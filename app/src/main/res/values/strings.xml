@@ -6,4 +6,9 @@
     <string name="search_time_range">1. Select the time range</string>
     <string name="search_from">From</string>
     <string name="search_to">To</string>
+    <string name="search_select_stock">2. Select the stock symbol</string>
+    <string name="search_symbol_hint">Search for a symbol (e.g \"Apple\" or \"AAPL\")</string>
+    <string name="stock_default_symbol">DFSS</string>
+    <string name="stock_default_description">StockDefaultDescription</string>
+    <string name="stock_default_exchange">:DFEX</string>
 </resources>

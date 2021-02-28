@@ -13,17 +13,15 @@ public class Stock {
     private final String mic;
     private final String symbol;
     private final String type;
-    private final HashMap _data;
 
     public Stock(HashMap data) {
-        _data = data;
-        currency = (String) _data.get("currency");
-        description = (String) _data.get("description");
-        displaySymbol = (String) _data.get("displaySymbol");
-        figi = (String) _data.get("figi");
-        mic = (String) _data.get("mic");
-        symbol = (String) _data.get("symbol");
-        type = (String) _data.get("type");
+        currency = (String) data.get("currency");
+        description = (String) data.get("description");
+        displaySymbol = (String) data.get("displaySymbol");
+        figi = (String) data.get("figi");
+        mic = (String) data.get("mic");
+        symbol = (String) data.get("symbol");
+        type = (String) data.get("type");
         stock_symbols.add(this);
     }
 

@@ -2,8 +2,10 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/searchLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:focusable="true"
     tools:context=".SearchActivity">
 
     <TextView
@@ -85,7 +87,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:completionThreshold="0"
+        android:completionThreshold="1"
         android:dropDownHeight="wrap_content"
         android:hint="@string/search_symbol_hint"
         android:textAppearance="@style/TextAppearance.AppCompat.Small"

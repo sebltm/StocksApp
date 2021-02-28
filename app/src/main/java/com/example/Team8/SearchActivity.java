@@ -9,6 +9,8 @@ import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
+import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Filter;
@@ -84,13 +86,40 @@ public class SearchActivity extends AppCompatActivity {
             InputMethodManager in = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
             in.hideSoftInputFromWindow(view.getApplicationWindowToken(), 0);
         });
+
+        // Create analysis selection interface
+        CheckBox smaCheckbox = (CheckBox) findViewById(R.id.SMAcheckbox);
+        CheckBox emaCheckbox = (CheckBox) findViewById(R.id.EMAcheckbox);
+        CheckBox macdCheckbox = (CheckBox) findViewById(R.id.MACDcheckbox);
+        CheckBox macdavgCheckbox = (CheckBox) findViewById(R.id.MACDAVGcheckbox);
+
+        TextView analysisDays = (TextView) findViewById(R.id.analysisDays);
+
+        Button resetBttn = (Button) findViewById(R.id.resetBttn);
+        resetBttn.setOnClickListener(v -> {
+            fromDate.clear();
+            toDate.clear();
+
+            stockAutocomplete.getText().clear();
+
+            smaCheckbox.setChecked(false);
+            emaCheckbox.setChecked(false);
+            macdCheckbox.setChecked(false);
+            macdavgCheckbox.setChecked(false);
+
+            analysisDays.setText("");
+
+            View current = getCurrentFocus();
+            if (current != null) current.clearFocus();
+        });
     }
 
     //TODO refactor this into its own file
     public static class DatePickerFragment implements View.OnClickListener, DatePickerDialog.OnDateSetListener {
 
+        private Calendar cal;
+
         private final EditText editText;
-        private final Calendar cal;
         private final Context ctx;
         private static final String format = "dd MMM yyyy";
         private static final SimpleDateFormat dateFormat = new SimpleDateFormat(format, Locale.UK);
@@ -112,6 +141,11 @@ public class SearchActivity extends AppCompatActivity {
         @Override
         public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
             cal.set(year, month, dayOfMonth);
+            editText.setText(dateFormat.format(cal.getTime()));
+        }
+
+        public void clear() {
+            this.cal = Calendar.getInstance();
             editText.setText(dateFormat.format(cal.getTime()));
         }
     }

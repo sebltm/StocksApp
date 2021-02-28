@@ -11,4 +11,13 @@
     <string name="stock_default_symbol">DFSS</string>
     <string name="stock_default_description">StockDefaultDescription</string>
     <string name="stock_default_exchange">:DFEX</string>
+    <string name="search_analysis_types">3. Select the indicators to be displayed</string>
+    <string name="sma">SMA</string>
+    <string name="EMA">EMA</string>
+    <string name="MACD">MACD</string>
+    <string name="MACDAVG">MACDAVG</string>
+    <string name="search_button">Search</string>
+    <string name="search_reset">Reset</string>
+    <string name="search_xma_days">For SMA, EMA:</string>
+    <string name="days">days</string>
 </resources>

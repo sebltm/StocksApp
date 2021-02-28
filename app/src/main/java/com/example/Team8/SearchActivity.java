@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.DatePicker;
@@ -28,6 +29,7 @@ import java.util.Locale;
 
 public class SearchActivity extends AppCompatActivity {
 
+    //THIS IS JUST USED AS DEMO, NEEDS TO BE REPLACED BY API CALLS INTO THE ARRAYADAPTER
     private static final List<Stock> STOCKS = new ArrayList<Stock>() {{
         add(new Stock(new HashMap<String, String>() {{
             put("currency", "USD");
@@ -74,6 +76,11 @@ public class SearchActivity extends AppCompatActivity {
         ArrayAdapter<Stock> stockAdapter = new StockAdapter(this, R.layout.stock_dropdown_item, STOCKS);
         AutoCompleteTextView stockAutocomplete = (AutoCompleteTextView) findViewById(R.id.stockDropdown);
         stockAutocomplete.setAdapter(stockAdapter);
+
+        stockAutocomplete.setOnItemClickListener((parent, view, position, id) -> {
+            InputMethodManager in = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            in.hideSoftInputFromWindow(view.getApplicationWindowToken(), 0);
+        });
     }
 
     //TODO refactor this into its own file

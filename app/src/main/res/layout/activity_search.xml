@@ -145,6 +145,34 @@
         app:layout_constraintStart_toEndOf="@+id/MACDcheckbox"
         app:layout_constraintTop_toTopOf="@+id/MACDcheckbox" />
 
+    <TextView
+        android:id="@+id/textView7"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/search_xma_days"
+        app:layout_constraintBottom_toBottomOf="@+id/analysisDays"
+        app:layout_constraintStart_toStartOf="@+id/SMAcheckbox"
+        app:layout_constraintTop_toTopOf="@+id/analysisDays" />
+
+    <EditText
+        android:id="@+id/analysisDays"
+        android:layout_width="50dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:ems="10"
+        android:inputType="number"
+        app:layout_constraintStart_toEndOf="@+id/textView7"
+        app:layout_constraintTop_toBottomOf="@+id/EMAcheckbox" />
+
+    <TextView
+        android:id="@+id/textView8"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/days"
+        app:layout_constraintBottom_toBottomOf="@+id/textView7"
+        app:layout_constraintStart_toEndOf="@+id/analysisDays"
+        app:layout_constraintTop_toTopOf="@+id/textView7" />
+
     <Button
         android:id="@+id/resetBttn"
         android:layout_width="wrap_content"
@@ -164,36 +192,6 @@
         app:layout_constraintEnd_toStartOf="@+id/resetBttn"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="@+id/textView2"
-        app:layout_constraintTop_toBottomOf="@+id/EMAcheckbox" />
-
-    <EditText
-        android:id="@+id/analysisDays"
-        android:layout_width="50dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="16dp"
-        android:ems="10"
-        android:inputType="number"
-        app:layout_constraintStart_toEndOf="@+id/textView7"
-        app:layout_constraintTop_toBottomOf="@+id/EMAcheckbox" />
-
-    <TextView
-        android:id="@+id/textView7"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:text="@string/search_xma_days"
-        app:layout_constraintBottom_toBottomOf="@+id/analysisDays"
-        app:layout_constraintHorizontal_chainStyle="packed"
-        app:layout_constraintStart_toStartOf="@+id/SMAcheckbox"
-        app:layout_constraintTop_toTopOf="@+id/analysisDays" />
-
-    <TextView
-        android:id="@+id/textView8"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:text="@string/days"
-        app:layout_constraintStart_toEndOf="@+id/analysisDays"
-        app:layout_constraintTop_toTopOf="@+id/textView7" />
+        app:layout_constraintTop_toBottomOf="@+id/analysisDays" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

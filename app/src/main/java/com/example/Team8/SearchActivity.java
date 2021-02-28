@@ -67,12 +67,15 @@ public class SearchActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
 
+
+        // Create date picker selection interface
         EditText editTextFromDate = (EditText) findViewById(R.id.mDatePickerFrom);
         EditText editTextToDate = (EditText) findViewById(R.id.mDatePickerTo);
 
         DatePickerFragment fromDate = new DatePickerFragment(editTextFromDate, this);
         DatePickerFragment toDate = new DatePickerFragment(editTextToDate, this);
 
+        // Create stock selection interface
         ArrayAdapter<Stock> stockAdapter = new StockAdapter(this, R.layout.stock_dropdown_item, STOCKS);
         AutoCompleteTextView stockAutocomplete = (AutoCompleteTextView) findViewById(R.id.stockDropdown);
         stockAutocomplete.setAdapter(stockAdapter);

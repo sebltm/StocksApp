@@ -1,28 +1,22 @@
 package com.example.Team8;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Toast;
 
-import com.google.android.material.tabs.TabLayout;
-
-import androidx.viewpager.widget.ViewPager;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.Team8.ui.main.SectionsPagerAdapter;
 import com.example.Team8.ui.main.ModelFacade;
-
 import com.example.Team8.utils.API;
 import com.example.Team8.utils.DateTimeHelper;
 import com.example.Team8.utils.HTTP_JSON;
 import com.example.Team8.utils.JSON;
-import com.example.Team8.utils.Resolution;
+import com.example.Team8.utils.Stock;
 import com.example.Team8.utils.StockCandle;
-import com.example.Team8.utils.StockSymbol;
 
 import java.time.LocalDate;
 import java.util.HashMap;
-
-import android.view.View;
-import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
     ModelFacade model;
@@ -45,6 +39,14 @@ public class MainActivity extends AppCompatActivity {
 //                getStockCandlesTEST();
             }
         });
+
+        findViewById(R.id.mBttnSwitchSearch).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, SearchActivity.class);
+                startActivity(intent);
+            }
+        });
     }
 
     private void getStockSymbolsTEST() {
@@ -58,10 +60,10 @@ public class MainActivity extends AppCompatActivity {
                     JSON j = (JSON) response;
                     if (j.getType().equals("array")) {
                         for (Object o : j.getDataArray()) {
-                            StockSymbol s = new StockSymbol((HashMap) o);
+                            Stock s = new Stock((HashMap) o);
                         }
-                        System.out.println(StockSymbol.stock_symbols.size());
-                        StockSymbol.stock_symbols.forEach(stockSymbol -> {
+                        System.out.println(Stock.stock_symbols.size());
+                        Stock.stock_symbols.forEach(stockSymbol -> {
                             System.out.println(stockSymbol.getSymbol());
                         });
                     }

@@ -2,4 +2,8 @@
     <string name="app_name">Team8</string>
     <string name="tab_text_1">Tab 1</string>
     <string name="tab_text_2">Tab 2</string>
+    <string name="search_title">Set Parameters and Run a Search</string>
+    <string name="search_time_range">1. Select the time range</string>
+    <string name="search_from">From</string>
+    <string name="search_to">To</string>
 </resources>

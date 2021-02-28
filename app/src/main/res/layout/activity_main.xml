@@ -1,48 +1,75 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
-xmlns:app="http://schemas.android.com/apk/res-auto"
-xmlns:tools="http://schemas.android.com/tools"
-android:layout_width="match_parent"
-android:layout_height="match_parent"
-tools:context=".MainActivity">
-
-<com.google.android.material.appbar.AppBarLayout
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:theme="@style/AppTheme.AppBarOverlay">
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
 
-    <TextView
-        android:id="@+id/title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:minHeight="?actionBarSize"
-        android:padding="@dimen/appbar_padding"
-        android:text="@string/app_name"
-        android:textAppearance="@style/TextAppearance.Widget.AppCompat.Toolbar.Title" />
-
-<com.google.android.material.tabs.TabLayout
-        android:id="@+id/tabs"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintLayout2"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="?attr/colorPrimary" />
-</com.google.android.material.appbar.AppBarLayout>
+        android:layout_height="match_parent"
+        app:layout_anchor="@+id/constraintLayout2"
+        app:layout_anchorGravity="center">
 
-<!--<androidx.viewpager.widget.ViewPager-->
-<!--    android:id="@+id/view_pager"-->
-<!--    android:layout_width="match_parent"-->
-<!--    android:layout_height="match_parent"-->
-<!--    app:layout_behavior="@string/appbar_scrolling_view_behavior" />-->
+        <com.google.android.material.appbar.AppBarLayout
+            android:id="@+id/appBarLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:theme="@style/AppTheme.AppBarOverlay"
+            app:layout_constraintTop_toTopOf="parent">
 
-    <Button
-        android:id="@+id/textButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="FETCH"
-        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-        android:layout_marginTop="200pt"
-        android:textSize="5pt"
-        />
+            <TextView
+                android:id="@+id/title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:minHeight="?actionBarSize"
+                android:padding="@dimen/appbar_padding"
+                android:text="@string/app_name"
+                android:textAppearance="@style/TextAppearance.Widget.AppCompat.Toolbar.Title" />
+
+            <com.google.android.material.tabs.TabLayout
+                android:id="@+id/tabs"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="?attr/colorPrimary" />
+        </com.google.android.material.appbar.AppBarLayout>
+
+        <Button
+            android:id="@+id/textButton"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:text="FETCH"
+            android:textSize="5pt"
+            app:layout_constraintBottom_toTopOf="@+id/mBttnSwitchSearch"
+            app:layout_constraintEnd_toEndOf="@+id/mBttnSwitchSearch"
+            app:layout_constraintStart_toStartOf="@+id/mBttnSwitchSearch"
+            app:layout_constraintTop_toBottomOf="@+id/appBarLayout"
+            app:layout_constraintVertical_chainStyle="packed" />
+
+        <Button
+            android:id="@+id/mBttnSwitchSearch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="Switch to Search"
+            android:visibility="visible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textButton" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <!--<androidx.viewpager.widget.ViewPager-->
+    <!--    android:id="@+id/view_pager"-->
+    <!--    android:layout_width="match_parent"-->
+    <!--    android:layout_height="match_parent"-->
+    <!--    app:layout_behavior="@string/appbar_scrolling_view_behavior" />-->
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
 

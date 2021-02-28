@@ -211,7 +211,7 @@ public class SearchActivity extends AppCompatActivity {
                     List<Stock> stockSuggestions = new ArrayList<>();
 
                     if (constraint != null) {
-                        for (Stock stock : stocks) {
+                        for (Stock stock : stocksDefault) {
                             if (stock.getDisplaySymbol().toLowerCase()
                                     .startsWith(constraint.toString().toLowerCase())
                                     || stock.getDescription().toLowerCase()

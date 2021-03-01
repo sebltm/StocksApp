@@ -1,5 +1,5 @@
 package com.example.Team8.ui.main;
-
+//test rathu
 import android.graphics.Canvas;
 import android.graphics.ColorFilter;
 import android.graphics.PixelFormat;
@@ -12,6 +12,7 @@ import java.util.HashMap;
 public class GraphDisplay extends Drawable implements Drawable.Callback
 { private String graphKind = "line"; // could also be "scatter" or "bar"
   private Canvas canvas = null;
+  private int hello = 0;
 
   private final Paint bluePaint;
   private final Paint blackPaint;

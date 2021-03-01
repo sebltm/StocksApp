@@ -1,5 +1,6 @@
 package com.example.Team8.utils;
 
+import com.example.Team8.StockCalc.ExponentialMovingAverage;
 import com.example.Team8.StockCalc.SimpleMovingAverage;
 
 import java.math.BigDecimal;
@@ -103,7 +104,24 @@ public class Stock {
     }
 
     public List<AnalysisPoint> calculateEMA(int nDays) {
-        return new ArrayList<>();
+        AnalysisType EMA = AnalysisType.EMA;
+        PricePoint p = priceHistory.get(priceHistory.size() - 1);
+        List<AnalysisPoint> a_points = new ArrayList<AnalysisPoint>();
+        Date now = new Date();
+
+        try {
+            double[] close_ema = new ExponentialMovingAverage().calculate(get_double_prices(p.getClose()), nDays).getEMA();
+
+            a_points = new ArrayList<AnalysisPoint>() {{
+                for (double d : close_ema) {
+                    add(new AnalysisPoint(EMA, new BigDecimal(String.valueOf(d)), now));
+                }
+            }};
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        System.out.println(a_points);
+        return a_points;
     }
 
     public List<AnalysisPoint> calculateMACD() {

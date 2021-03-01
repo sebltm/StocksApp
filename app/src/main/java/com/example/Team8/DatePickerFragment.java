@@ -43,4 +43,8 @@ public class DatePickerFragment implements View.OnClickListener, DatePickerDialo
         this.cal = Calendar.getInstance();
         editText.setText(dateFormat.format(cal.getTime()));
     }
+
+    public Calendar getCal() {
+        return cal;
+    }
 }

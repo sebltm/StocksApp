@@ -50,6 +50,7 @@ public class StockAdapter extends ArrayAdapter<Stock> {
         Stock stock = stocks.get(position);
 
         if (stock != null) {
+            viewHolder.stock = stock;
             viewHolder.stockSymbol.setText(stocks.get(position).getDisplaySymbol());
             viewHolder.stockDesc.setText(stocks.get(position).getDescription());
         }
@@ -64,6 +65,7 @@ public class StockAdapter extends ArrayAdapter<Stock> {
     }
 
     static class ViewHolderItem {
+        Stock stock;
         TextView stockSymbol;
         TextView stockDesc;
     }

@@ -13,6 +13,9 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.Team8.utils.AnalysisType;
+import com.example.Team8.utils.SearchHistoryDatabase;
+import com.example.Team8.utils.SearchHistoryItem;
 import com.example.Team8.utils.Stock;
 
 import java.util.ArrayList;
@@ -54,6 +57,8 @@ public class SearchActivity extends AppCompatActivity {
         }}));
     }};
 
+    Stock selectedStock;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -74,6 +79,8 @@ public class SearchActivity extends AppCompatActivity {
         stockAutocomplete.setOnItemClickListener((parent, view, position, id) -> {
             InputMethodManager in = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
             in.hideSoftInputFromWindow(view.getApplicationWindowToken(), 0);
+            StockAdapter.ViewHolderItem stockItem = (StockAdapter.ViewHolderItem) view.getTag();
+            selectedStock = stockItem.stock;
         });
 
         // Create analysis selection interface
@@ -100,6 +107,38 @@ public class SearchActivity extends AppCompatActivity {
 
             View current = getCurrentFocus();
             if (current != null) current.clearFocus();
+        });
+
+        SearchHistoryDatabase database = SearchHistoryDatabase.getInstance(this);
+
+        // Create Search button
+        Button searchBttn = (Button) findViewById(R.id.searchBttn);
+        searchBttn.setOnClickListener(v -> {
+
+            List<AnalysisType> analysisTypes = new ArrayList<>();
+
+            if (smaCheckbox.isChecked()) {
+                analysisTypes.add(AnalysisType.SMA);
+            }
+
+            if (emaCheckbox.isChecked()) {
+                analysisTypes.add(AnalysisType.EMA);
+            }
+
+            if (macdCheckbox.isChecked()) {
+                analysisTypes.add(AnalysisType.MACD);
+            }
+
+            if (macdavgCheckbox.isChecked()) {
+                analysisTypes.add(AnalysisType.MACDAVG);
+            }
+
+            // TODO this needs to fetch an actual stock using the symbol
+            SearchHistoryItem searchHistoryItem = new SearchHistoryItem(selectedStock, fromDate.getCal(), toDate.getCal(), analysisTypes);
+
+            // Insert search history object into the database
+            // TODO deal with duplicates (e.g same stock, date from and to and analysis types)
+            new Thread(() -> database.getSearchHistoryDao().insert(searchHistoryItem)).start();
         });
     }
 }

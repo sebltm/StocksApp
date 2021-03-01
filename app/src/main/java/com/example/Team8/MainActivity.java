@@ -2,7 +2,6 @@ package com.example.Team8;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -32,20 +31,18 @@ public class MainActivity extends AppCompatActivity {
 //        tabs.setupWithViewPager(viewPager);
 //        model = ModelFacade.getInstance(this);
 
-        findViewById(R.id.textButton).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                getStockSymbolsTEST();
-//                getStockCandlesTEST();
-            }
+        findViewById(R.id.textButton).setOnClickListener(view -> {
+            getStockSymbolsTEST();
         });
 
-        findViewById(R.id.mBttnSwitchSearch).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, SearchActivity.class);
-                startActivity(intent);
-            }
+        findViewById(R.id.mBttnSwitchSearch).setOnClickListener(v -> {
+            Intent intent = new Intent(MainActivity.this, SearchActivity.class);
+            startActivity(intent);
+        });
+
+        findViewById(R.id.mBttnSwitchSearchHistory).setOnClickListener(v -> {
+            Intent intent = new Intent(MainActivity.this, SearchHistoryActivity.class);
+            startActivity(intent);
         });
     }
 

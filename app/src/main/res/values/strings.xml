@@ -20,4 +20,10 @@
     <string name="search_reset">Reset</string>
     <string name="search_xma_days">For SMA, EMA:</string>
     <string name="days">days</string>
+    <string name="search_history_title">Search History</string>
+    <string name="search_history_num_items">Showing the last %1$d items</string>
+    <string name="default_date">01/01/1970</string>
+    <string name="summary">👁</string>
+    <string name="search">🔍</string>
+    <string name="analysis_types">SMA, EMA, MACD, MACDAVG</string>
 </resources>

@@ -37,12 +37,12 @@
             style="@style/Widget.MaterialComponents.Button.OutlinedButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp"
             android:text="FETCH"
             android:textSize="5pt"
             app:layout_constraintBottom_toTopOf="@+id/mBttnSwitchSearch"
             app:layout_constraintEnd_toEndOf="@+id/mBttnSwitchSearch"
+            app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="@+id/mBttnSwitchSearch"
             app:layout_constraintTop_toBottomOf="@+id/appBarLayout"
             app:layout_constraintVertical_chainStyle="packed" />
@@ -51,13 +51,26 @@
             android:id="@+id/mBttnSwitchSearch"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
             android:text="Switch to Search"
+            android:visibility="visible"
+            app:layout_constraintBottom_toTopOf="@+id/mBttnSwitchSearchHistory"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textButton" />
+
+        <Button
+            android:id="@+id/mBttnSwitchSearchHistory"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="Switch to History"
             android:visibility="visible"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textButton" />
+            app:layout_constraintTop_toBottomOf="@+id/mBttnSwitchSearch" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <!--<androidx.viewpager.widget.ViewPager-->

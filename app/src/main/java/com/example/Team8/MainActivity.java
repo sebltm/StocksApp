@@ -99,7 +99,17 @@ public class MainActivity extends AppCompatActivity {
 //                    put("type", "Common Stock");
 //                }});
 
-                EMA_TEST(new HashMap<String, String>() {{
+//                EMA_TEST(new HashMap<String, String>() {{
+//                    put("currency", "USD");
+//                    put("description", "APPLE INC");
+//                    put("displaySymbol", "AAPL");
+//                    put("figi", "");
+//                    put("mic", "");
+//                    put("symbol", "AAPL");
+//                    put("type", "Common Stock");
+//                }});
+
+                MACD_TEST(new HashMap<String, String>() {{
                     put("currency", "USD");
                     put("description", "APPLE INC");
                     put("displaySymbol", "AAPL");
@@ -287,6 +297,23 @@ public class MainActivity extends AppCompatActivity {
                         return;
                     }
                     stock.calculateEMA(15);
+                }
+        );
+    }
+
+    public void MACD_TEST(HashMap stock_info) {
+        Stock s = new Stock(stock_info);
+        s.fetchData(
+                Resolution.types.get("15"),
+                DateTimeHelper.toDate(LocalDate.now().minusDays(5)),
+                DateTimeHelper.toDate(LocalDate.now()),
+                (priceHistory, stock) -> {
+                    if(priceHistory == null){
+//                        API IS LIMITED IN FREE TIER
+//                        System.out.println(String.format("API ERROR, DATA NOT FOUND FOR SYMBOL: %s", s.getSymbol()));
+                        return;
+                    }
+                    stock.calculateMACD(26,12,9);
                 }
         );
     }

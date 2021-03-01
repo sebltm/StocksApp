@@ -1,6 +1,7 @@
 package com.example.Team8.utils;
 
 import com.example.Team8.StockCalc.ExponentialMovingAverage;
+import com.example.Team8.StockCalc.MovingAverageConvergenceDivergence;
 import com.example.Team8.StockCalc.SimpleMovingAverage;
 
 import java.math.BigDecimal;
@@ -124,8 +125,32 @@ public class Stock {
         return a_points;
     }
 
-    public List<AnalysisPoint> calculateMACD() {
-        return new ArrayList<>();
+    public List<AnalysisPoint> calculateMACD(int fastPeriod, int slowPeriod, int signalPeriod) {
+        AnalysisType MACD = AnalysisType.MACD;
+        PricePoint p = priceHistory.get(priceHistory.size() - 1);
+        List<AnalysisPoint> a_points = new ArrayList<AnalysisPoint>();
+        Date now = new Date();
+
+        try {
+            MovingAverageConvergenceDivergence macd_calc = new MovingAverageConvergenceDivergence().calculate(
+                    get_double_prices(p.getClose()), fastPeriod, slowPeriod, signalPeriod
+            );
+
+            double[] close_macd = macd_calc.getMACD();
+            double[] close_macd_diff = macd_calc.getDiff();
+            double[] close_macd_signal = macd_calc.getSignal();
+            int[] close_macd_crossover = macd_calc.getCrossover();
+
+            a_points = new ArrayList<AnalysisPoint>() {{
+                for (double d : close_macd) {
+                    add(new AnalysisPoint(MACD, new BigDecimal(String.valueOf(d)), now));
+                }
+            }};
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        System.out.println(a_points);
+        return a_points;
     }
 
     public List<AnalysisPoint> calculateMACDAVG() {

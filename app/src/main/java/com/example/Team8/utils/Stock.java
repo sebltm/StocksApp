@@ -1,9 +1,16 @@
 package com.example.Team8.utils;
 
+import com.example.Team8.StockCalc.SimpleMovingAverage;
+
+import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+
+import static com.example.Team8.utils.ArrayUtils.doubleArr;
+import static com.example.Team8.utils.ArrayUtils.toDoubleArr;
 
 public class Stock {
 
@@ -70,8 +77,29 @@ public class Stock {
                 '}';
     }
 
+    private double[] get_double_prices(List<DataPoint> prices) {
+        return doubleArr(prices.stream().map((data_point) -> data_point.value.doubleValue()).toArray());
+    }
+
     public List<AnalysisPoint> calculateSMA(int nDays) {
-        return new ArrayList<>();
+        AnalysisType SMA = AnalysisType.SMA;
+        PricePoint p = priceHistory.get(priceHistory.size() - 1);
+        List<AnalysisPoint> a_points = new ArrayList<AnalysisPoint>();
+        Date now = new Date();
+
+        try {
+            double[] close_sma = new SimpleMovingAverage().calculate(get_double_prices(p.getClose()), nDays).getSMA();
+
+            a_points = new ArrayList<AnalysisPoint>() {{
+                for (double d : close_sma) {
+                    add(new AnalysisPoint(SMA, new BigDecimal(String.valueOf(d)), now));
+                }
+            }};
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        System.out.println(a_points);
+        return a_points;
     }
 
     public List<AnalysisPoint> calculateEMA(int nDays) {
@@ -88,7 +116,7 @@ public class Stock {
 
     private void setResponseCallback(StockDataCallback callback, List<PricePoint> value) {
         if (callback != null) {
-            callback.response(value);
+            callback.response(value, this);
         }
     }
 

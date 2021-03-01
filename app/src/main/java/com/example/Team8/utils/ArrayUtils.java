@@ -39,4 +39,12 @@ public class ArrayUtils {
         }
         return d_p_l.toArray(new DataPoint[0]);
     }
+
+    public static double[] doubleArr(Object[] arr) {
+        double[] d = new double[arr.length];
+        for (int i = 0; i < d.length; i++) {
+            d[i] = (double) arr[i];
+        }
+        return d;
+    }
 }

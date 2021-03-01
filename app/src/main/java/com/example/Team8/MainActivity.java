@@ -87,7 +87,17 @@ public class MainActivity extends AppCompatActivity {
 //                    put("type", "");
 //                }});
 
-                getSearchTEST();
+//                getSearchTEST();
+
+                SMA_TEST(new HashMap<String, String>() {{
+                    put("currency", "USD");
+                    put("description", "APPLE INC");
+                    put("displaySymbol", "AAPL");
+                    put("figi", "");
+                    put("mic", "");
+                    put("symbol", "AAPL");
+                    put("type", "Common Stock");
+                }});
             }
         });
     }
@@ -219,7 +229,7 @@ public class MainActivity extends AppCompatActivity {
                 Resolution.types.get("15"),
                 DateTimeHelper.toDate(LocalDate.now().minusDays(5)),
                 DateTimeHelper.toDate(LocalDate.now()),
-                (priceHistory) -> {
+                (priceHistory, stock) -> {
                     System.out.println(String.format("%s %s", s.getSymbol(), priceHistory == null? null : "DATA!!"));
                     if(priceHistory == null){
 //                        API IS LIMITED IN FREE TIER
@@ -233,6 +243,23 @@ public class MainActivity extends AppCompatActivity {
                         System.out.println(pp.getClose());
                         System.out.println(pp.getTimestamps());
                     });
+                }
+        );
+    }
+
+    public void SMA_TEST(HashMap stock_info) {
+        Stock s = new Stock(stock_info);
+        s.fetchData(
+                Resolution.types.get("15"),
+                DateTimeHelper.toDate(LocalDate.now().minusDays(5)),
+                DateTimeHelper.toDate(LocalDate.now()),
+                (priceHistory, stock) -> {
+                    if(priceHistory == null){
+//                        API IS LIMITED IN FREE TIER
+//                        System.out.println(String.format("API ERROR, DATA NOT FOUND FOR SYMBOL: %s", s.getSymbol()));
+                        return;
+                    }
+                    stock.calculateSMA(15);
                 }
         );
     }

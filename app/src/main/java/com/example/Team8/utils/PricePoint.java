@@ -42,19 +42,19 @@ public class PricePoint {
 
         for (int i = 0; i < timestamps_arr.length; i++) {
             open.add(new DataPoint(
-                    new BigDecimal(Double.valueOf(String.valueOf(open_arr[i]))),
+                    new BigDecimal(String.valueOf(open_arr[i])),
                     DateTimeHelper.toDateTime(timestamps_arr[i])
             ));
             high.add(new DataPoint(
-                    new BigDecimal(Double.valueOf(String.valueOf(high_arr[i]))),
+                    new BigDecimal(String.valueOf(high_arr[i])),
                     DateTimeHelper.toDateTime(timestamps_arr[i])
             ));
             low.add(new DataPoint(
-                    new BigDecimal(Double.valueOf(String.valueOf(low_arr[i]))),
+                    new BigDecimal(String.valueOf(low_arr[i])),
                     DateTimeHelper.toDateTime(timestamps_arr[i])
             ));
             close.add(new DataPoint(
-                    new BigDecimal(Double.valueOf(String.valueOf(close_arr[i]))),
+                    new BigDecimal(String.valueOf(close_arr[i])),
                     DateTimeHelper.toDateTime(timestamps_arr[i])
             ));
         }

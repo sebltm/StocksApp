@@ -9,7 +9,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.Team8.utils.SearchHistoryDatabase;
+import com.example.Team8.adapters.SearchHistoryAdapter;
+import com.example.Team8.database.SearchHistoryDatabase;
 import com.example.Team8.utils.SearchHistoryItem;
 
 import java.util.ArrayList;

@@ -1,10 +1,12 @@
-package com.example.Team8.utils;
+package com.example.Team8.database;
 
 import android.content.Context;
 
 import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
+
+import com.example.Team8.utils.SearchHistoryItem;
 
 @Database(entities = {SearchHistoryItem.class}, version = 1)
 public abstract class SearchHistoryDatabase extends RoomDatabase {

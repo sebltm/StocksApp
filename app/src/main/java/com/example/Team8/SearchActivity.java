@@ -10,11 +10,13 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.Team8.adapters.StockAdapter;
+import com.example.Team8.database.SearchHistoryDatabase;
 import com.example.Team8.utils.AnalysisType;
-import com.example.Team8.utils.SearchHistoryDatabase;
 import com.example.Team8.utils.SearchHistoryItem;
 import com.example.Team8.utils.Stock;
 
@@ -133,12 +135,17 @@ public class SearchActivity extends AppCompatActivity {
                 analysisTypes.add(AnalysisType.MACDAVG);
             }
 
-            // TODO this needs to fetch an actual stock using the symbol
-            SearchHistoryItem searchHistoryItem = new SearchHistoryItem(selectedStock, fromDate.getCal(), toDate.getCal(), analysisTypes);
+            if (fromDate.getCal().compareTo(toDate.getCal()) <= 0) {
+                // TODO this needs to fetch an actual stock using the symbol
+                SearchHistoryItem searchHistoryItem = new SearchHistoryItem(selectedStock, fromDate.getCal(), toDate.getCal(), analysisTypes);
 
-            // Insert search history object into the database
-            // TODO deal with duplicates (e.g same stock, date from and to and analysis types)
-            new Thread(() -> database.getSearchHistoryDao().insert(searchHistoryItem)).start();
+                // Insert search history object into the database
+                // TODO deal with duplicates (e.g same stock, date from and to and analysis types)
+                new Thread(() -> database.getSearchHistoryDao().insert(searchHistoryItem)).start();
+            } else {
+                Toast.makeText(this, "\"From\" date must be smaller or equal \"to\" date", Toast.LENGTH_LONG).show();
+                fromDate.setDayEqual(toDate);
+            }
         });
     }
 }

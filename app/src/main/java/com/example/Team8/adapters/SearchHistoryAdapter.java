@@ -1,4 +1,4 @@
-package com.example.Team8;
+package com.example.Team8.adapters;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,6 +8,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.Team8.R;
 import com.example.Team8.utils.AnalysisType;
 import com.example.Team8.utils.SearchHistoryItem;
 

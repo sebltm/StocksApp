@@ -1,4 +1,4 @@
-package com.example.Team8;
+package com.example.Team8.adapters;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -11,6 +11,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.example.Team8.R;
+import com.example.Team8.StockFilter;
 import com.example.Team8.utils.Stock;
 
 import java.util.List;
@@ -64,8 +66,8 @@ public class StockAdapter extends ArrayAdapter<Stock> {
         return new StockFilter(stocks, this);
     }
 
-    static class ViewHolderItem {
-        Stock stock;
+    public static class ViewHolderItem {
+        public Stock stock;
         TextView stockSymbol;
         TextView stockDesc;
     }

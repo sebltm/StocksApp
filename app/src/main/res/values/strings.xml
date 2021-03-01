@@ -26,4 +26,5 @@
     <string name="summary">👁</string>
     <string name="search">🔍</string>
     <string name="analysis_types">SMA, EMA, MACD, MACDAVG</string>
+    <string name="date_future">Date must be today or before</string>
 </resources>

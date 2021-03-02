@@ -28,11 +28,21 @@ tools:context=".MainActivity">
         android:background="?attr/colorPrimary" />
 </com.google.android.material.appbar.AppBarLayout>
 
-<androidx.viewpager.widget.ViewPager
-    android:id="@+id/view_pager"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+<!--<androidx.viewpager.widget.ViewPager-->
+<!--    android:id="@+id/view_pager"-->
+<!--    android:layout_width="match_parent"-->
+<!--    android:layout_height="match_parent"-->
+<!--    app:layout_behavior="@string/appbar_scrolling_view_behavior" />-->
+
+    <Button
+        android:id="@+id/textButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="FETCH"
+        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+        android:layout_marginTop="200pt"
+        android:textSize="5pt"
+        />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
 

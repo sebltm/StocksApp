@@ -1,9 +1,11 @@
 package com.example.Team8;
 
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.widget.Toast;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.Team8.ui.main.ModelFacade;
@@ -12,6 +14,7 @@ import com.example.Team8.utils.DateTimeHelper;
 import com.example.Team8.utils.HTTP_JSON;
 import com.example.Team8.utils.JSON;
 import com.example.Team8.utils.PricePoint;
+import com.example.Team8.utils.Resolution;
 import com.example.Team8.utils.Stock;
 import com.example.Team8.utils.StockCandle;
 
@@ -69,6 +72,7 @@ public class MainActivity extends AppCompatActivity {
                 });
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     private void getStockCandlesTEST() {
         Toast.makeText(this, "FETCHING STOCK CANDLES", Toast.LENGTH_SHORT).show();
         String getStockCandlesURL = API.getStockCandles(
@@ -100,6 +104,7 @@ public class MainActivity extends AppCompatActivity {
                 });
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     private void getPricePointTEST() {
         Toast.makeText(this, "FETCHING STOCK CANDLES", Toast.LENGTH_SHORT).show();
         String getStockCandlesURL = API.getStockCandles(
@@ -169,6 +174,7 @@ public class MainActivity extends AppCompatActivity {
                 });
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     public void FETCH_data_TEST(HashMap stock_info) {
         Stock s = new Stock(stock_info);
         s.fetchData(
@@ -193,6 +199,7 @@ public class MainActivity extends AppCompatActivity {
         );
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     public void SMA_TEST(HashMap stock_info) {
         Stock s = new Stock(stock_info);
         s.fetchData(
@@ -210,6 +217,7 @@ public class MainActivity extends AppCompatActivity {
         );
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     public void EMA_TEST(HashMap stock_info) {
         Stock s = new Stock(stock_info);
         s.fetchData(
@@ -227,6 +235,7 @@ public class MainActivity extends AppCompatActivity {
         );
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     public void MACD_TEST(HashMap stock_info) {
         Stock s = new Stock(stock_info);
         s.fetchData(

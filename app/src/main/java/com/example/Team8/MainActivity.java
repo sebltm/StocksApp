@@ -4,14 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Toast;
 
-import com.example.Team8.utils.AnalysisPoint;
-import com.example.Team8.utils.AnalysisType;
-import com.example.Team8.utils.DataPoint;
-import com.example.Team8.utils.PricePoint;
-import com.example.Team8.utils.Stock;
-import com.google.android.material.tabs.TabLayout;
-
-import androidx.viewpager.widget.ViewPager;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.Team8.ui.main.ModelFacade;
@@ -19,13 +11,12 @@ import com.example.Team8.utils.API;
 import com.example.Team8.utils.DateTimeHelper;
 import com.example.Team8.utils.HTTP_JSON;
 import com.example.Team8.utils.JSON;
+import com.example.Team8.utils.PricePoint;
 import com.example.Team8.utils.Stock;
 import com.example.Team8.utils.StockCandle;
 
 import java.io.UnsupportedEncodingException;
-import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.HashMap;
 
 public class MainActivity extends AppCompatActivity {

@@ -3,7 +3,9 @@ package com.example.Team8.utils;
 import com.example.Team8.StockCalc.ExponentialMovingAverage;
 import com.example.Team8.StockCalc.MovingAverageConvergenceDivergence;
 import com.example.Team8.StockCalc.SimpleMovingAverage;
+import com.example.Team8.tests.Test;
 
+import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
@@ -82,17 +84,21 @@ public class Stock {
     }
 
     public List<AnalysisPoint> calculateSMA(int nDays) {
-        AnalysisType SMA = AnalysisType.SMA;
+        AnalysisType a_type = AnalysisType.SMA;
         PricePoint p = priceHistory.get(priceHistory.size() - 1);
         List<AnalysisPoint> a_points = new ArrayList<AnalysisPoint>();
-        Date now = new Date();
+        List<String> timestamps_arr = p.getTimestamps();
 
         try {
             double[] close_sma = new SimpleMovingAverage().calculate(get_double_prices(p.getClose()), nDays).getSMA();
 
             a_points = new ArrayList<AnalysisPoint>() {{
-                for (double d : close_sma) {
-                    add(new AnalysisPoint(SMA, new BigDecimal(String.valueOf(d)), now));
+                for (int i = 0; i < close_sma.length; i++) {
+                    add(new AnalysisPoint(
+                            a_type,
+                            new BigDecimal(String.valueOf(close_sma[i])),
+                            DateTimeHelper.toDateTime(timestamps_arr.get(i))
+                    ));
                 }
             }};
         } catch (Exception e) {
@@ -103,17 +109,21 @@ public class Stock {
     }
 
     public List<AnalysisPoint> calculateEMA(int nDays) {
-        AnalysisType EMA = AnalysisType.EMA;
+        AnalysisType a_type = AnalysisType.EMA;
         PricePoint p = priceHistory.get(priceHistory.size() - 1);
         List<AnalysisPoint> a_points = new ArrayList<AnalysisPoint>();
-        Date now = new Date();
+        List<String> timestamps_arr = p.getTimestamps();
 
         try {
             double[] close_ema = new ExponentialMovingAverage().calculate(get_double_prices(p.getClose()), nDays).getEMA();
 
             a_points = new ArrayList<AnalysisPoint>() {{
-                for (double d : close_ema) {
-                    add(new AnalysisPoint(EMA, new BigDecimal(String.valueOf(d)), now));
+                for (int i = 0; i < close_ema.length; i++) {
+                    add(new AnalysisPoint(
+                            a_type,
+                            new BigDecimal(String.valueOf(close_ema[i])),
+                            DateTimeHelper.toDateTime(timestamps_arr.get(i))
+                    ));
                 }
             }};
         } catch (Exception e) {
@@ -124,10 +134,10 @@ public class Stock {
     }
 
     public List<AnalysisPoint> calculateMACD(int fastPeriod, int slowPeriod, int signalPeriod) {
-        AnalysisType MACD = AnalysisType.MACD;
+        AnalysisType a_type = AnalysisType.MACD;
         PricePoint p = priceHistory.get(priceHistory.size() - 1);
         List<AnalysisPoint> a_points = new ArrayList<AnalysisPoint>();
-        Date now = new Date();
+        List<String> timestamps_arr = p.getTimestamps();
 
         try {
             MovingAverageConvergenceDivergence macd_calc = new MovingAverageConvergenceDivergence().calculate(
@@ -140,8 +150,12 @@ public class Stock {
             int[] close_macd_crossover = macd_calc.getCrossover();
 
             a_points = new ArrayList<AnalysisPoint>() {{
-                for (double d : close_macd) {
-                    add(new AnalysisPoint(MACD, new BigDecimal(String.valueOf(d)), now));
+                for (int i = 0; i < close_macd.length; i++) {
+                    add(new AnalysisPoint(
+                            a_type,
+                            new BigDecimal(String.valueOf(close_macd[i])),
+                            DateTimeHelper.toDateTime(timestamps_arr.get(i))
+                    ));
                 }
             }};
         } catch (Exception e) {
@@ -178,9 +192,8 @@ public class Stock {
                         setResponseCallback(callback, null);
                         return;
                     }
-                    JSON j = (JSON) response;
                     if (response.getType().equals("object")) {
-                        HashMap data = j.getDataObj();
+                        HashMap data = response.getDataObj();
                         boolean status = API.isValidStatus((String) data.get("s"));
                         if (!status) {
 //                            System.out.println("NO DATA FOUND");
@@ -192,6 +205,53 @@ public class Stock {
                         setResponseCallback(callback, priceHistory);
                     } else {
                         setResponseCallback(callback, null);
+                    }
+                });
+    }
+
+    private static void setSearchCallback(StocksCallback callback, List<Stock> value) {
+        if (callback != null) {
+            callback.response(value);
+        }
+    }
+
+    public static void search(String query, StocksCallback callback) {
+        String getSearchURL;
+        try {
+            getSearchURL = API.getSearchSymbolURL(query);
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+            setSearchCallback(callback, null);
+            return;
+        }
+
+        HTTP_JSON.fetch(getSearchURL,
+                response -> {
+                    if (response == null) {
+                        setSearchCallback(callback, null);
+                        return;
+                    }
+                    if (response.getType().equals("object")) {
+                        HashMap data = response.getDataObj();
+                        int count = 0;
+                        try{
+                            count = (int) data.get("count");
+                        }catch (Exception e){}
+
+                        if (count > 0) {
+//                            System.out.println(String.format("SEARCH COUNT >> %s %s", count, results.length));
+                            List<Stock> stocks_result = new ArrayList<Stock>(){{
+                                Object[] results = (Object[]) data.get("result");
+                                results = results != null? results : new Object[0];
+                                for (Object o : results) {
+                                    add(new Stock((HashMap) o));
+                                }
+                            }};
+                            setSearchCallback(callback, stocks_result.size() > 0? stocks_result : null);
+                        } else {
+                            setSearchCallback(callback, null);
+//                            System.out.println("NO RESULTS");
+                        }
                     }
                 });
     }

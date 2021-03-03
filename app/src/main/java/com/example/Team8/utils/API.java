@@ -1,5 +1,8 @@
 package com.example.Team8.utils;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -26,10 +29,18 @@ public class API {
         return join(String.format("/stock/candle?symbol=%1$s&resolution=%2$s&from=%3$s&to=%4$s", symbol, resolution, DateTimeHelper.toEpoch(from), DateTimeHelper.toEpoch(to)));
     }
 
+    public static String getSearchSymbolURL(String q) throws UnsupportedEncodingException {
+        return join(String.format("/search?q=%1$s", encodeValue(q)));
+    }
+
     public static boolean isValidStatus(String s){
         ArrayList<String> invalid_status = new ArrayList<>();
         invalid_status.add("no_data");
         return !invalid_status.contains(s);
+    }
+
+    private static String encodeValue(String value) throws UnsupportedEncodingException {
+        return URLEncoder.encode(value, StandardCharsets.UTF_8.toString());
     }
 
 }

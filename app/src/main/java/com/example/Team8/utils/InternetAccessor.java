@@ -2,8 +2,9 @@ package com.example.Team8.utils;
 
 import android.os.AsyncTask;
 
+import com.example.Team8.utils.callbacks.InternetCallback;
+
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
@@ -86,10 +87,6 @@ public class InternetAccessor extends AsyncTask<String, Void, String> {
     @Override
     protected void onProgressUpdate(Void... values) {
     }
-}
-
-interface InternetCallback {
-    public void internetAccessCompleted(String response);
 }
 
 

@@ -1,9 +1,11 @@
 package com.example.Team8.utils;
 
+import com.example.Team8.utils.callbacks.JSONCallback;
+
 public class HTTP_JSON {
 
     public static void fetch(String url, JSONCallback json_callback){
-        InternetAccessor x = new InternetAccessor();
+        InternetAccessor x = InternetAccessor.getInstance();
         x.setDelegate(response -> {
             boolean error = false;
             JSON j = null;

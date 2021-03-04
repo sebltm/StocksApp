@@ -15,17 +15,17 @@ import com.example.Team8.R;
 import com.example.Team8.StockFilter;
 import com.example.Team8.utils.Stock;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class StockAdapter extends ArrayAdapter<Stock> {
 
-    private final Context ctx;
-    private final List<Stock> stocks;
     private final int resource;
+    private final List<Stock> stocks;
 
     public StockAdapter(@NonNull Context context, int resource, @NonNull List<Stock> stocks) {
         super(context, resource, stocks);
-        this.ctx = context;
         this.stocks = stocks;
         this.resource = resource;
     }
@@ -37,7 +37,7 @@ public class StockAdapter extends ArrayAdapter<Stock> {
         ViewHolderItem viewHolder;
 
         if (convertView == null) {
-            LayoutInflater inflater = (LayoutInflater) ctx.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             convertView = inflater.inflate(this.resource, parent, false);
 
             viewHolder = new ViewHolderItem();
@@ -49,21 +49,47 @@ public class StockAdapter extends ArrayAdapter<Stock> {
             viewHolder = (ViewHolderItem) convertView.getTag();
         }
 
-        Stock stock = stocks.get(position);
+        Stock stock = getItem(position);
 
         if (stock != null) {
             viewHolder.stock = stock;
-            viewHolder.stockSymbol.setText(stocks.get(position).getDisplaySymbol());
-            viewHolder.stockDesc.setText(stocks.get(position).getDescription());
+            viewHolder.stockSymbol.setText(getItem(position).getDisplaySymbol());
+            viewHolder.stockDesc.setText(getItem(position).getDescription());
         }
 
         return convertView;
     }
 
+    @Override
+    public void add(@Nullable Stock object) {
+        stocks.add(object);
+    }
+
+    @Override
+    public int getCount() {
+        return stocks.size();
+    }
+
+    @Override
+    public void addAll(Stock... items) {
+        stocks.addAll(new ArrayList<>(Arrays.asList(items)));
+    }
+
+    @Nullable
+    @Override
+    public Stock getItem(int position) {
+        return stocks.get(position);
+    }
+
     @NonNull
     @Override
     public Filter getFilter() {
-        return new StockFilter(stocks, this);
+        return new StockFilter(this);
+    }
+
+    @Override
+    public void clear() {
+        stocks.clear();
     }
 
     public static class ViewHolderItem {

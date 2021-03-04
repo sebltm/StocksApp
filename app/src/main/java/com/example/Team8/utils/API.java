@@ -12,15 +12,15 @@ import java.util.List;
 
 public class API {
     public static final String domain = "https://finnhub.io";
-    private String endpoint = "/api/v1";
-    private String API_KEY = "c0kg3ln48v6und6ris7g";
+    private final String endpoint = "/api/v1";
+    private final String API_KEY = "c0kg3ln48v6und6ris7g";
     private static API instance = null;
 
-    private API(){
+    private API() {
     }
 
-    public static API getInstance(){
-        if(instance == null){
+    public static API getInstance() {
+        if (instance == null) {
             instance = new API();
         }
         return instance;
@@ -84,20 +84,21 @@ public class API {
                     if (response.getType().equals("object")) {
                         HashMap data = response.getDataObj();
                         int count = 0;
-                        try{
+                        try {
                             count = (int) data.get("count");
-                        }catch (Exception e){}
+                        } catch (Exception ignored) {
+                        }
 
                         if (count > 0) {
 //                            System.out.println(String.format("SEARCH COUNT >> %s %s", count, results.length));
-                            List<Stock> stocks_result = new ArrayList<Stock>(){{
+                            List<Stock> stocks_result = new ArrayList<Stock>() {{
                                 Object[] results = (Object[]) data.get("result");
-                                results = results != null? results : new Object[0];
+                                results = results != null ? results : new Object[0];
                                 for (Object o : results) {
                                     add(new Stock((HashMap) o));
                                 }
                             }};
-                            setSearchCallback(callback, stocks_result.size() > 0? stocks_result : null);
+                            setSearchCallback(callback, stocks_result.size() > 0 ? stocks_result : null);
                         } else {
                             setSearchCallback(callback, null);
 //                            System.out.println("NO RESULTS");

@@ -4,7 +4,6 @@ import android.content.Context;
 import android.os.Bundle;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -21,43 +20,11 @@ import com.example.Team8.utils.SearchHistoryItem;
 import com.example.Team8.utils.Stock;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 public class SearchActivity extends AppCompatActivity {
 
-    //THIS IS JUST USED AS DEMO, NEEDS TO BE REPLACED BY API CALLS INTO THE ARRAYADAPTER
-    private static final List<Stock> STOCKS = new ArrayList<Stock>() {{
-        add(new Stock(new HashMap<String, String>() {{
-            put("currency", "USD");
-            put("description", "APPLE INC");
-            put("displaySymbol", "AAPL");
-            put("figi", "");
-            put("mic", "");
-            put("symbol", "AAPL");
-            put("type", "Common Stock");
-        }}));
-
-        add(new Stock(new HashMap<String, String>() {{
-            put("currency", "USD");
-            put("description", "AAON");
-            put("displaySymbol", "AAON");
-            put("figi", "");
-            put("mic", "");
-            put("symbol", "AAON");
-            put("type", "Common Stock");
-        }}));
-
-        add(new Stock(new HashMap<String, String>() {{
-            put("currency", "USD");
-            put("description", "AMERICAN AIRLINES");
-            put("displaySymbol", "AAL");
-            put("figi", "");
-            put("mic", "");
-            put("symbol", "AAL");
-            put("type", "Common Stock");
-        }}));
-    }};
+    private static final ArrayList<Stock> STOCKS = new ArrayList<>();
 
     Stock selectedStock;
 
@@ -74,7 +41,7 @@ public class SearchActivity extends AppCompatActivity {
         DatePickerFragment toDate = new DatePickerFragment(editTextToDate, this);
 
         // Create stock selection interface
-        ArrayAdapter<Stock> stockAdapter = new StockAdapter(this, R.layout.stock_dropdown_item, STOCKS);
+        StockAdapter stockAdapter = new StockAdapter(this, R.layout.stock_dropdown_item, STOCKS);
         AutoCompleteTextView stockAutocomplete = (AutoCompleteTextView) findViewById(R.id.stockDropdown);
         stockAutocomplete.setAdapter(stockAdapter);
 
@@ -84,6 +51,9 @@ public class SearchActivity extends AppCompatActivity {
             StockAdapter.ViewHolderItem stockItem = (StockAdapter.ViewHolderItem) view.getTag();
             selectedStock = stockItem.stock;
         });
+
+        StockAutoCompleteWatcher autoCompleteWatcher = StockAutoCompleteWatcher.getInstance(stockAdapter);
+        stockAutocomplete.addTextChangedListener(autoCompleteWatcher);
 
         // Create analysis selection interface
         CheckBox smaCheckbox = (CheckBox) findViewById(R.id.SMAcheckbox);

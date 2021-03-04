@@ -11,7 +11,7 @@ import com.example.Team8.utils.AnalysisPoint;
 import com.example.Team8.utils.AnalysisType;
 import com.example.Team8.utils.DataPoint;
 import com.example.Team8.utils.DateTimeHelper;
-import com.example.Team8.utils.HTTP_JSON;
+import com.example.Team8.utils.http.HTTP_JSON;
 import com.example.Team8.utils.PricePoint;
 import com.example.Team8.utils.Resolution;
 import com.example.Team8.utils.Stock;

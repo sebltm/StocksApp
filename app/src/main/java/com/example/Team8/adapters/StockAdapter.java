@@ -21,6 +21,7 @@ import java.util.List;
 
 public class StockAdapter extends ArrayAdapter<Stock> {
 
+    protected Filter filter;
     private final int resource;
     private final List<Stock> stocks;
 
@@ -28,6 +29,7 @@ public class StockAdapter extends ArrayAdapter<Stock> {
         super(context, resource, stocks);
         this.stocks = stocks;
         this.resource = resource;
+        this.filter = new StockFilter(this);
     }
 
     @NonNull
@@ -56,13 +58,14 @@ public class StockAdapter extends ArrayAdapter<Stock> {
             viewHolder.stockSymbol.setText(getItem(position).getDisplaySymbol());
             viewHolder.stockDesc.setText(getItem(position).getDescription());
         }
-
         return convertView;
     }
+
 
     @Override
     public void add(@Nullable Stock object) {
         stocks.add(object);
+        notifyDataSetChanged();
     }
 
     @Override
@@ -73,6 +76,7 @@ public class StockAdapter extends ArrayAdapter<Stock> {
     @Override
     public void addAll(Stock... items) {
         stocks.addAll(new ArrayList<>(Arrays.asList(items)));
+        notifyDataSetChanged();
     }
 
     @Nullable
@@ -84,7 +88,7 @@ public class StockAdapter extends ArrayAdapter<Stock> {
     @NonNull
     @Override
     public Filter getFilter() {
-        return new StockFilter(this);
+        return filter;
     }
 
     @Override

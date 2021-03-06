@@ -11,12 +11,16 @@ import com.example.Team8.utils.AnalysisPoint;
 import com.example.Team8.utils.AnalysisType;
 import com.example.Team8.utils.DataPoint;
 import com.example.Team8.utils.DateTimeHelper;
+import com.example.Team8.utils.JSON;
+import com.example.Team8.utils.callbacks.HTTPCallback;
 import com.example.Team8.utils.http.HTTP_JSON;
 import com.example.Team8.utils.PricePoint;
 import com.example.Team8.utils.Resolution;
 import com.example.Team8.utils.Stock;
 import com.example.Team8.utils.StockCandle;
 import com.example.Team8.utils.callbacks.StocksCallback;
+import com.example.Team8.utils.http.HTTP_REQUEST;
+import com.example.Team8.utils.http.JSON_REQUEST;
 
 import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;

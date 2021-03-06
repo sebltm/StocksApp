@@ -11,7 +11,6 @@ import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Request;
 import okhttp3.Response;
-import okhttp3.ResponseBody;
 
 public class JSON_REQUEST extends HTTP_REQUEST<HTTPCallback<JSON>> {
     public JSON_REQUEST(String url) {
@@ -28,39 +27,28 @@ public class JSON_REQUEST extends HTTP_REQUEST<HTTPCallback<JSON>> {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
                 e.printStackTrace();
-                onResponse.response(null);
+                setResponse(onResponse, null);
             }
 
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                String body_str = null;
+                String body_str = getBodyStr(response);
                 boolean error = false;
                 JSON j = null;
-
                 try{
-                    if(response.isSuccessful()){
-                        ResponseBody body = response.body();
-                        body_str = body.string();
-                        body.close();
+                    if(body_str != null){
+                        j = new JSON(body_str);
+                        if(j.getType() == null){
+                            error = true;
+                        }
+                    }else{
+                        error = true;
                     }
                 }catch (Exception e){
-                }
-
-                if(body_str != null){
-                    try{
-                        if(response == null){
-                            error = true;
-                        }else{
-                            j = new JSON(body_str);
-                        }
-                    }catch (Exception e){
-                        error = true;
-                        e.printStackTrace();
-                    }
-                }else{
+                    e.printStackTrace();
                     error = true;
                 }
-                onResponse.response(error? null : j);
+                setResponse(onResponse, error? null : j);
             }
         };
     }

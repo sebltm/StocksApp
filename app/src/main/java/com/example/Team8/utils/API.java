@@ -1,9 +1,12 @@
 package com.example.Team8.utils;
 
+import com.example.Team8.utils.callbacks.StockDataCallback;
+import com.example.Team8.utils.callbacks.StockPricesCallback;
 import com.example.Team8.utils.callbacks.StocksCallback;
 import com.example.Team8.utils.http.HTTP_JSON;
 
 import java.io.UnsupportedEncodingException;
+import java.math.BigDecimal;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -17,7 +20,7 @@ public class API {
     private String API_KEY = "c0kg3ln48v6und6ris7g";
     private static API instance = null;
 
-    private API(){
+    public API(){
     }
 
     public static API getInstance(){
@@ -66,10 +69,35 @@ public class API {
         }
     }
 
-    public void search(String query, StocksCallback callback) {
+    private void setStockPricesSearchCallback(StockPricesCallback callback, List<DataPoint> stockPrices, Stock stock) {
+        if (callback != null) {
+            callback.response(stockPrices, stock);
+        }
+    }
+
+    public void retrieveStockPrices(String url, Stock stock, StockPricesCallback callback) {
+        HTTP_JSON.fetch(url,
+                response -> {
+                    if (response == null) {
+                        setStockPricesSearchCallback(callback, null, stock);
+                        return;
+                    }
+                    if (response.getType().equals("object")) {
+                        System.out.println("Response received");
+                        HashMap data = response.getDataObj();
+
+                        PricePoint pricesResult = new PricePoint(data);
+                        List<DataPoint> closingPrices = pricesResult.getClose();
+
+                        setStockPricesSearchCallback(callback, closingPrices, stock);
+                    }
+                });
+    }
+
+    public void retrieveMatchingStocks(String symbol, StocksCallback callback) {
         String getSearchURL;
         try {
-            getSearchURL = getSearchSymbolURL(query);
+            getSearchURL = getSearchSymbolURL(symbol);
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
             setSearchCallback(callback, null);
@@ -85,26 +113,24 @@ public class API {
                     if (response.getType().equals("object")) {
                         HashMap data = response.getDataObj();
                         int count = 0;
-                        try{
+                        try {
                             count = (int) data.get("count");
-                        }catch (Exception e){}
+                        } catch (Exception e) {}
 
                         if (count > 0) {
-//                            System.out.println(String.format("SEARCH COUNT >> %s %s", count, results.length));
-                            List<Stock> stocks_result = new ArrayList<Stock>(){{
+                            List<Stock> retrievedStocks = new ArrayList<Stock>() {{
                                 Object[] results = (Object[]) data.get("result");
-                                results = results != null? results : new Object[0];
-                                for (Object o : results) {
-                                    add(new Stock((HashMap) o));
+                                results = results != null ? results : new Object[0];
+                                for (Object object : results) {
+                                    add(new Stock((HashMap) object));
                                 }
                             }};
-                            setSearchCallback(callback, stocks_result.size() > 0? stocks_result : null);
+
+                            setSearchCallback(callback, retrievedStocks.size() > 0 ? retrievedStocks : null);
                         } else {
                             setSearchCallback(callback, null);
-//                            System.out.println("NO RESULTS");
                         }
                     }
                 });
     }
-
 }

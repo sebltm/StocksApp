@@ -1,9 +1,10 @@
-package com.example.Team8.utils;
+package com.example.Team8.utils.http;
 
 import android.os.AsyncTask;
 
+import com.example.Team8.utils.callbacks.InternetCallback;
+
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
@@ -12,6 +13,7 @@ import java.net.URL;
 public class InternetAccessor extends AsyncTask<String, Void, String> {
     private InternetCallback delegate = null;
     private static InternetAccessor instance = null;
+    private boolean CallbackUsed = false;
 
     public void setDelegate(InternetCallback c) {
         delegate = c;
@@ -35,7 +37,10 @@ public class InternetAccessor extends AsyncTask<String, Void, String> {
         try {
             myData = fetchUrl(url);
         } catch (Exception _e) {
-            delegate.internetAccessCompleted(null);
+            if(!CallbackUsed){
+                CallbackUsed = true;
+                delegate.internetAccessCompleted(null);
+            }
             return null;
         }
         return myData;
@@ -60,8 +65,11 @@ public class InternetAccessor extends AsyncTask<String, Void, String> {
                 myStrBuff.append(urlContent + '\n');
             }
 
-        } catch (IOException e) {
-            delegate.internetAccessCompleted(null);
+        } catch (Exception e) {
+            if(!CallbackUsed) {
+                CallbackUsed = true;
+                delegate.internetAccessCompleted(null);
+            }
             return null;
         }
 
@@ -70,16 +78,15 @@ public class InternetAccessor extends AsyncTask<String, Void, String> {
 
     @Override
     protected void onPostExecute(String result) {
-        delegate.internetAccessCompleted(result);
+        if(!CallbackUsed) {
+            CallbackUsed = true;
+            delegate.internetAccessCompleted(result);
+        }
     }
 
     @Override
     protected void onProgressUpdate(Void... values) {
     }
-}
-
-interface InternetCallback {
-    public void internetAccessCompleted(String response);
 }
 
 

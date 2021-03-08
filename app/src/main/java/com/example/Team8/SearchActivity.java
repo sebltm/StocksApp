@@ -204,6 +204,8 @@ public class SearchActivity extends AppCompatActivity {
                 Date fromDateTime = fromDate.getCal().getTime();
                 Date toDateTime = toDate.getCal().getTime();
 
+                spinner.setVisibility(View.VISIBLE);
+
                 selectedStock.fetchData(
                         Resolution.types.get("D"),
                         fromDateTime, toDateTime,

@@ -1,7 +1,6 @@
 package com.example.Team8.utils;
 
 import com.example.Team8.utils.callbacks.StockDataCallback;
-import com.example.Team8.utils.callbacks.StockPricesCallback;
 import com.example.Team8.utils.callbacks.StocksCallback;
 import com.example.Team8.utils.http.HTTP_JSON;
 
@@ -20,7 +19,7 @@ public class API {
     private String API_KEY = "c0kg3ln48v6und6ris7g";
     private static API instance = null;
 
-    public API(){
+    private API(){
     }
 
     public static API getInstance(){
@@ -67,31 +66,6 @@ public class API {
         if (callback != null) {
             callback.response(value);
         }
-    }
-
-    private void setStockPricesSearchCallback(StockPricesCallback callback, List<DataPoint> stockPrices, Stock stock) {
-        if (callback != null) {
-            callback.response(stockPrices, stock);
-        }
-    }
-
-    public void retrieveStockPrices(String url, Stock stock, StockPricesCallback callback) {
-        HTTP_JSON.fetch(url,
-                response -> {
-                    if (response == null) {
-                        setStockPricesSearchCallback(callback, null, stock);
-                        return;
-                    }
-                    if (response.getType().equals("object")) {
-                        System.out.println("Response received");
-                        HashMap data = response.getDataObj();
-
-                        PricePoint pricesResult = new PricePoint(data);
-                        List<DataPoint> closingPrices = pricesResult.getClose();
-
-                        setStockPricesSearchCallback(callback, closingPrices, stock);
-                    }
-                });
     }
 
     public void retrieveMatchingStocks(String symbol, StocksCallback callback) {

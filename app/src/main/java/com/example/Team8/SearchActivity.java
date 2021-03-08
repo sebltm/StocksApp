@@ -24,11 +24,11 @@ import com.example.Team8.database.SearchHistoryDatabase;
 import com.example.Team8.utils.AnalysisType;
 import com.example.Team8.utils.DataPoint;
 import com.example.Team8.utils.PricePoint;
+import com.example.Team8.utils.Resolution;
 import com.example.Team8.utils.SearchHistoryItem;
 import com.example.Team8.utils.Stock;
 import com.example.Team8.utils.API;
 import com.example.Team8.utils.callbacks.StockDataCallback;
-import com.example.Team8.utils.callbacks.StockPricesCallback;
 import com.example.Team8.utils.callbacks.StocksCallback;
 
 import java.sql.SQLOutput;
@@ -103,7 +103,6 @@ public class SearchActivity extends AppCompatActivity {
         Button searchSymbol = (Button) findViewById(R.id.searchSymbol);
 
         searchSymbol.setOnClickListener(v -> {
-            API api = API.getInstance();
             TextView stockView = (TextView) findViewById(R.id.stockDropdown);
             String currentSearch = stockView.getText().toString().toUpperCase();
 
@@ -114,15 +113,14 @@ public class SearchActivity extends AppCompatActivity {
 
             spinner.setVisibility(View.VISIBLE);
 
-            api.retrieveMatchingStocks(currentSearch, new StocksCallback() {
-                @Override
-                public void response(List<Stock> stocks) {
-                    if(stocks != null) {
-                        if (!stocks.isEmpty()) {
-                            stockAdapter.clear();
-                            stockAdapter.addAll(stocks);
-                            spinner.setVisibility(View.GONE);
-                        }
+            API.getInstance().retrieveMatchingStocks(currentSearch, stocks -> {
+                if(stocks != null) {
+                    System.out.println(stocks.size());
+                    System.out.println(stocks);
+                    if (!stocks.isEmpty()) {
+                        stockAdapter.clear();
+                        stockAdapter.addAll(stocks);
+                        spinner.setVisibility(View.GONE);
                     }
                 }
             });
@@ -206,20 +204,25 @@ public class SearchActivity extends AppCompatActivity {
                 Date fromDateTime = fromDate.getCal().getTime();
                 Date toDateTime = toDate.getCal().getTime();
 
-                API api = API.getInstance();
-                String stockCandlesAPIURL = api.getStockCandlesURL(selectedStock.getSymbol(), "D", fromDateTime, toDateTime);
+                selectedStock.fetchData(
+                        Resolution.types.get("D"),
+                        fromDateTime, toDateTime,
+                        (price_points, stock) -> {
+                            if(price_points == null || price_points.size() == 0){
+                                return;
+                            }
+                            // TODO Calculate the selected indicators, redirect user to Stock Chart view with tabs of the selected indicators enabled
+                            PricePoint p = price_points.get(price_points.size()-1);
+                            List<DataPoint> stockPrices = p.getClose();
+                            System.out.print("Stock prices: ");
+                            System.out.println(stockPrices);
+//                            stock.calculateSMA(params);
+//                            stock.calculateEMA(params);
+//                            stock.calculateMACD(params);
+//                            stock.calculateMACDAVG(params);
+                            spinner.setVisibility(View.GONE);
+                        });
 
-                spinner.setVisibility(View.VISIBLE);
-
-                api.retrieveStockPrices(stockCandlesAPIURL, selectedStock, new StockPricesCallback() {
-                    @Override
-                    public void response(List<DataPoint> stockPrices, Stock stock) {
-                        // TODO Calculate the selected indicators, redirect user to Stock Chart view with tabs of the selected indicators enabled
-                        System.out.print("Stock prices: ");
-                        System.out.println(stockPrices);
-                        spinner.setVisibility(View.GONE);
-                    }
-                });
 
                 // TODO this needs to fetch an actual stock using the symbol
                 SearchHistoryItem searchHistoryItem = new SearchHistoryItem(selectedStock, fromDate.getCal(), toDate.getCal(), analysisTypes);

@@ -68,7 +68,7 @@ public class API {
         }
     }
 
-    public void retrieveMatchingStocks(String symbol, StocksCallback callback) {
+    public void search(String symbol, StocksCallback callback) {
         String getSearchURL;
         try {
             getSearchURL = getSearchSymbolURL(symbol);

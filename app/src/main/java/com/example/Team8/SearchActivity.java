@@ -113,7 +113,7 @@ public class SearchActivity extends AppCompatActivity {
 
             spinner.setVisibility(View.VISIBLE);
 
-            API.getInstance().retrieveMatchingStocks(currentSearch, stocks -> {
+            API.getInstance().search(currentSearch, stocks -> {
                 if(stocks != null) {
                     System.out.println(stocks.size());
                     System.out.println(stocks);

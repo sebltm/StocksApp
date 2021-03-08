@@ -109,12 +109,12 @@ public class Test {
 //            put("type", "Common Stock");
 //        }});
 
-//        API.getInstance().search("apple", stocks -> {
-//            if (stocks == null) {
-//                return;
-//            }
-//            System.out.println(stocks.size());
-//        });
+        API.getInstance().search("apple", stocks -> {
+            if (stocks == null) {
+                return;
+            }
+            System.out.println(stocks.size());
+        });
 
         return this;
     }

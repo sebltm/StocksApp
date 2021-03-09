@@ -109,12 +109,22 @@ public class Test {
 //            put("type", "Common Stock");
 //        }});
 
-        API.getInstance().search("apple", stocks -> {
-            if (stocks == null) {
-                return;
-            }
-            System.out.println(stocks.size());
-        });
+        MACDAVG_TEST(new HashMap<String, String>() {{
+            put("currency", "USD");
+            put("description", "APPLE INC");
+            put("displaySymbol", "AAPL");
+            put("figi", "");
+            put("mic", "");
+            put("symbol", "AAPL");
+            put("type", "Common Stock");
+        }});
+
+//        API.getInstance().search("apple", stocks -> {
+//            if (stocks == null) {
+//                return;
+//            }
+//            System.out.println(stocks.size());
+//        });
 
         return this;
     }
@@ -341,7 +351,26 @@ public class Test {
 //                        System.out.println(String.format("API ERROR, DATA NOT FOUND FOR SYMBOL: %s", s.getSymbol()));
                         return;
                     }
-                    stock.calculateMACD(26, 12, 9);
+                    stock.calculateMACD(12, 26, 9);
+                }
+        );
+        return this;
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    public Test MACDAVG_TEST(HashMap stock_info) {
+        Stock s = new Stock(stock_info);
+        s.fetchData(
+                Resolution.types.get("15"),
+                DateTimeHelper.toDate(LocalDate.now().minusDays(5)),
+                DateTimeHelper.toDate(LocalDate.now()),
+                (priceHistory, stock) -> {
+                    if (priceHistory == null) {
+//                        API IS LIMITED IN FREE TIER
+//                        System.out.println(String.format("API ERROR, DATA NOT FOUND FOR SYMBOL: %s", s.getSymbol()));
+                        return;
+                    }
+                    stock.calculateMACDAVG();
                 }
         );
         return this;

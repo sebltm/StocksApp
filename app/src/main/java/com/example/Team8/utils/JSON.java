@@ -9,7 +9,7 @@ import java.util.Iterator;
 import java.util.Map;
 
 public class JSON {
-    private String str_data;
+    private final String str_data;
 
     private HashMap data_obj = null;
     private Object[] data_arr = null;
@@ -100,5 +100,9 @@ public class JSON {
 
     public String getType() {
         return type;
+    }
+
+    public String getStr_data() {
+        return str_data;
     }
 }

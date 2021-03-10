@@ -10,13 +10,9 @@ import java.util.List;
 
 public class StockFilter extends Filter {
 
-    List<Stock> stocks;
-    List<Stock> stocksDefault;
-    ArrayAdapter<?> parent;
+    ArrayAdapter<Stock> parent;
 
-    public StockFilter(List<Stock> stocks, ArrayAdapter<?> parent) {
-        this.stocks = stocks;
-        this.stocksDefault = new ArrayList<>(stocks);
+    public StockFilter(ArrayAdapter<Stock> parent) {
         this.parent = parent;
     }
 
@@ -31,7 +27,8 @@ public class StockFilter extends Filter {
         List<Stock> stockSuggestions = new ArrayList<>();
 
         if (constraint != null) {
-            for (Stock stock : stocksDefault) {
+            for (int i = 0; i < parent.getCount(); i++) {
+                Stock stock = parent.getItem(i);
                 if (stock.getDisplaySymbol().toLowerCase()
                         .startsWith(constraint.toString().toLowerCase())
                         || stock.getDescription().toLowerCase()
@@ -49,16 +46,9 @@ public class StockFilter extends Filter {
 
     @Override
     protected void publishResults(CharSequence constraint, FilterResults results) {
-        stocks.clear();
         if (results != null && results.count > 0) {
-            for (Object object : (List<?>) results.values) {
-                if (object instanceof Stock) {
-                    stocks.add((Stock) object);
-                }
-            }
             parent.notifyDataSetChanged();
         } else if (constraint == null) {
-            stocks.addAll(stocksDefault);
             parent.notifyDataSetInvalidated();
         }
     }

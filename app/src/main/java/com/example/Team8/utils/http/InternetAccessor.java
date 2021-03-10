@@ -1,7 +1,5 @@
 package com.example.Team8.utils.http;
 
-import android.os.AsyncTask;
-
 import com.example.Team8.utils.callbacks.InternetCallback;
 
 import java.io.BufferedReader;
@@ -9,41 +7,19 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.concurrent.Callable;
 
-public class InternetAccessor extends AsyncTask<String, Void, String> {
+public class InternetAccessor implements Callable<String> {
     private InternetCallback delegate = null;
-    private static InternetAccessor instance = null;
     private boolean CallbackUsed = false;
+    private final String url;
+
+    public InternetAccessor(String url) {
+        this.url = url;
+    }
 
     public void setDelegate(InternetCallback c) {
         delegate = c;
-    }
-
-    public static InternetAccessor getInstance() {
-        if (instance == null) {
-            instance = new InternetAccessor();
-        }
-        return instance;
-    }
-
-    @Override
-    protected void onPreExecute() {
-    }
-
-    @Override
-    protected String doInBackground(String... params) {
-        String url = params[0];
-        String myData = "";
-        try {
-            myData = fetchUrl(url);
-        } catch (Exception _e) {
-            if(!CallbackUsed){
-                CallbackUsed = true;
-                delegate.internetAccessCompleted(null);
-            }
-            return null;
-        }
-        return myData;
     }
 
     private String fetchUrl(String url) {
@@ -62,7 +38,7 @@ public class InternetAccessor extends AsyncTask<String, Void, String> {
             BufferedReader myBuffRdr = new BufferedReader(new InputStreamReader(myInStrm));
 
             while ((urlContent = myBuffRdr.readLine()) != null) {
-                myStrBuff.append(urlContent + '\n');
+                myStrBuff.append(urlContent).append('\n');
             }
 
         } catch (Exception e) {
@@ -77,15 +53,24 @@ public class InternetAccessor extends AsyncTask<String, Void, String> {
     }
 
     @Override
-    protected void onPostExecute(String result) {
-        if(!CallbackUsed) {
-            CallbackUsed = true;
-            delegate.internetAccessCompleted(result);
+    public String call() throws Exception {
+        String myData = "";
+        try {
+            myData = fetchUrl(this.url);
+        } catch (Exception _e) {
+            if (!CallbackUsed) {
+                CallbackUsed = true;
+                delegate.internetAccessCompleted(null);
+            }
+            return null;
         }
-    }
 
-    @Override
-    protected void onProgressUpdate(Void... values) {
+        if (!CallbackUsed) {
+            CallbackUsed = true;
+            delegate.internetAccessCompleted(myData);
+        }
+
+        return myData;
     }
 }
 

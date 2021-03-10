@@ -1,10 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MainActivity">
+
+    <RelativeLayout
+        android:layout_alignParentTop="true"
+        android:id="@+id/appbarlayout"
+        android:elevation="4dp"
+        android:background="@drawable/gradient_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="60dp">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+    </RelativeLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintLayout2"
@@ -33,44 +49,32 @@
         </com.google.android.material.appbar.AppBarLayout>
 
         <Button
-            android:id="@+id/textButton"
-            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
-            android:text="FETCH"
-            android:textSize="5pt"
-            app:layout_constraintBottom_toTopOf="@+id/mBttnSwitchSearch"
-            app:layout_constraintEnd_toEndOf="@+id/mBttnSwitchSearch"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="@+id/mBttnSwitchSearch"
-            app:layout_constraintTop_toBottomOf="@+id/appBarLayout"
-            app:layout_constraintVertical_chainStyle="packed" />
-
-        <Button
             android:id="@+id/mBttnSwitchSearch"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Switch to Search"
+            android:layout_width="145dp"
+            android:layout_height="70dp"
+            android:layout_marginTop="156dp"
+            android:background="@drawable/gradient_bttn"
+            android:text="New Search"
+            android:textColor="#f5f5f5"
             android:visibility="visible"
-            app:layout_constraintBottom_toTopOf="@+id/mBttnSwitchSearchHistory"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textButton" />
+            app:layout_constraintTop_toBottomOf="@+id/appBarLayout" />
 
         <Button
             android:id="@+id/mBttnSwitchSearchHistory"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="145dp"
+            android:layout_height="70dp"
             android:layout_marginTop="8dp"
-            android:text="Switch to History"
+            android:background="@drawable/gradient_bttn"
+            android:text="Search History"
+            android:textColor="#f5f5f5"
             android:visibility="visible"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/mBttnSwitchSearch" />
+            app:layout_constraintTop_toBottomOf="@+id/mBttnSwitchSearch"
+            app:layout_constraintVertical_bias="0.23" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <!--<androidx.viewpager.widget.ViewPager-->

@@ -75,7 +75,7 @@
         android:id="@+id/textView5"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="64dp"
+        android:layout_marginTop="52dp"
         android:text="@string/search_select_stock"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
         app:layout_constraintStart_toStartOf="@+id/textView2"
@@ -91,7 +91,7 @@
         android:dropDownHeight="wrap_content"
         android:hint="@string/search_symbol_hint"
         android:textAppearance="@style/TextAppearance.AppCompat.Small"
-        app:layout_constraintEnd_toEndOf="@+id/mDatePickerTo"
+        app:layout_constraintEnd_toStartOf="@+id/searchSymbol"
         app:layout_constraintStart_toStartOf="@+id/textView5"
         app:layout_constraintTop_toBottomOf="@+id/textView5" />
 
@@ -99,7 +99,7 @@
         android:id="@+id/textView6"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="64dp"
+        android:layout_marginTop="80dp"
         android:text="@string/search_analysis_types"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
         app:layout_constraintStart_toStartOf="@+id/textView2"
@@ -142,7 +142,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/MACDAVG"
-        app:layout_constraintEnd_toEndOf="@+id/stockDropdown"
+        app:layout_constraintEnd_toEndOf="@+id/searchSymbol"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/MACDcheckbox"
         app:layout_constraintTop_toTopOf="@+id/MACDcheckbox" />
@@ -160,6 +160,7 @@
         android:id="@+id/analysisDays"
         android:layout_width="50dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
         android:layout_marginTop="8dp"
         android:ems="10"
         android:inputType="number"
@@ -172,28 +173,73 @@
         android:layout_height="wrap_content"
         android:text="@string/days"
         app:layout_constraintBottom_toBottomOf="@+id/textView7"
+        app:layout_constraintEnd_toEndOf="@+id/MACDcheckbox"
+        app:layout_constraintHorizontal_bias="0.255"
         app:layout_constraintStart_toEndOf="@+id/analysisDays"
-        app:layout_constraintTop_toTopOf="@+id/textView7" />
+        app:layout_constraintTop_toTopOf="@+id/textView7"
+        app:layout_constraintVertical_bias="0.0" />
 
     <Button
         android:id="@+id/resetBttn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/search_reset"
-        app:layout_constraintEnd_toEndOf="@+id/textView"
+        android:background="@drawable/gradient_bttn"
+        android:textColor="#f5f5f5"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/searchBttn"
-        app:layout_constraintTop_toTopOf="@+id/searchBttn" />
+        app:layout_constraintTop_toBottomOf="@+id/analysisDays" />
 
     <Button
         android:id="@+id/searchBttn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/search_button"
+        android:textColor="#f5f5f5"
+        android:background="@drawable/gradient_bttn"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/resetBttn"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="@+id/textView2"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/analysisDays" />
+
+    <Button
+        android:id="@+id/searchSymbol"
+        android:layout_width="39dp"
+        android:layout_height="40dp"
+        android:layout_marginEnd="36dp"
+        android:text="🔍"
+        app:layout_constraintBottom_toTopOf="@+id/textView6"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/mDatePickerTo"
+        app:layout_constraintVertical_bias="0.531" />
+
+    <TextView
+        android:id="@+id/textView10"
+        android:layout_width="189dp"
+        android:layout_height="15dp"
+        android:text=" Press the button to search for the stock"
+        android:textSize="10dp"
+        app:layout_constraintBottom_toTopOf="@+id/textView6"
+        app:layout_constraintEnd_toEndOf="@+id/searchSymbol"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/stockDropdown"
+        app:layout_constraintTop_toBottomOf="@+id/stockDropdown"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:indeterminateTint="@android:color/holo_blue_dark"
+        app:layout_constraintBottom_toTopOf="@+id/mDatePickerTo"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.827"
+        app:layout_constraintStart_toEndOf="@+id/textView"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.283" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

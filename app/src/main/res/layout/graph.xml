@@ -97,7 +97,7 @@
         tools:layout_editor_absoluteX="9dp"
         tools:layout_editor_absoluteY="653dp"
         tools:ignore="MissingConstraints"
-        android:onClick="showSummary"/>/>
+        android:onClick="showSummary"/>
 
     <TextView
         android:id="@+id/stockText"

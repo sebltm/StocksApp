@@ -44,7 +44,7 @@ public class Graph extends AppCompatActivity {
     public ArrayList<Entry> addValuesOne(ArrayList<Float> xValues, ArrayList<Float> yValues){
         int size = xValues.size();
 
-        ArrayList<Entry> dataVals = new ArrayList<Entry>();
+        ArrayList<Entry> dataVals = new ArrayList<>();
         for(int i=0;i<size;i++){
             Float x = xValues.get(i);
             Float y = yValues.get(i);
@@ -90,8 +90,7 @@ public class Graph extends AppCompatActivity {
             sb.append(randomChar);
         }
 
-        String randomString = sb.toString();
-        return randomString;
+        return sb.toString();
 
     }
 //https://www.codota.com/code/java/methods/com.github.mikephil.charting.charts.Chart/saveToGallery

@@ -1,6 +1,7 @@
 package com.example.Team8.utils;
 
 import com.example.Team8.utils.callbacks.JSONCallback;
+import com.example.Team8.utils.http.InternetAccessor;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;

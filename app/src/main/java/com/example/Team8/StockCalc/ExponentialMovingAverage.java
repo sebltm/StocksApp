@@ -1,5 +1,7 @@
 package com.example.Team8.StockCalc;
 
+import androidx.annotation.NonNull;
+
 import java.util.Arrays;
 
 public class ExponentialMovingAverage {
@@ -50,11 +52,13 @@ public class ExponentialMovingAverage {
         return this.periodEma;
     }
 
+    @NonNull
     @Override
     public String toString() {
 
         StringBuilder sb = new StringBuilder();
 
+        //TODO do not infer the locale, mention it explicitly
         for (int i = 0; i < this.prices.length; i++) {
             sb.append(String.format("%02.2f", this.prices[i]));
             sb.append(" ");

@@ -1,5 +1,7 @@
 package com.example.Team8.utils;
 
+import androidx.annotation.NonNull;
+
 import com.example.Team8.StockCalc.ExponentialMovingAverage;
 import com.example.Team8.StockCalc.MovingAverageConvergenceDivergence;
 import com.example.Team8.StockCalc.SimpleMovingAverage;
@@ -16,7 +18,7 @@ import static com.example.Team8.utils.ArrayUtils.doubleArr;
 
 public class Stock {
 
-    public static ArrayList<Stock> stocks = new ArrayList<Stock>();
+    public static ArrayList<Stock> stocks = new ArrayList<>();
     private final String currency;
     private final String description;
     private final String displaySymbol;
@@ -27,7 +29,7 @@ public class Stock {
     private final List<PricePoint> priceHistory = new ArrayList<>();
 
 
-    public Stock(HashMap data) {
+    public Stock(HashMap<String, ?> data) {
         currency = (String) data.get("currency");
         description = (String) data.get("description");
         displaySymbol = (String) data.get("displaySymbol");
@@ -66,6 +68,7 @@ public class Stock {
         return type;
     }
 
+    @NonNull
     @Override
     public String toString() {
         return "Stock{" +
@@ -85,6 +88,8 @@ public class Stock {
 
     private List<AnalysisPoint> generateAnalysisPoints(PricePoint pricePoint, List<DataPoint> prices, AnalysisType a_type, double[] a_values) {
         List<String> timestamps_arr = pricePoint.getTimestamps();
+
+        //TODO can't have that here, move it to a UnitTest
         boolean debug = true;
         return new ArrayList<AnalysisPoint>() {{
             for (int i = 0; i < a_values.length; i++) {
@@ -93,16 +98,18 @@ public class Stock {
                         new BigDecimal(String.valueOf(a_values[i])),
                         DateTimeHelper.toDateTime(timestamps_arr.get(i))
                 );
-                if (debug) printAnalysis(i, prices, "close", a_type, a_point);
+
+                //TODO related to point above
+                if (debug) printAnalysis(i, prices, a_type, a_point);
                 add(a_point);
             }
         }};
     }
 
-    private void printAnalysis(int index, List<DataPoint> prices, String priceType, AnalysisType a_type, AnalysisPoint analysisPoint) {
+    private void printAnalysis(int index, List<DataPoint> prices, AnalysisType a_type, AnalysisPoint analysisPoint) {
         System.out.println(String.format(
                 "%1$s PRICE -> %2$s \n%3$s -> %4$s\n",
-                priceType.toUpperCase(),
+                "close".toUpperCase(),
                 prices.get(index),
                 a_type,
                 analysisPoint
@@ -125,7 +132,7 @@ public class Stock {
     }
 
     public List<AnalysisPoint> calculateSMA(int nDays) {
-        if (priceHistory.isEmpty()) return new ArrayList<AnalysisPoint>();
+        if (priceHistory.isEmpty()) return new ArrayList<>();
 
         PricePoint pricePoint = priceHistory.get(priceHistory.size() - 1);
         List<DataPoint> close_prices = pricePoint.getClose();
@@ -136,12 +143,12 @@ public class Stock {
             return generateAnalysisPoints(pricePoint, close_prices, AnalysisType.SMA, close_sma);
         } catch (Exception e) {
             e.printStackTrace();
-            return new ArrayList<AnalysisPoint>();
+            return new ArrayList<>();
         }
     }
 
     public List<AnalysisPoint> calculateEMA(int nDays) {
-        if (priceHistory.isEmpty()) return new ArrayList<AnalysisPoint>();
+        if (priceHistory.isEmpty()) return new ArrayList<>();
 
         PricePoint pricePoint = priceHistory.get(priceHistory.size() - 1);
         List<DataPoint> close_prices = pricePoint.getClose();
@@ -152,12 +159,12 @@ public class Stock {
             return generateAnalysisPoints(pricePoint, close_prices, AnalysisType.EMA, close_ema);
         } catch (Exception e) {
             e.printStackTrace();
-            return new ArrayList<AnalysisPoint>();
+            return new ArrayList<>();
         }
     }
 
     public List<AnalysisPoint> calculateMACD(int fastPeriod, int slowPeriod, int signalPeriod) {
-        if (priceHistory.isEmpty()) return new ArrayList<AnalysisPoint>();
+        if (priceHistory.isEmpty()) return new ArrayList<>();
 
         PricePoint pricePoint = priceHistory.get(priceHistory.size() - 1);
         List<DataPoint> close_prices = pricePoint.getClose();
@@ -167,17 +174,18 @@ public class Stock {
                     get_double_prices(close_prices), fastPeriod, slowPeriod, signalPeriod
             );
 
+            //TODO need a null check here
             double[] close_macd = macd_calc.getMACD();
 
             return generateAnalysisPoints(pricePoint, close_prices, AnalysisType.MACD, close_macd);
         } catch (Exception e) {
             e.printStackTrace();
-            return new ArrayList<AnalysisPoint>();
+            return new ArrayList<>();
         }
     }
 
     public List<AnalysisPoint> calculateMACDAVG() {
-        if (priceHistory.isEmpty()) return new ArrayList<AnalysisPoint>();
+        if (priceHistory.isEmpty()) return new ArrayList<>();
 
         PricePoint pricePoint = priceHistory.get(priceHistory.size() - 1);
         List<DataPoint> close_prices = pricePoint.getClose();
@@ -197,7 +205,7 @@ public class Stock {
             return generateAnalysisPoints(pricePoint, close_prices, AnalysisType.MACDAVG, close_macd_signal);
         } catch (Exception e) {
             e.printStackTrace();
-            return new ArrayList<AnalysisPoint>();
+            return new ArrayList<>();
         }
     }
 
@@ -226,6 +234,8 @@ public class Stock {
                         return;
                     }
                     if (response.getType().equals("object")) {
+
+                        //TODO need to parametrize HashMap
                         HashMap data = response.getDataObj();
                         boolean status = api.isValidStatus((String) data.get("s"));
                         if (!status) {

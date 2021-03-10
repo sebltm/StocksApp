@@ -6,32 +6,33 @@ import java.util.HashMap;
 import java.util.List;
 
 import static com.example.Team8.utils.ArrayUtils.toDoubleArr;
-import static com.example.Team8.utils.ArrayUtils.toStringArr;
 import static com.example.Team8.utils.ArrayUtils.toIntegerArr;
+import static com.example.Team8.utils.ArrayUtils.toStringArr;
 
 public class StockCandle {
 
     //    List of open prices for returned candles.
-    private List<Double> o;
+    private final List<Double> o;
 
     //    List of high prices for returned candles.
-    private List<Double> h;
+    private final List<Double> h;
 
     //    List of low prices for returned candles.
-    private List<Double> l;
+    private final List<Double> l;
 
     //    List of close prices for returned candles.
-    private List<Double> c;
+    private final List<Double> c;
 
     //    List of volume data for returned candles.
-    private List<Integer> v;
+    private final List<Integer> v;
 
     //    List of timestamp for returned candles.
-    private List<String> t;
+    private final List<String> t;
 
     public static ArrayList<StockCandle> stock_candles = new ArrayList<>();
 
-    public StockCandle(HashMap data) {
+    public StockCandle(HashMap<String, ?> data) {
+        //TODO deal with all the possible null values here, e.g data.getOrDefault()
         o = Arrays.asList(toDoubleArr((Object[]) data.get("o")));
         h = Arrays.asList(toDoubleArr((Object[]) data.get("h")));
         l = Arrays.asList(toDoubleArr((Object[]) data.get("l")));
@@ -42,8 +43,7 @@ public class StockCandle {
     }
 
     public static String[] getNames() {
-        String[] n = {"o", "h", "l", "c", "v", "t"};
-        return n;
+        return new String[]{"o", "h", "l", "c", "v", "t"};
     }
 
     public List<Double> getO() {

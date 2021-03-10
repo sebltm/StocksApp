@@ -1,11 +1,9 @@
 package com.example.Team8.utils;
 
-import com.example.Team8.utils.callbacks.StockDataCallback;
 import com.example.Team8.utils.callbacks.StocksCallback;
 import com.example.Team8.utils.http.HTTP_JSON;
 
 import java.io.UnsupportedEncodingException;
-import java.math.BigDecimal;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -15,8 +13,6 @@ import java.util.List;
 
 public class API {
     public static final String domain = "https://finnhub.io";
-    private final String endpoint = "/api/v1";
-    private final String API_KEY = "c0kg3ln48v6und6ris7g";
     private static API instance = null;
 
     private API() {
@@ -30,8 +26,10 @@ public class API {
     }
 
     public String join(String path){
-        path = path.startsWith("/")? path : String.format("/%1$s", path);
-        path = path.endsWith("/")? path.substring(0, path.length()-1) : path;
+        path = path.startsWith("/") ? path : String.format("/%1$s", path);
+        path = path.endsWith("/") ? path.substring(0, path.length() - 1) : path;
+        String endpoint = "/api/v1";
+        String API_KEY = "c0kg3ln48v6und6ris7g";
         return String.format("%1$s%2$s%3$s&token=%4$s", domain, endpoint, path, API_KEY);
     }
 
@@ -85,7 +83,9 @@ public class API {
                         return;
                     }
                     if (response.getType().equals("object")) {
-                        HashMap data = response.getDataObj();
+
+                        //TODO this should be parametrized properly
+                        HashMap<String, Object> data = response.getDataObj();
                         int count = 0;
                         try {
                             count = (int) data.get("count");
@@ -97,7 +97,7 @@ public class API {
                                 Object[] results = (Object[]) data.get("result");
                                 results = results != null ? results : new Object[0];
                                 for (Object object : results) {
-                                    add(new Stock((HashMap) object));
+                                    add(new Stock((HashMap<String, ?>) object));
                                 }
                             }};
 

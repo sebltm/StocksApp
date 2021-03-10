@@ -46,13 +46,16 @@ public class HTTP_REQUEST<T extends HTTPCallback> {
 
     protected String getBodyStr(Response response){
         String body_str = null;
-        try{
-            if(response.isSuccessful()){
+        try {
+            if (response.isSuccessful()) {
                 ResponseBody body = response.body();
+
+                //TODO need a null check here
                 body_str = body.string();
                 body.close();
             }
-        }catch (Exception e){
+        } catch (Exception ignored) {
+            //TODO not a good idea to ignore exceptions
         }
         return body_str;
     }
@@ -66,7 +69,7 @@ public class HTTP_REQUEST<T extends HTTPCallback> {
             }
 
             @Override
-            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+            public void onResponse(@NotNull Call call, @NotNull Response response) {
                 setResponse(onResponse, getBodyStr(response));
             }
         };

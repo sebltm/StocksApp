@@ -11,16 +11,16 @@ import static com.example.Team8.utils.ArrayUtils.toStringArr;
 public class PricePoint {
 
     //    List of open prices for returned candles.
-    private List<DataPoint> open = new ArrayList<>();
+    private final List<DataPoint> open = new ArrayList<>();
 
     //    List of high prices for returned candles.
-    private List<DataPoint> high = new ArrayList<>();
+    private final List<DataPoint> high = new ArrayList<>();
 
     //    List of low prices for returned candles.
-    private List<DataPoint> low = new ArrayList<>();
+    private final List<DataPoint> low = new ArrayList<>();
 
     //    List of close prices for returned candles.
-    private List<DataPoint> close = new ArrayList<>();
+    private final List<DataPoint> close = new ArrayList<>();
 
     //    List of timestamp for returned candles.
     private List<String> timestamps = new ArrayList<>();
@@ -28,11 +28,12 @@ public class PricePoint {
     public PricePoint() {
     }
 
-    public PricePoint(HashMap data) {
+    public PricePoint(HashMap<?, ?> data) {
         this.setData(data);
     }
 
-    public void setData(HashMap data) {
+    //TODO deal with possible null values here, e.g data.getOrDefault()
+    public void setData(HashMap<?, ?> data) {
         Object[] open_arr = (Object[]) data.get("o");
         Object[] high_arr = (Object[]) data.get("h");
         Object[] low_arr = (Object[]) data.get("l");

@@ -7,31 +7,24 @@ import android.widget.Toast;
 import androidx.annotation.RequiresApi;
 
 import com.example.Team8.utils.API;
-import com.example.Team8.utils.AnalysisPoint;
-import com.example.Team8.utils.AnalysisType;
-import com.example.Team8.utils.DataPoint;
 import com.example.Team8.utils.DateTimeHelper;
-import com.example.Team8.utils.JSON;
-import com.example.Team8.utils.callbacks.HTTPCallback;
-import com.example.Team8.utils.http.HTTP_JSON;
 import com.example.Team8.utils.PricePoint;
 import com.example.Team8.utils.Resolution;
 import com.example.Team8.utils.Stock;
 import com.example.Team8.utils.StockCandle;
 import com.example.Team8.utils.callbacks.StocksCallback;
-import com.example.Team8.utils.http.HTTP_REQUEST;
-import com.example.Team8.utils.http.JSON_REQUEST;
+import com.example.Team8.utils.http.HTTP_JSON;
 
 import java.io.UnsupportedEncodingException;
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 
+
+//TODO this shouldn't be here, move it to the UnitTest/integration tests folders outside of main
 public class Test {
 
-    private Context ctx;
+    private final Context ctx;
 
     public Test(Context context) {
         ctx = context;

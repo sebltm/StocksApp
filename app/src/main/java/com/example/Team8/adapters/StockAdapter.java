@@ -55,8 +55,8 @@ public class StockAdapter extends ArrayAdapter<Stock> {
 
         if (stock != null) {
             viewHolder.stock = stock;
-            viewHolder.stockSymbol.setText(getItem(position).getDisplaySymbol());
-            viewHolder.stockDesc.setText(getItem(position).getDescription());
+            viewHolder.stockSymbol.setText(stock.getDisplaySymbol());
+            viewHolder.stockDesc.setText(stock.getDescription());
         }
         return convertView;
     }

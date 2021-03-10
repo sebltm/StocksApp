@@ -7,6 +7,7 @@ import com.example.Team8.adapters.StockAdapter;
 import com.example.Team8.utils.API;
 import com.example.Team8.utils.Stock;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -14,6 +15,8 @@ public class StockAutoCompleteWatcher implements TextWatcher {
 
     public static StockAutoCompleteWatcher autoCompleteWatcher = null;
     private final HashMap<String, List<Stock>> pastRequests = new HashMap<>();
+    private static Date lastRequest;
+    private Date currentRequest;
     StockAdapter stockAdapter;
 
     private StockAutoCompleteWatcher() {
@@ -43,20 +46,29 @@ public class StockAutoCompleteWatcher implements TextWatcher {
 
         String symbolReq = s.toString().toLowerCase();
 
+        currentRequest = new Date(System.currentTimeMillis());
+        if (lastRequest == null || lastRequest.compareTo(currentRequest) < 0) {
+            lastRequest = new Date(currentRequest.getTime());
+        }
+
         if (!pastRequests.containsKey(symbolReq)) {
             API.getInstance().search(symbolReq, stocks -> {
                 pastRequests.put(symbolReq, stocks);
 
-                stockAdapter.clear();
-                stockAdapter.addAll(stocks);
-                stockAdapter.getFilter().filter(s);
-                stockAdapter.notifyDataSetChanged();
+                if (lastRequest.compareTo(currentRequest) == 0) {
+                    stockAdapter.clear();
+                    stockAdapter.addAll(stocks);
+                    stockAdapter.getFilter().filter(s);
+                    stockAdapter.notifyDataSetChanged();
+                }
             });
         } else {
-            stockAdapter.clear();
-            stockAdapter.addAll(pastRequests.get(symbolReq));
-            stockAdapter.getFilter().filter(s);
-            stockAdapter.notifyDataSetChanged();
+            if (lastRequest.compareTo(currentRequest) == 0) {
+                stockAdapter.clear();
+                stockAdapter.addAll(pastRequests.get(symbolReq));
+                stockAdapter.getFilter().filter(s);
+                stockAdapter.notifyDataSetChanged();
+            }
         }
     }
 }

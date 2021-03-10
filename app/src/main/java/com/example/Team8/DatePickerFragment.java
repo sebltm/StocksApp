@@ -12,7 +12,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
-//TODO refactor this into its own file
 public class DatePickerFragment implements View.OnClickListener, DatePickerDialog.OnDateSetListener {
 
     private static final String format = "dd MMM yyyy";

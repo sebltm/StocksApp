@@ -106,7 +106,6 @@ public class SearchActivity extends AppCompatActivity {
             }
 
             if (fromDate.getCal().compareTo(toDate.getCal()) <= 0) {
-                // TODO this needs to fetch an actual stock using the symbol
                 SearchHistoryItem searchHistoryItem = new SearchHistoryItem(selectedStock, fromDate.getCal(), toDate.getCal(), analysisTypes);
 
                 // Insert search history object into the database

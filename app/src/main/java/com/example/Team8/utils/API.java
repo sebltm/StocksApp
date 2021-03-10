@@ -1,8 +1,11 @@
 package com.example.Team8.utils;
 
+import com.example.Team8.utils.callbacks.StockDataCallback;
 import com.example.Team8.utils.callbacks.StocksCallback;
+import com.example.Team8.utils.http.HTTP_JSON;
 
 import java.io.UnsupportedEncodingException;
+import java.math.BigDecimal;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -65,10 +68,10 @@ public class API {
         }
     }
 
-    public void search(String query, StocksCallback callback) {
+    public void search(String symbol, StocksCallback callback) {
         String getSearchURL;
         try {
-            getSearchURL = getSearchSymbolURL(query);
+            getSearchURL = getSearchSymbolURL(symbol);
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
             setSearchCallback(callback, null);
@@ -90,21 +93,19 @@ public class API {
                         }
 
                         if (count > 0) {
-//                            System.out.println(String.format("SEARCH COUNT >> %s %s", count, results.length));
-                            List<Stock> stocks_result = new ArrayList<Stock>() {{
+                            List<Stock> retrievedStocks = new ArrayList<Stock>() {{
                                 Object[] results = (Object[]) data.get("result");
                                 results = results != null ? results : new Object[0];
-                                for (Object o : results) {
-                                    add(new Stock((HashMap) o));
+                                for (Object object : results) {
+                                    add(new Stock((HashMap) object));
                                 }
                             }};
-                            setSearchCallback(callback, stocks_result.size() > 0 ? stocks_result : null);
+
+                            setSearchCallback(callback, retrievedStocks.size() > 0 ? retrievedStocks : null);
                         } else {
                             setSearchCallback(callback, null);
-//                            System.out.println("NO RESULTS");
                         }
                     }
                 });
     }
-
 }

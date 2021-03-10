@@ -27,4 +27,13 @@
     <string name="search">🔍</string>
     <string name="analysis_types">SMA, EMA, MACD, MACDAVG</string>
     <string name="date_future">Date must be today or before</string>
+    <string name="from">From:</string>
+    <string name="titletextgraph">titleTextGraph</string>
+    <string name="stock">Stock:</string>
+    <string name="xyz">XYZ</string>
+    <string name="date1">DATE1</string>
+    <string name="to">to</string>
+    <string name="date2">DATE2</string>
+    <string name="save_as_jpg">Save As .jpg</string>
+    <string name="todo">TODO</string>
 </resources>

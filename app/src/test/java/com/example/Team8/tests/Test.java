@@ -1,14 +1,10 @@
-package com.example.Team8;
+package com.example.Team8.tests;
 
-import android.content.Context;
 import android.os.Build;
-import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
 
 import com.example.Team8.utils.API;
-import com.example.Team8.utils.AnalysisPoint;
-import com.example.Team8.utils.AnalysisType;
 import com.example.Team8.utils.DataPoint;
 import com.example.Team8.utils.DateTimeHelper;
 import com.example.Team8.utils.PricePoint;
@@ -19,18 +15,15 @@ import com.example.Team8.utils.callbacks.StocksCallback;
 import com.example.Team8.utils.http.HTTP_JSON;
 
 import java.io.UnsupportedEncodingException;
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 
 public class Test {
 
-    private final Context ctx;
-
-    public Test(Context context) {
-        ctx = context;
+    public Test() {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -127,7 +120,7 @@ public class Test {
 
     @SuppressWarnings("unchecked")
     public Test getStockSymbolsTEST() {
-        Toast.makeText(ctx, "FETCHING STOCK SYMBOLS", Toast.LENGTH_SHORT).show();
+//        Toast.makeText(ctx, "FETCHING STOCK SYMBOLS", Toast.LENGTH_SHORT).show();
         String getStockSymbolsURL = API.getInstance().getStockSymbolsURL();
         HTTP_JSON.fetch(getStockSymbolsURL,
                 response -> {
@@ -169,7 +162,7 @@ public class Test {
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     public Test getStockCandlesTEST() {
-        Toast.makeText(ctx, "FETCHING STOCK CANDLES", Toast.LENGTH_SHORT).show();
+//        Toast.makeText(ctx, "FETCHING STOCK CANDLES", Toast.LENGTH_SHORT).show();
         API api = API.getInstance();
         String getStockCandlesURL = api.getStockCandlesURL(
                 "AAPL",
@@ -202,7 +195,7 @@ public class Test {
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     public Test getPricePointTEST() {
-        Toast.makeText(ctx, "FETCHING STOCK CANDLES", Toast.LENGTH_SHORT).show();
+//        Toast.makeText(ctx, "FETCHING STOCK CANDLES", Toast.LENGTH_SHORT).show();
         API api = API.getInstance();
         String getStockCandlesURL = api.getStockCandlesURL(
                 "AAPL",
@@ -238,7 +231,7 @@ public class Test {
 
 //        SEARCH ENDPOINT KEEPS CHANGING RESULTS (NOT FIXED RESULTS), SOMETIMES AAPL DOESN'T SHOW UP IN RESULTS
 
-        Toast.makeText(ctx, "SEARCH FOR STOCK", Toast.LENGTH_SHORT).show();
+//        Toast.makeText(ctx, "SEARCH FOR STOCK", Toast.LENGTH_SHORT).show();
         String getSearchURL;
         try {
             getSearchURL = API.getInstance().getSearchSymbolURL("apple");
@@ -262,7 +255,7 @@ public class Test {
                         }
                         if (count > 0) {
                             Object[] results = (Object[]) data.get("result");
-                            System.out.println(String.format("SEARCH COUNT >> %s %s", count, results != null? results.length : 0));
+                            System.out.println(String.format("SEARCH COUNT >> %s %s", count, results != null ? results.length : 0));
                             for (Object o : results) {
                                 HashMap<String, Object> r = (HashMap<String, Object>) o;
 //                                System.out.println(new Stock(r));
@@ -308,16 +301,14 @@ public class Test {
     public Test SMA_TEST(HashMap<String, Object> stock_info) {
         Stock s = new Stock(stock_info);
         s.fetchData(
-                Resolution.types.get("15"),
-                DateTimeHelper.toDate(LocalDate.now().minusDays(5)),
+                Resolution.types.get("D"),
+                DateTimeHelper.toDate(LocalDate.now().minusDays(15)),
                 DateTimeHelper.toDate(LocalDate.now()),
-                (priceHistory, stock) -> {
-                    if (priceHistory == null) {
-//                        API IS LIMITED IN FREE TIER
-//                        System.out.println(String.format("API ERROR, DATA NOT FOUND FOR SYMBOL: %s", s.getSymbol()));
-                        return;
-                    }
-                    stock.calculateSMA(15);
+                (price_points, stock) -> {
+                    if (PricePointsNotFound(price_points)) return;
+                    printClosePrices(price_points);
+                    System.out.println(validateSMA(getClosePrice(price_points).size()-1,getClosePrice(price_points).size()));
+                    System.out.println(stock.calculateSMA(1).size());
                 }
         );
         return this;
@@ -327,35 +318,44 @@ public class Test {
     public Test EMA_TEST(HashMap<String, Object> stock_info) {
         Stock s = new Stock(stock_info);
         s.fetchData(
-                Resolution.types.get("15"),
-                DateTimeHelper.toDate(LocalDate.now().minusDays(5)),
+                Resolution.types.get("D"),
+                DateTimeHelper.toDate(LocalDate.now().minusDays(22)),
                 DateTimeHelper.toDate(LocalDate.now()),
-                (priceHistory, stock) -> {
-                    if (priceHistory == null) {
-//                        API IS LIMITED IN FREE TIER
-//                        System.out.println(String.format("API ERROR, DATA NOT FOUND FOR SYMBOL: %s", s.getSymbol()));
-                        return;
-                    }
-                    stock.calculateEMA(15);
+                (price_points, stock) -> {
+                    if (PricePointsNotFound(price_points)) return;
+                    printClosePrices(price_points);
+                    System.out.println(stock.calculateEMA(17).size());
                 }
         );
         return this;
     }
 
+    private boolean validateMACD(Date date_1, Date date_2) {
+        return DateTimeHelper.dateDiff(date_1, date_2) >= 38;
+    }
+
+    private boolean validateSMA(int nDays, int prices_length) {
+        return nDays > 0 && nDays <= prices_length;
+    }
+
+    private boolean validateEMA(int nDays, int prices_length) {
+        return nDays > 0 && nDays <= prices_length - 1;
+    }
+
     @RequiresApi(api = Build.VERSION_CODES.O)
     public Test MACD_TEST(HashMap<String, Object> stock_info) {
+        boolean valid = validateMACD(DateTimeHelper.toDate(LocalDate.now().minusDays(38)), DateTimeHelper.toDate(LocalDate.now()));
+        ;
+        System.out.println(valid);
         Stock s = new Stock(stock_info);
         s.fetchData(
-                Resolution.types.get("15"),
-                DateTimeHelper.toDate(LocalDate.now().minusDays(5)),
+                Resolution.types.get("D"),
+                DateTimeHelper.toDate(LocalDate.now().minusDays(38)),
                 DateTimeHelper.toDate(LocalDate.now()),
-                (priceHistory, stock) -> {
-                    if (priceHistory == null) {
-//                        API IS LIMITED IN FREE TIER
-//                        System.out.println(String.format("API ERROR, DATA NOT FOUND FOR SYMBOL: %s", s.getSymbol()));
-                        return;
-                    }
-                    stock.calculateMACD(12, 26, 9);
+                (price_points, stock) -> {
+                    if (PricePointsNotFound(price_points)) return;
+                    printClosePrices(price_points);
+                    System.out.println(stock.calculateMACD().size());
                 }
         );
         return this;
@@ -365,18 +365,33 @@ public class Test {
     public Test MACDAVG_TEST(HashMap<String, Object> stock_info) {
         Stock s = new Stock(stock_info);
         s.fetchData(
-                Resolution.types.get("15"),
-                DateTimeHelper.toDate(LocalDate.now().minusDays(5)),
+                Resolution.types.get("D"),
+                DateTimeHelper.toDate(LocalDate.now().minusDays(38)),
                 DateTimeHelper.toDate(LocalDate.now()),
-                (priceHistory, stock) -> {
-                    if (priceHistory == null) {
-//                        API IS LIMITED IN FREE TIER
-//                        System.out.println(String.format("API ERROR, DATA NOT FOUND FOR SYMBOL: %s", s.getSymbol()));
-                        return;
-                    }
-                    stock.calculateMACDAVG();
+                (price_points, stock) -> {
+                    if (PricePointsNotFound(price_points)) return;
+                    printClosePrices(price_points);
+                    System.out.println(stock.calculateMACDAVG().size());
                 }
         );
         return this;
+    }
+
+    private boolean PricePointsNotFound(List<PricePoint> price_points) {
+//        API IS LIMITED IN FREE TIER
+//        System.out.println(String.format("API ERROR, DATA NOT FOUND FOR SYMBOL");
+        return price_points == null || price_points.isEmpty();
+    }
+
+    private List<DataPoint> getClosePrice(List<PricePoint> price_points) {
+        PricePoint p = price_points.get(price_points.size() - 1);
+        List<DataPoint> stockPrices = p.getClose();
+        return stockPrices;
+    }
+
+    private void printClosePrices(List<PricePoint> price_points) {
+        System.out.print("Stock prices: ");
+        System.out.println(getClosePrice(price_points));
+        System.out.println(getClosePrice(price_points).size());
     }
 }

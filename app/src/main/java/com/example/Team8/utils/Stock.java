@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.function.Consumer;
 
 import static com.example.Team8.utils.ArrayUtils.doubleArr;
 
@@ -88,9 +89,6 @@ public class Stock {
 
     private List<AnalysisPoint> generateAnalysisPoints(PricePoint pricePoint, List<DataPoint> prices, AnalysisType a_type, double[] a_values) {
         List<String> timestamps_arr = pricePoint.getTimestamps();
-
-        //TODO can't have that here, move it to a UnitTest
-        boolean debug = true;
         return new ArrayList<AnalysisPoint>() {{
             for (int i = 0; i < a_values.length; i++) {
                 AnalysisPoint a_point = new AnalysisPoint(
@@ -98,9 +96,7 @@ public class Stock {
                         new BigDecimal(String.valueOf(a_values[i])),
                         DateTimeHelper.toDateTime(timestamps_arr.get(i))
                 );
-
-                //TODO related to point above
-                if (debug) printAnalysis(i, prices, a_type, a_point);
+                printAnalysis(i, prices, a_type, a_point);
                 add(a_point);
             }
         }};
@@ -185,6 +181,10 @@ public class Stock {
         }
     }
 
+    public List<AnalysisPoint> calculateMACD() {
+        return calculateMACD(12,26,9);
+    }
+
     public List<AnalysisPoint> calculateMACDAVG() {
         if (priceHistory.isEmpty()) return new ArrayList<>();
 
@@ -210,6 +210,73 @@ public class Stock {
             e.printStackTrace();
             return new ArrayList<>();
         }
+    }
+
+    public HashMap<AnalysisType, List<AnalysisPoint>> calculateSelectedIndicators(List<AnalysisType> analysisTypes, Date fromDateTime, Date toDateTime, int nDays, Consumer<List<String>> onErrorCallback) {
+        HashMap<AnalysisType, List<AnalysisPoint>> a_points = new HashMap<>();
+        List<String> errors = new ArrayList<>();
+
+        if (priceHistory.isEmpty()) {
+            onErrorCallback.accept(errors);
+            return a_points;
+        }
+
+        PricePoint pricePoint = priceHistory.get(priceHistory.size() - 1);
+        List<DataPoint> stockPrices = pricePoint.getClose();
+        int stockPricesCount = stockPrices.size();
+
+        analysisTypes.forEach(analysisType -> {
+            String macd_error_msg = String.format("The difference between the from and to dates must be greater than or equal to 38 for the %s analysis", analysisType);
+            String sma_ema_error_msg_1 = String.format("Days should be between 1 and %s for this %s analysis", analysisType == AnalysisType.EMA? stockPricesCount-1 : stockPricesCount, analysisType);
+
+            switch (analysisType) {
+                case SMA:
+                    if (!validateSMA(nDays, stockPricesCount)) {
+                        String error_msg = stockPricesCount == 1 && nDays != 1 ? String.format("Days should be set to 1 for this %s analysis", analysisType) : sma_ema_error_msg_1;
+                        errors.add(error_msg);
+                        break;
+                    }
+                    a_points.put(AnalysisType.SMA, calculateSMA(nDays));
+                    break;
+                case EMA:
+                    if (!validateEMA(nDays, stockPricesCount)) {
+                        String error_msg_2 = stockPricesCount - 1 == 1 && nDays != 1 ? String.format("Days should be set to 1 for this %s analysis", analysisType) : sma_ema_error_msg_1;
+                        String error_msg = stockPricesCount < 2 ? String.format("The difference between the current dates needs to be greater for the %s analysis", analysisType) : error_msg_2;
+                        errors.add(error_msg);
+                        break;
+                    }
+                    a_points.put(AnalysisType.EMA, calculateEMA(nDays));
+                    break;
+                case MACD:
+                    if (!validateMACD(fromDateTime, toDateTime)) {
+                        errors.add(macd_error_msg);
+                        break;
+                    }
+                    a_points.put(AnalysisType.MACD, calculateMACD());
+                    break;
+                case MACDAVG:
+                    if (!validateMACD(fromDateTime, toDateTime)) {
+                        errors.add(macd_error_msg);
+                        break;
+                    }
+                    a_points.put(AnalysisType.MACDAVG, calculateMACDAVG());
+                    break;
+            }
+        });
+        onErrorCallback.accept(errors);
+        return a_points;
+    }
+
+    private boolean validateMACD(Date date_1, Date date_2) {
+        return DateTimeHelper.dateDiff(date_1, date_2) >= 38;
+    }
+
+    private boolean validateSMA(int nDays, int prices_length) {
+        return nDays > 0 && nDays <= prices_length;
+    }
+
+    private boolean validateEMA(int nDays, int prices_length) {
+        return nDays > 0 && nDays <= prices_length - 1;
     }
 
     private void setResponseCallback(StockDataCallback callback, List<PricePoint> value) {

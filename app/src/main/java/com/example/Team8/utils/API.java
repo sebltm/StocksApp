@@ -26,10 +26,12 @@ public class API {
     }
 
     public String join(String path){
-        path = path.startsWith("/") ? path : String.format("/%1$s", path);
-        path = path.endsWith("/") ? path.substring(0, path.length() - 1) : path;
         String endpoint = "/api/v1";
         String API_KEY = "c0kg3ln48v6und6ris7g";
+
+        path = path.startsWith("/") ? path : String.format("/%1$s", path);
+        path = path.endsWith("/") ? path.substring(0, path.length() - 1) : path;
+
         return String.format("%1$s%2$s%3$s&token=%4$s", domain, endpoint, path, API_KEY);
     }
 
@@ -66,6 +68,7 @@ public class API {
         }
     }
 
+    @SuppressWarnings("unchecked")
     public void search(String symbol, StocksCallback callback) {
         String getSearchURL;
         try {
@@ -83,8 +86,6 @@ public class API {
                         return;
                     }
                     if (response.getType().equals("object")) {
-
-                        //TODO this should be parametrized properly
                         HashMap<String, Object> data = response.getDataObj();
                         int count = 0;
                         try {
@@ -97,7 +98,7 @@ public class API {
                                 Object[] results = (Object[]) data.get("result");
                                 results = results != null ? results : new Object[0];
                                 for (Object object : results) {
-                                    add(new Stock((HashMap<String, ?>) object));
+                                    add(new Stock((HashMap<String, Object>) object));
                                 }
                             }};
 

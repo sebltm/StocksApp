@@ -9,7 +9,6 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
-import com.example.Team8.tests.Test;
 import com.example.Team8.ui.main.ModelFacade;
 import com.example.Team8.utils.Stock;
 
@@ -32,10 +31,6 @@ public class MainActivity extends AppCompatActivity {
 //        TabLayout tabs = findViewById(R.id.tabs);
 //        tabs.setupWithViewPager(viewPager);
 //        model = ModelFacade.getInstance(this);
-
-        //findViewById(R.id.textButton).setOnClickListener(view -> {
-        //    new Test(this).Run();
-        //});
 
         findViewById(R.id.mBttnSwitchSearch).setOnClickListener(v -> {
             Intent intent = new Intent(MainActivity.this, SearchActivity.class);

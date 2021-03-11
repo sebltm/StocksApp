@@ -1,4 +1,4 @@
-package com.example.Team8.tests;
+package com.example.Team8;
 
 import android.content.Context;
 import android.os.Build;
@@ -7,6 +7,9 @@ import android.widget.Toast;
 import androidx.annotation.RequiresApi;
 
 import com.example.Team8.utils.API;
+import com.example.Team8.utils.AnalysisPoint;
+import com.example.Team8.utils.AnalysisType;
+import com.example.Team8.utils.DataPoint;
 import com.example.Team8.utils.DateTimeHelper;
 import com.example.Team8.utils.PricePoint;
 import com.example.Team8.utils.Resolution;
@@ -16,12 +19,12 @@ import com.example.Team8.utils.callbacks.StocksCallback;
 import com.example.Team8.utils.http.HTTP_JSON;
 
 import java.io.UnsupportedEncodingException;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 
-
-//TODO this shouldn't be here, move it to the UnitTest/integration tests folders outside of main
 public class Test {
 
     private final Context ctx;
@@ -42,7 +45,7 @@ public class Test {
 //
 //        System.out.println(new DataPoint(new BigDecimal(1.0), DateTimeHelper.toDateTime("1614547709977")));
 //        System.out.println(new AnalysisPoint(AnalysisType.EMA, new BigDecimal(0.0), new Date()));
-//        System.out.println(new DataPoint(new BigDecimal(0.0), new Date()));
+//        System.out.println(new DataPoint(new BigDecimal("0.0"), new Date()));
 //
 //        AnalysisType a = AnalysisType.EMA;
 //        System.out.println(a);
@@ -50,7 +53,7 @@ public class Test {
 //        System.out.println(Resolution.types);
 //        System.out.println(Resolution.types.get("15"));
 //
-//        FETCH_data_TEST(new HashMap<String, String>() {{
+//        FETCH_data_TEST(new HashMap<String, Object>() {{
 //            put("currency", "USD");
 //            put("description", "APPLE INC");
 //            put("displaySymbol", "AAPL");
@@ -60,7 +63,7 @@ public class Test {
 //            put("type", "Common Stock");
 //        }});
 //
-//        FETCH_data_TEST(new HashMap<String, String>() {{
+//        FETCH_data_TEST(new HashMap<String, Object>() {{
 //            put("currency", "");
 //            put("description", "");
 //            put("displaySymbol", "");
@@ -72,7 +75,7 @@ public class Test {
 //
 //        getSearchTEST();
 //
-//        SMA_TEST(new HashMap<String, String>() {{
+//        SMA_TEST(new HashMap<String, Object>() {{
 //            put("currency", "USD");
 //            put("description", "APPLE INC");
 //            put("displaySymbol", "AAPL");
@@ -82,7 +85,7 @@ public class Test {
 //            put("type", "Common Stock");
 //        }});
 //
-//        EMA_TEST(new HashMap<String, String>() {{
+//        EMA_TEST(new HashMap<String, Object>() {{
 //            put("currency", "USD");
 //            put("description", "APPLE INC");
 //            put("displaySymbol", "AAPL");
@@ -92,7 +95,7 @@ public class Test {
 //            put("type", "Common Stock");
 //        }});
 //
-//        MACD_TEST(new HashMap<String, String>() {{
+//        MACD_TEST(new HashMap<String, Object>() {{
 //            put("currency", "USD");
 //            put("description", "APPLE INC");
 //            put("displaySymbol", "AAPL");
@@ -101,17 +104,17 @@ public class Test {
 //            put("symbol", "AAPL");
 //            put("type", "Common Stock");
 //        }});
-
-        MACDAVG_TEST(new HashMap<String, String>() {{
-            put("currency", "USD");
-            put("description", "APPLE INC");
-            put("displaySymbol", "AAPL");
-            put("figi", "");
-            put("mic", "");
-            put("symbol", "AAPL");
-            put("type", "Common Stock");
-        }});
-
+//
+//        MACDAVG_TEST(new HashMap<String, Object>() {{
+//            put("currency", "USD");
+//            put("description", "APPLE INC");
+//            put("displaySymbol", "AAPL");
+//            put("figi", "");
+//            put("mic", "");
+//            put("symbol", "AAPL");
+//            put("type", "Common Stock");
+//        }});
+//
 //        API.getInstance().search("apple", stocks -> {
 //            if (stocks == null) {
 //                return;
@@ -122,6 +125,7 @@ public class Test {
         return this;
     }
 
+    @SuppressWarnings("unchecked")
     public Test getStockSymbolsTEST() {
         Toast.makeText(ctx, "FETCHING STOCK SYMBOLS", Toast.LENGTH_SHORT).show();
         String getStockSymbolsURL = API.getInstance().getStockSymbolsURL();
@@ -132,7 +136,7 @@ public class Test {
                     }
                     if (response.getType().equals("array")) {
                         for (Object o : response.getDataArray()) {
-                            Stock s = new Stock((HashMap) o);
+                            Stock s = new Stock((HashMap<String, Object>) o);
                         }
                         Stock.stocks.forEach(stockSymbol -> {
                             System.out.println(stockSymbol.getSymbol());
@@ -143,6 +147,7 @@ public class Test {
         return this;
     }
 
+    @SuppressWarnings("unchecked")
     public Test getAllStocks(StocksCallback callback) {
         HTTP_JSON.fetch(API.getInstance().getStockSymbolsURL(),
                 response -> {
@@ -152,7 +157,7 @@ public class Test {
                     }
                     if (response.getType().equals("array")) {
                         for (Object o : response.getDataArray()) {
-                            Stock s = new Stock((HashMap) o);
+                            Stock s = new Stock((HashMap<String, Object>) o);
                         }
                         callback.response(Stock.stocks);
                     } else {
@@ -176,7 +181,7 @@ public class Test {
         HTTP_JSON.fetch(getStockCandlesURL,
                 response -> {
                     if (response.getType().equals("object")) {
-                        HashMap data = response.getDataObj();
+                        HashMap<String, Object> data = response.getDataObj();
                         boolean status = api.isValidStatus((String) data.get("s"));
                         if (!status) {
                             System.out.println("NO DATA FOUND");
@@ -209,7 +214,7 @@ public class Test {
         HTTP_JSON.fetch(getStockCandlesURL,
                 response -> {
                     if (response.getType().equals("object")) {
-                        HashMap data = response.getDataObj();
+                        HashMap<String, Object> data = response.getDataObj();
                         boolean status = api.isValidStatus((String) data.get("s"));
                         if (!status) {
                             System.out.println("NO DATA FOUND");
@@ -227,6 +232,7 @@ public class Test {
         return this;
     }
 
+    @SuppressWarnings("unchecked")
     @RequiresApi(api = Build.VERSION_CODES.O)
     public Test getSearchTEST() {
 
@@ -247,13 +253,18 @@ public class Test {
                         return;
                     }
                     if (response.getType().equals("object")) {
-                        HashMap data = response.getDataObj();
-                        int count = (int) data.get("count");
+                        HashMap<String, Object> data = response.getDataObj();
+                        int count = 0;
+                        try {
+                            count = (int) data.get("count");
+                        } catch (Exception ignored) {
+
+                        }
                         if (count > 0) {
                             Object[] results = (Object[]) data.get("result");
-                            System.out.println(String.format("SEARCH COUNT >> %s %s", count, results.length));
+                            System.out.println(String.format("SEARCH COUNT >> %s %s", count, results != null? results.length : 0));
                             for (Object o : results) {
-                                HashMap r = (HashMap) o;
+                                HashMap<String, Object> r = (HashMap<String, Object>) o;
 //                                System.out.println(new Stock(r));
                                 FETCH_data_TEST(r);
 
@@ -268,7 +279,7 @@ public class Test {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
-    public Test FETCH_data_TEST(HashMap stock_info) {
+    public Test FETCH_data_TEST(HashMap<String, Object> stock_info) {
         Stock s = new Stock(stock_info);
         s.fetchData(
                 Resolution.types.get("15"),
@@ -294,7 +305,7 @@ public class Test {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
-    public Test SMA_TEST(HashMap stock_info) {
+    public Test SMA_TEST(HashMap<String, Object> stock_info) {
         Stock s = new Stock(stock_info);
         s.fetchData(
                 Resolution.types.get("15"),
@@ -313,7 +324,7 @@ public class Test {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
-    public Test EMA_TEST(HashMap stock_info) {
+    public Test EMA_TEST(HashMap<String, Object> stock_info) {
         Stock s = new Stock(stock_info);
         s.fetchData(
                 Resolution.types.get("15"),
@@ -332,7 +343,7 @@ public class Test {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
-    public Test MACD_TEST(HashMap stock_info) {
+    public Test MACD_TEST(HashMap<String, Object> stock_info) {
         Stock s = new Stock(stock_info);
         s.fetchData(
                 Resolution.types.get("15"),
@@ -351,7 +362,7 @@ public class Test {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
-    public Test MACDAVG_TEST(HashMap stock_info) {
+    public Test MACDAVG_TEST(HashMap<String, Object> stock_info) {
         Stock s = new Stock(stock_info);
         s.fetchData(
                 Resolution.types.get("15"),

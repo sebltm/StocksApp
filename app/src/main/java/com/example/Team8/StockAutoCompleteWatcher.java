@@ -53,6 +53,8 @@ public class StockAutoCompleteWatcher implements TextWatcher {
 
         if (!pastRequests.containsKey(symbolReq)) {
             API.getInstance().search(symbolReq, stocks -> {
+                if(stocks == null) return;
+
                 pastRequests.put(symbolReq, stocks);
 
                 if (lastRequest.compareTo(currentRequest) == 0) {

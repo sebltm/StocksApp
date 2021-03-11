@@ -29,7 +29,7 @@ public class Stock {
     private final List<PricePoint> priceHistory = new ArrayList<>();
 
 
-    public Stock(HashMap<String, ?> data) {
+    public Stock(HashMap<String, Object> data) {
         currency = (String) data.get("currency");
         description = (String) data.get("description");
         displaySymbol = (String) data.get("displaySymbol");
@@ -174,7 +174,8 @@ public class Stock {
                     get_double_prices(close_prices), fastPeriod, slowPeriod, signalPeriod
             );
 
-            //TODO need a null check here
+            if(macd_calc == null) return new ArrayList<>();
+
             double[] close_macd = macd_calc.getMACD();
 
             return generateAnalysisPoints(pricePoint, close_prices, AnalysisType.MACD, close_macd);
@@ -192,6 +193,8 @@ public class Stock {
 
         try {
             MovingAverageConvergenceDivergence macd_calc = getDefaultMACDCalc(get_double_prices(close_prices));
+
+            if(macd_calc == null) return new ArrayList<>();
 
             //SIGNAL IS MACDAVG
             double[] close_macd_signal = macd_calc.getSignal();
@@ -234,9 +237,7 @@ public class Stock {
                         return;
                     }
                     if (response.getType().equals("object")) {
-
-                        //TODO need to parametrize HashMap
-                        HashMap data = response.getDataObj();
+                        HashMap<String, Object> data = response.getDataObj();
                         boolean status = api.isValidStatus((String) data.get("s"));
                         if (!status) {
 //                            System.out.println("NO DATA FOUND");

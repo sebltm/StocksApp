@@ -4,7 +4,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 
+import static com.example.Team8.utils.ArrayUtils.parseObjToArr;
 import static com.example.Team8.utils.ArrayUtils.toDoubleArr;
 import static com.example.Team8.utils.ArrayUtils.toIntegerArr;
 import static com.example.Team8.utils.ArrayUtils.toStringArr;
@@ -31,14 +33,13 @@ public class StockCandle {
 
     public static ArrayList<StockCandle> stock_candles = new ArrayList<>();
 
-    public StockCandle(HashMap<String, ?> data) {
-        //TODO deal with all the possible null values here, e.g data.getOrDefault()
-        o = Arrays.asList(toDoubleArr((Object[]) data.get("o")));
-        h = Arrays.asList(toDoubleArr((Object[]) data.get("h")));
-        l = Arrays.asList(toDoubleArr((Object[]) data.get("l")));
-        c = Arrays.asList(toDoubleArr((Object[]) data.get("c")));
-        v = Arrays.asList(toIntegerArr((Object[]) data.get("v")));
-        t = Arrays.asList(toStringArr((Object[]) data.get("t")));
+    public StockCandle(HashMap<String, Object> data) {
+        o = Arrays.asList(toDoubleArr(parseObjToArr(data.get("o"))));
+        h = Arrays.asList(toDoubleArr(parseObjToArr(data.get("h"))));
+        l = Arrays.asList(toDoubleArr(parseObjToArr(data.get("l"))));
+        c = Arrays.asList(toDoubleArr(parseObjToArr(data.get("c"))));
+        v = Arrays.asList(toIntegerArr(parseObjToArr(data.get("v"))));
+        t = Arrays.asList(toStringArr(parseObjToArr(data.get("t"))));
         stock_candles.add(this);
     }
 

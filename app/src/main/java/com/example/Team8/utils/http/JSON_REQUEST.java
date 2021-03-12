@@ -31,17 +31,17 @@ public class JSON_REQUEST extends HTTP_REQUEST<HTTPCallback<JSON>> {
             }
 
             @Override
-            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+            public void onResponse(@NotNull Call call, @NotNull Response response) {
                 String body_str = getBodyStr(response);
                 boolean error = false;
                 JSON j = null;
-                try{
-                    if(body_str != null){
+                try {
+                    if (body_str != null) {
                         j = new JSON(body_str);
-                        if(j.getType() == null){
+                        if (j.getType() == null) {
                             error = true;
                         }
-                    }else{
+                    } else {
                         error = true;
                     }
                 }catch (Exception e){

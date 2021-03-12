@@ -54,7 +54,7 @@ public class Graph extends AppCompatActivity {
     }
 
     private void createChart(){
-        mpLineChart =(LineChart) findViewById(R.id.line_graph);
+        mpLineChart = (LineChart) findViewById(R.id.graph_frag_line_graph);
         LineDataSet lineDataset1 = new LineDataSet(addValuesOne(xVAL, yVAL), "Stocks 1");
         ArrayList<ILineDataSet> dataSets = new ArrayList<>();
         dataSets.add(lineDataset1);

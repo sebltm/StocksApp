@@ -6,7 +6,7 @@
     android:layout_height="match_parent">
 
     <com.github.mikephil.charting.charts.LineChart
-        android:id="@+id/line_graph"
+        android:id="@+id/graph_frag_line_graph"
         android:layout_width="398dp"
         android:layout_height="481dp"
         android:layout_marginTop="16dp"
@@ -21,14 +21,14 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="2dp"
         android:text="@string/to"
-        app:layout_constraintEnd_toStartOf="@+id/dateText02"
+        app:layout_constraintEnd_toStartOf="@+id/graph_frag_date_to"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/dateText01"
-        app:layout_constraintTop_toTopOf="@+id/dateText01"
+        app:layout_constraintStart_toEndOf="@+id/graph_frag_date_from"
+        app:layout_constraintTop_toTopOf="@+id/graph_frag_date_from"
         tools:ignore="MissingConstraints" />
 
     <TextView
-        android:id="@+id/dateText02"
+        android:id="@+id/graph_frag_date_to"
         android:layout_width="wrap_content"
         android:layout_height="19dp"
         android:layout_marginStart="2dp"
@@ -39,7 +39,7 @@
         tools:ignore="MissingConstraints" />
 
     <TextView
-        android:id="@+id/dateText01"
+        android:id="@+id/graph_frag_date_from"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="2dp"
@@ -58,7 +58,7 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
         android:text="@string/from"
-        app:layout_constraintEnd_toStartOf="@+id/dateText01"
+        app:layout_constraintEnd_toStartOf="@+id/graph_frag_date_from"
         app:layout_constraintHorizontal_chainStyle="packed"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/stockText"
@@ -116,7 +116,7 @@
         android:textSize="12sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/line_graph"
+        app:layout_constraintTop_toBottomOf="@+id/graph_frag_line_graph"
         tools:ignore="MissingConstraints" />
 
     <TextView
@@ -126,14 +126,14 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
         android:text="@string/stock"
-        app:layout_constraintEnd_toStartOf="@+id/stockText2"
+        app:layout_constraintEnd_toStartOf="@+id/graph_frag_stock_symbol"
         app:layout_constraintHorizontal_chainStyle="packed"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/titleTextGraph"
         tools:ignore="MissingConstraints" />
 
     <TextView
-        android:id="@+id/stockText2"
+        android:id="@+id/graph_frag_stock_symbol"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="2dp"

@@ -8,6 +8,7 @@ import com.example.Team8.StockCalc.SimpleMovingAverage;
 import com.example.Team8.utils.callbacks.StockDataCallback;
 import com.example.Team8.utils.http.HTTP_JSON;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
@@ -16,7 +17,7 @@ import java.util.List;
 
 import static com.example.Team8.utils.ArrayUtils.doubleArr;
 
-public class Stock {
+public class Stock implements Serializable {
 
     public static ArrayList<Stock> stocks = new ArrayList<>();
     private final String currency;
@@ -91,6 +92,7 @@ public class Stock {
 
         //TODO can't have that here, move it to a UnitTest
         boolean debug = true;
+
         return new ArrayList<AnalysisPoint>() {{
             for (int i = 0; i < a_values.length; i++) {
                 AnalysisPoint a_point = new AnalysisPoint(

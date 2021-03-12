@@ -53,13 +53,16 @@ public class StockAutoCompleteWatcher implements TextWatcher {
 
         if (!pastRequests.containsKey(symbolReq)) {
             API.getInstance().search(symbolReq, stocks -> {
-                pastRequests.put(symbolReq, stocks);
 
-                if (lastRequest.compareTo(currentRequest) == 0) {
-                    stockAdapter.clear();
-                    stockAdapter.addAll(stocks);
-                    stockAdapter.getFilter().filter(s);
-                    stockAdapter.notifyDataSetChanged();
+                if (stocks != null) {
+                    pastRequests.put(symbolReq, stocks);
+
+                    if (lastRequest.compareTo(currentRequest) == 0) {
+                        stockAdapter.clear();
+                        stockAdapter.addAll(stocks);
+                        stockAdapter.getFilter().filter(s);
+                        stockAdapter.notifyDataSetChanged();
+                    }
                 }
             });
         } else {

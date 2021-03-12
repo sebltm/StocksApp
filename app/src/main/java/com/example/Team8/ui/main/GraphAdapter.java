@@ -6,30 +6,37 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 
+import com.example.Team8.utils.AnalysisType;
+import com.example.Team8.utils.SearchHistoryItem;
+
+import java.util.List;
+
 public class GraphAdapter extends FragmentPagerAdapter {
 
-    String[] titles;
+    SearchHistoryItem searchItem;
+    List<AnalysisType> analysisTypes;
     int numTabs;
 
     public GraphAdapter(@NonNull FragmentManager fm, int behavior) {
         super(fm, behavior);
     }
 
-    public void setAttributes(String[] titles, int numTabs) {
-        this.titles = titles;
-        this.numTabs = numTabs;
+    public void setAttributes(SearchHistoryItem searchItem) {
+        this.searchItem = searchItem;
+        this.analysisTypes = searchItem.getAnalysisTypes();
+        this.numTabs = analysisTypes.size();
     }
 
     @NonNull
     @Override
     public Fragment getItem(int position) {
-        return new GraphFragment();
+        return new GraphFragment(this.searchItem, this.analysisTypes.get(position));
     }
 
     @Nullable
     @Override
     public CharSequence getPageTitle(int position) {
-        return titles[position];
+        return analysisTypes.get(position).name();
     }
 
     @Override

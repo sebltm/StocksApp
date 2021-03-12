@@ -1,13 +1,11 @@
 package com.example.Team8;
 
 import android.content.Context;
+import android.content.Intent;
 import android.database.sqlite.SQLiteConstraintException;
 import android.os.Bundle;
-import android.view.KeyEvent;
 import android.view.View;
-import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -17,7 +15,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 
 import com.example.Team8.adapters.StockAdapter;
 import com.example.Team8.database.SearchHistoryDatabase;
@@ -27,14 +24,10 @@ import com.example.Team8.utils.PricePoint;
 import com.example.Team8.utils.Resolution;
 import com.example.Team8.utils.SearchHistoryItem;
 import com.example.Team8.utils.Stock;
-import com.example.Team8.utils.API;
-import com.example.Team8.utils.callbacks.StockDataCallback;
-import com.example.Team8.utils.callbacks.StocksCallback;
 
-import java.sql.SQLOutput;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 
 public class SearchActivity extends AppCompatActivity {
@@ -160,27 +153,26 @@ public class SearchActivity extends AppCompatActivity {
                                 return;
                             }
                             // TODO Calculate the selected indicators, redirect user to Stock Chart view with tabs of the selected indicators enabled
-                            PricePoint p = price_points.get(price_points.size()-1);
+                            PricePoint p = price_points.get(price_points.size() - 1);
                             List<DataPoint> stockPrices = p.getClose();
                             System.out.print("Stock prices: ");
                             System.out.println(stockPrices);
-//                            stock.calculateSMA(params);
-//                            stock.calculateEMA(params);
-//                            stock.calculateMACD(params);
-//                            stock.calculateMACDAVG(params);
                             spinner.setVisibility(View.GONE);
                         });
 
-
                 // TODO this needs to fetch an actual stock using the symbol
                 SearchHistoryItem searchHistoryItem = new SearchHistoryItem(selectedStock, fromDate.getCal(), toDate.getCal(), analysisTypes);
+
+                Intent intent = new Intent(SearchActivity.this, GraphActivity.class);
+                intent.putExtra("SearchItem", (Serializable) searchHistoryItem);
+                startActivity(intent);
 
                 // Insert search history object into the database
                 // TODO deal with duplicates (e.g same stock, date from and to and analysis types)
 
                 try {
                     new Thread(() -> database.getSearchHistoryDao().insert(searchHistoryItem)).start();
-                } catch(SQLiteConstraintException error) {
+                } catch (SQLiteConstraintException error) {
                     System.out.println("This search has already been added to the database");
                 }
             } else {

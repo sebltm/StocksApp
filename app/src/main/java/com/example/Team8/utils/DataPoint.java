@@ -18,6 +18,14 @@ public class DataPoint {
     @NonNull
     @Override
     public String toString() {
-        return String.format("[%3$s] DateTime: \"%2$s\" | Value: \"%1$s\"", value,  dateTime, pointType.toUpperCase());
+        return String.format("[%3$s] DateTime: \"%2$s\" | Value: \"%1$s\"", value, dateTime, pointType.toUpperCase());
+    }
+
+    public BigDecimal getValue() {
+        return value;
+    }
+
+    public Date getDateTime() {
+        return dateTime;
     }
 }

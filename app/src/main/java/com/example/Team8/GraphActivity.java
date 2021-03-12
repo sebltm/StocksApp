@@ -6,19 +6,22 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager.widget.ViewPager;
 
 import com.example.Team8.ui.main.GraphAdapter;
+import com.example.Team8.utils.SearchHistoryItem;
 import com.google.android.material.tabs.TabLayout;
 
 public class GraphActivity extends AppCompatActivity {
+
+    SearchHistoryItem searchItem;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_graph);
 
-        String[] pageTitles = {"SMA", "EMA"};
+        this.searchItem = (SearchHistoryItem) getIntent().getSerializableExtra("SearchItem");
 
         GraphAdapter graphAdapter = new GraphAdapter(getSupportFragmentManager(), 0);
-        graphAdapter.setAttributes(pageTitles, pageTitles.length);
+        graphAdapter.setAttributes(searchItem);
 
         ViewPager viewPager = findViewById(R.id.view_pager);
         viewPager.setAdapter(graphAdapter);

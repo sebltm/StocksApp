@@ -19,20 +19,16 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.Team8.adapters.StockAdapter;
 import com.example.Team8.database.SearchHistoryDatabase;
 import com.example.Team8.utils.AnalysisType;
-import com.example.Team8.utils.DataPoint;
-import com.example.Team8.utils.PricePoint;
-import com.example.Team8.utils.Resolution;
 import com.example.Team8.utils.SearchHistoryItem;
 import com.example.Team8.utils.Stock;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 public class SearchActivity extends AppCompatActivity {
     private static Stock selectedStock;
-
+    private final Context context = this;
     private static final ArrayList<Stock> STOCKS = new ArrayList<>();
 
     @Override
@@ -104,10 +100,7 @@ public class SearchActivity extends AppCompatActivity {
                 return;
             }
 
-            int analysisDays = 0;
-            try {
-                analysisDays = Integer.parseInt(analysisDaysView.getText().toString());
-            } catch(Exception error) {}
+            int analysisDays = Integer.parseInt(analysisDaysView.getText().toString());
 
             if(stockSymbol == null || stockSymbol.isEmpty()) {
                 Toast.makeText(this, "Please select the correct stock symbol to run the search", Toast.LENGTH_SHORT).show();
@@ -140,41 +133,22 @@ public class SearchActivity extends AppCompatActivity {
             }
 
             if (fromDate.getCal().compareTo(toDate.getCal()) <= 0) {
-                Date fromDateTime = fromDate.getCal().getTime();
-                Date toDateTime = toDate.getCal().getTime();
 
-                spinner.setVisibility(View.VISIBLE);
-
-                selectedStock.fetchData(
-                        Resolution.types.get("D"),
-                        fromDateTime, toDateTime,
-                        (price_points, stock) -> {
-                            if(price_points == null || price_points.size() == 0){
-                                return;
-                            }
-                            // TODO Calculate the selected indicators, redirect user to Stock Chart view with tabs of the selected indicators enabled
-                            PricePoint p = price_points.get(price_points.size() - 1);
-                            List<DataPoint> stockPrices = p.getClose();
-                            System.out.print("Stock prices: ");
-                            System.out.println(stockPrices);
-                            spinner.setVisibility(View.GONE);
-                        });
-
-                // TODO this needs to fetch an actual stock using the symbol
                 SearchHistoryItem searchHistoryItem = new SearchHistoryItem(selectedStock, fromDate.getCal(), toDate.getCal(), analysisTypes);
-
-                Intent intent = new Intent(SearchActivity.this, GraphActivity.class);
-                intent.putExtra("SearchItem", (Serializable) searchHistoryItem);
-                startActivity(intent);
 
                 // Insert search history object into the database
                 // TODO deal with duplicates (e.g same stock, date from and to and analysis types)
-
                 try {
                     new Thread(() -> database.getSearchHistoryDao().insert(searchHistoryItem)).start();
                 } catch (SQLiteConstraintException error) {
                     System.out.println("This search has already been added to the database");
                 }
+
+                System.out.println("About to start intent");
+                Intent intent = new Intent(SearchActivity.this, GraphActivity.class);
+                intent.putExtra("SearchItem", (Serializable) searchHistoryItem);
+                context.startActivity(intent);
+                System.out.println("Intent should have started");
             } else {
                 Toast.makeText(this, "\"From\" date must be smaller or equal \"to\" date", Toast.LENGTH_LONG).show();
                 fromDate.setDayEqual(toDate);

@@ -1,4 +1,4 @@
-package com.example.Team8.ui.main;
+package com.example.Team8.adapters;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 
+import com.example.Team8.ui.main.GraphFragment;
 import com.example.Team8.utils.AnalysisType;
 import com.example.Team8.utils.SearchHistoryItem;
 

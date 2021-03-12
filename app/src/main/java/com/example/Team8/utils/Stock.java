@@ -227,8 +227,6 @@ public class Stock implements Serializable {
             throw new NoSuchFieldError();
         }
 
-//        System.out.println(String.format("FETCH DATA FOR %2$s: %1$s", getStockCandlesURL, symbol));
-
         HTTP_JSON.fetch(getStockCandlesURL,
                 response -> {
                     if (response == null) {
@@ -241,7 +239,6 @@ public class Stock implements Serializable {
                         HashMap data = response.getDataObj();
                         boolean status = api.isValidStatus((String) data.get("s"));
                         if (!status) {
-//                            System.out.println("NO DATA FOUND");
                             setResponseCallback(callback, null);
                             return;
                         }
@@ -252,5 +249,9 @@ public class Stock implements Serializable {
                         setResponseCallback(callback, null);
                     }
                 });
+    }
+
+    public List<PricePoint> getPriceHistory() {
+        return priceHistory;
     }
 }

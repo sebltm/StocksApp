@@ -1,5 +1,6 @@
 package com.example.Team8.utils;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -8,7 +9,7 @@ import java.util.List;
 
 import static com.example.Team8.utils.ArrayUtils.toStringArr;
 
-public class PricePoint {
+public class PricePoint implements Serializable {
 
     //    List of open prices for returned candles.
     private final List<DataPoint> open = new ArrayList<>();

@@ -5,7 +5,7 @@ import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager.widget.ViewPager;
 
-import com.example.Team8.ui.main.GraphAdapter;
+import com.example.Team8.adapters.GraphAdapter;
 import com.example.Team8.utils.SearchHistoryItem;
 import com.google.android.material.tabs.TabLayout;
 

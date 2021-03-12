@@ -13,6 +13,9 @@ import androidx.fragment.app.Fragment;
 import com.example.Team8.R;
 import com.example.Team8.utils.AnalysisPoint;
 import com.example.Team8.utils.AnalysisType;
+import com.example.Team8.utils.DataPoint;
+import com.example.Team8.utils.PricePoint;
+import com.example.Team8.utils.Resolution;
 import com.example.Team8.utils.SearchHistoryItem;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.AxisBase;
@@ -30,7 +33,7 @@ import java.util.Locale;
 
 public class GraphFragment extends Fragment {
 
-    private static final String format = "dd MMM yyyy";
+    private static final String format = "dd-mm-yy";
     private static final SimpleDateFormat dateFormat = new SimpleDateFormat(format, Locale.UK);
     LineChart mpLineChart;
     SearchHistoryItem searchItem;
@@ -61,28 +64,46 @@ public class GraphFragment extends Fragment {
         dateFrom.setText(dateFormat.format(searchItem.getFrom()));
         dateTo.setText(dateFormat.format(searchItem.getTo()));
 
-        switch (analysisType) {
-            case EMA:
-                analysisPoints = searchItem.getStock().calculateEMA(15);
-                break;
-            case SMA:
-                analysisPoints = searchItem.getStock().calculateSMA(15);
-                break;
-            case MACD:
-                analysisPoints = searchItem.getStock().calculateMACD(9, 26, 2);
-            case MACDAVG:
-                analysisPoints = searchItem.getStock().calculateMACDAVG();
-        }
+        searchItem.getStock().fetchData(
+                Resolution.types.get("D"),
+                searchItem.getFrom(), searchItem.getTo(),
+                (price_points, stock) -> {
+                    if (price_points == null || price_points.size() == 0) {
+                        return;
+                    }
+                    // TODO Calculate the selected indicators, redirect user to Stock Chart view with tabs of the selected indicators enabled
+                    PricePoint p = price_points.get(price_points.size() - 1);
+                    List<DataPoint> stockPrices = p.getClose();
 
-        createChart(graphView, analysisPoints);
+                    // TODO this needs to fetch an actual stock using the symbol
+
+                    switch (analysisType) {
+                        case EMA:
+                            analysisPoints = searchItem.getStock().calculateEMA(2);
+                            break;
+                        case SMA:
+                            analysisPoints = searchItem.getStock().calculateSMA(2);
+                            break;
+                        case MACD:
+                            analysisPoints = searchItem.getStock().calculateMACD(9, 26, 2);
+                        case MACDAVG:
+                            analysisPoints = searchItem.getStock().calculateMACDAVG();
+                    }
+
+                    createChart(graphView, analysisPoints);
+                });
 
         return graphView;
     }
 
     private List<Entry> analysisToEntry(List<AnalysisPoint> analysisPoints) {
         List<Entry> entryList = new ArrayList<>();
+
+        System.out.println("PRINTING SIZE OF ARRAY");
+        System.out.println(analysisPoints.size());
         for (AnalysisPoint point : analysisPoints) {
             entryList.add(new Entry(point.getDateTime().getTime(), point.getValue().floatValue()));
+            System.out.println(entryList.get(entryList.size() - 1).toString());
         }
 
         return entryList;

@@ -24,13 +24,16 @@ public class Graph extends AppCompatActivity {
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.graph);
+        setContentView(R.layout.activity_graph);
+
+        xVAL = new ArrayList<>();
+        yVAL = new ArrayList<>();
 
         getValues();
         createChart();
     }
 
-    public void getValues(){
+    public void getValues() {
         xVAL.add((float) 0);
         yVAL.add((float) 20.11);
 

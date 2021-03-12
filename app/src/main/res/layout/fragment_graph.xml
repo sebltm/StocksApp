@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.github.mikephil.charting.charts.LineChart
+        android:id="@+id/line_graph"
+        android:layout_width="398dp"
+        android:layout_height="481dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/stockText4"
+        tools:ignore="MissingConstraints" />
+
+    <TextView
+        android:id="@+id/toText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="2dp"
+        android:text="@string/to"
+        app:layout_constraintEnd_toStartOf="@+id/dateText02"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/dateText01"
+        app:layout_constraintTop_toTopOf="@+id/dateText01"
+        tools:ignore="MissingConstraints" />
+
+    <TextView
+        android:id="@+id/dateText02"
+        android:layout_width="wrap_content"
+        android:layout_height="19dp"
+        android:layout_marginStart="2dp"
+        android:text="@string/date2"
+        android:textStyle="bold"
+        app:layout_constraintStart_toEndOf="@+id/toText"
+        app:layout_constraintTop_toTopOf="@+id/toText"
+        tools:ignore="MissingConstraints" />
+
+    <TextView
+        android:id="@+id/dateText01"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="2dp"
+        android:text="@string/date1"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toStartOf="@+id/toText"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/stockText4"
+        app:layout_constraintTop_toTopOf="@+id/stockText4"
+        tools:ignore="MissingConstraints" />
+
+    <TextView
+        android:id="@+id/stockText4"
+        android:layout_width="36dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:text="@string/from"
+        app:layout_constraintEnd_toStartOf="@+id/dateText01"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/stockText"
+        tools:ignore="MissingConstraints" />
+
+    <EditText
+        android:id="@+id/titleTextGraph"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:text="@string/titletextgraph"
+        android:textAlignment="center"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="MissingConstraints" />
+
+    <ImageButton
+        android:id="@+id/saveImageBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="@string/todo"
+        android:onClick="saveImageAsPNG"
+        app:layout_constraintBottom_toTopOf="@+id/textView10"
+        app:layout_constraintEnd_toEndOf="@+id/textView10"
+        app:layout_constraintStart_toEndOf="@+id/summaryBtn"
+        app:layout_constraintStart_toStartOf="@+id/textView10"
+        app:layout_constraintTop_toTopOf="@+id/summaryBtn"
+        app:srcCompat="@android:drawable/ic_menu_save"
+        tools:ignore="MissingConstraints" />
+
+    <TextView
+        android:id="@+id/textView10"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="32dp"
+        android:text="@string/save_as_jpg"
+        android:textAlignment="center"
+        android:textSize="12sp"
+        app:layout_constraintBottom_toBottomOf="@+id/summaryBtn"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/saveImageBtn"
+        tools:ignore="MissingConstraints" />
+
+    <Button
+        android:id="@+id/summaryBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:onClick="showSummary"
+        android:text="@string/summary"
+        android:textSize="12sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/line_graph"
+        tools:ignore="MissingConstraints" />
+
+    <TextView
+        android:id="@+id/stockText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:text="@string/stock"
+        app:layout_constraintEnd_toStartOf="@+id/stockText2"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/titleTextGraph"
+        tools:ignore="MissingConstraints" />
+
+    <TextView
+        android:id="@+id/stockText2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="2dp"
+        android:text="@string/xyz"
+        android:textStyle="bold"
+        app:layout_constraintStart_toEndOf="@+id/stockText"
+        app:layout_constraintTop_toTopOf="@+id/stockText"
+        tools:ignore="MissingConstraints" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

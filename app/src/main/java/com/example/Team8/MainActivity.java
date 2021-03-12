@@ -9,9 +9,7 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
-import com.example.Team8.tests.Test;
 import com.example.Team8.ui.main.ModelFacade;
-import com.example.Team8.utils.Stock;
 
 public class MainActivity extends AppCompatActivity {
     ModelFacade model;
@@ -44,6 +42,11 @@ public class MainActivity extends AppCompatActivity {
 
         findViewById(R.id.mBttnSwitchSearchHistory).setOnClickListener(v -> {
             Intent intent = new Intent(MainActivity.this, SearchHistoryActivity.class);
+            startActivity(intent);
+        });
+
+        findViewById(R.id.mBttnSwitchGraph).setOnClickListener(v -> {
+            Intent intent = new Intent(MainActivity.this, GraphActivity.class);
             startActivity(intent);
         });
     }

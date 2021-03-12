@@ -36,4 +36,5 @@
     <string name="date2">DATE2</string>
     <string name="save_as_jpg">Save As .jpg</string>
     <string name="todo">TODO</string>
+    <string name="title_activity_graph">GraphActivity</string>
 </resources>

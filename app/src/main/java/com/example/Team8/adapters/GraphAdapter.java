@@ -15,10 +15,10 @@ import java.util.List;
 
 public class GraphAdapter extends FragmentPagerAdapter {
 
-    List<GraphFragment> fragments;
-    SearchHistoryItem searchItem;
-    List<AnalysisType> analysisTypes;
-    int numTabs;
+    private List<GraphFragment> fragments;
+    private SearchHistoryItem searchItem;
+    private List<AnalysisType> analysisTypes;
+    private int numTabs;
 
     public GraphAdapter(@NonNull FragmentManager fm, int behavior) {
         super(fm, behavior);
@@ -31,8 +31,7 @@ public class GraphAdapter extends FragmentPagerAdapter {
 
         this.fragments = new ArrayList<>();
         for (int i = 0; i < analysisTypes.size(); i++) {
-            GraphFragment graphFragment = new GraphFragment(this.searchItem, this.analysisTypes.get(i));
-            fragments.add(graphFragment);
+            fragments.add(null);
         }
     }
 

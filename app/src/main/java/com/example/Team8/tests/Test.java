@@ -281,12 +281,12 @@ public class Test {
 //                        System.out.println(String.format("API ERROR, DATA NOT FOUND FOR SYMBOL: %s", s.getSymbol()));
                         return;
                     }
-                    priceHistory.forEach((pp) -> {
-                        System.out.println(pp.getOpen());
-                        System.out.println(pp.getHigh());
-                        System.out.println(pp.getLow());
-                        System.out.println(pp.getClose());
-                        System.out.println(pp.getTimestamps());
+                    Stock.stocks.forEach(stock1 -> {
+                        System.out.println(stock1.getPriceHistory().getOpen());
+                        System.out.println(stock1.getPriceHistory().getHigh());
+                        System.out.println(stock1.getPriceHistory().getLow());
+                        System.out.println(stock1.getPriceHistory().getClose());
+                        System.out.println(stock1.getPriceHistory().getTimestamps());
                     });
                 }
         );

@@ -18,6 +18,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.Team8.adapters.StockAdapter;
 import com.example.Team8.database.SearchHistoryDatabase;
+import com.example.Team8.ui.main.DatePickerFragment;
 import com.example.Team8.utils.AnalysisType;
 import com.example.Team8.utils.SearchHistoryItem;
 import com.example.Team8.utils.Stock;

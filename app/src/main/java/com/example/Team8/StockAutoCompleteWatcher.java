@@ -53,20 +53,13 @@ public class StockAutoCompleteWatcher implements TextWatcher {
 
         if (!pastRequests.containsKey(symbolReq)) {
             API.getInstance().search(symbolReq, stocks -> {
-                System.out.println(String.format("Started a new online search for %s at %s", symbolReq, currentRequest));
-                System.out.flush();
 
                 if (stocks != null) {
                     pastRequests.put(symbolReq, stocks);
                     stockAdapter.addAll(stocks);
                     stockAdapter.notifyDataSetChanged();
                     stockAdapter.getFilter().filter(s);
-
-                    System.out.println(String.format("Finished online search for %s, added %d items", symbolReq, stocks.size()));
-                } else {
-                    System.out.println(String.format("Finished online search for %s, added 0 items", symbolReq));
                 }
-                System.out.flush();
             });
         }
     }

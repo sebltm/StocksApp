@@ -1,4 +1,4 @@
-package com.example.Team8;
+package com.example.Team8.ui.main;
 
 import android.app.DatePickerDialog;
 import android.content.Context;
@@ -6,6 +6,8 @@ import android.view.View;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import com.example.Team8.R;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;

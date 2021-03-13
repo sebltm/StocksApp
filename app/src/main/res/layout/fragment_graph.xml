@@ -116,7 +116,7 @@
         android:textSize="12sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/graph_frag_line_graph"
+        app:layout_constraintTop_toBottomOf="@+id/toggle_price_line"
         tools:ignore="MissingConstraints" />
 
     <TextView
@@ -142,5 +142,14 @@
         app:layout_constraintStart_toEndOf="@+id/stockText"
         app:layout_constraintTop_toTopOf="@+id/stockText"
         tools:ignore="MissingConstraints" />
+
+    <androidx.appcompat.widget.SwitchCompat
+        android:id="@+id/toggle_price_line"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="@string/switch_toggle_price"
+        app:layout_constraintStart_toStartOf="@+id/graph_frag_line_graph"
+        app:layout_constraintTop_toBottomOf="@+id/graph_frag_line_graph" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

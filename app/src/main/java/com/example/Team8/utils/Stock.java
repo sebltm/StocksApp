@@ -27,7 +27,7 @@ public class Stock implements Serializable {
     private final String mic;
     private final String symbol;
     private final String type;
-    private final List<PricePoint> priceHistory = new ArrayList<>();
+    private PricePoint priceHistory;
 
 
     public Stock(HashMap<String, ?> data) {
@@ -91,7 +91,7 @@ public class Stock implements Serializable {
         List<String> timestamps_arr = pricePoint.getTimestamps();
 
         //TODO can't have that here, move it to a UnitTest
-        boolean debug = true;
+        boolean debug = false;
 
         return new ArrayList<AnalysisPoint>() {{
             for (int i = 0; i < a_values.length; i++) {
@@ -134,15 +134,14 @@ public class Stock implements Serializable {
     }
 
     public List<AnalysisPoint> calculateSMA(int nDays) {
-        if (priceHistory.isEmpty()) return new ArrayList<>();
+        if (priceHistory == null) return new ArrayList<>();
 
-        PricePoint pricePoint = priceHistory.get(priceHistory.size() - 1);
-        List<DataPoint> close_prices = pricePoint.getClose();
+        List<DataPoint> close_prices = priceHistory.getClose();
 
         try {
             double[] close_sma = new SimpleMovingAverage().calculate(get_double_prices(close_prices), nDays).getSMA();
 
-            return generateAnalysisPoints(pricePoint, close_prices, AnalysisType.SMA, close_sma);
+            return generateAnalysisPoints(priceHistory, close_prices, AnalysisType.SMA, close_sma);
         } catch (Exception e) {
             e.printStackTrace();
             return new ArrayList<>();
@@ -150,15 +149,14 @@ public class Stock implements Serializable {
     }
 
     public List<AnalysisPoint> calculateEMA(int nDays) {
-        if (priceHistory.isEmpty()) return new ArrayList<>();
+        if (priceHistory == null) return new ArrayList<>();
 
-        PricePoint pricePoint = priceHistory.get(priceHistory.size() - 1);
-        List<DataPoint> close_prices = pricePoint.getClose();
+        List<DataPoint> close_prices = priceHistory.getClose();
 
         try {
             double[] close_ema = new ExponentialMovingAverage().calculate(get_double_prices(close_prices), nDays).getEMA();
 
-            return generateAnalysisPoints(pricePoint, close_prices, AnalysisType.EMA, close_ema);
+            return generateAnalysisPoints(priceHistory, close_prices, AnalysisType.EMA, close_ema);
         } catch (Exception e) {
             e.printStackTrace();
             return new ArrayList<>();
@@ -166,10 +164,9 @@ public class Stock implements Serializable {
     }
 
     public List<AnalysisPoint> calculateMACD(int fastPeriod, int slowPeriod, int signalPeriod) {
-        if (priceHistory.isEmpty()) return new ArrayList<>();
+        if (priceHistory == null) return new ArrayList<>();
 
-        PricePoint pricePoint = priceHistory.get(priceHistory.size() - 1);
-        List<DataPoint> close_prices = pricePoint.getClose();
+        List<DataPoint> close_prices = priceHistory.getClose();
 
         try {
             MovingAverageConvergenceDivergence macd_calc = getMACDCalc(
@@ -179,7 +176,7 @@ public class Stock implements Serializable {
             //TODO need a null check here
             double[] close_macd = macd_calc.getMACD();
 
-            return generateAnalysisPoints(pricePoint, close_prices, AnalysisType.MACD, close_macd);
+            return generateAnalysisPoints(priceHistory, close_prices, AnalysisType.MACD, close_macd);
         } catch (Exception e) {
             e.printStackTrace();
             return new ArrayList<>();
@@ -187,10 +184,9 @@ public class Stock implements Serializable {
     }
 
     public List<AnalysisPoint> calculateMACDAVG() {
-        if (priceHistory.isEmpty()) return new ArrayList<>();
+        if (priceHistory == null) return new ArrayList<>();
 
-        PricePoint pricePoint = priceHistory.get(priceHistory.size() - 1);
-        List<DataPoint> close_prices = pricePoint.getClose();
+        List<DataPoint> close_prices = priceHistory.getClose();
 
         try {
             MovingAverageConvergenceDivergence macd_calc = getDefaultMACDCalc(get_double_prices(close_prices));
@@ -204,14 +200,14 @@ public class Stock implements Serializable {
             //MACD CROSSOVER
             int[] close_macd_crossover = macd_calc.getCrossover();
 
-            return generateAnalysisPoints(pricePoint, close_prices, AnalysisType.MACDAVG, close_macd_signal);
+            return generateAnalysisPoints(priceHistory, close_prices, AnalysisType.MACDAVG, close_macd_signal);
         } catch (Exception e) {
             e.printStackTrace();
             return new ArrayList<>();
         }
     }
 
-    private void setResponseCallback(StockDataCallback callback, List<PricePoint> value) {
+    private void setResponseCallback(StockDataCallback callback, PricePoint value) {
         if (callback != null) {
             callback.response(value, this);
         }
@@ -242,8 +238,7 @@ public class Stock implements Serializable {
                             setResponseCallback(callback, null);
                             return;
                         }
-                        PricePoint pp = new PricePoint(data);
-                        priceHistory.add(pp);
+                        priceHistory = new PricePoint(data);
                         setResponseCallback(callback, priceHistory);
                     } else {
                         setResponseCallback(callback, null);
@@ -251,7 +246,7 @@ public class Stock implements Serializable {
                 });
     }
 
-    public List<PricePoint> getPriceHistory() {
+    public PricePoint getPriceHistory() {
         return priceHistory;
     }
 }

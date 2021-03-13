@@ -13,8 +13,6 @@ import androidx.fragment.app.Fragment;
 import com.example.Team8.R;
 import com.example.Team8.utils.AnalysisPoint;
 import com.example.Team8.utils.AnalysisType;
-import com.example.Team8.utils.DataPoint;
-import com.example.Team8.utils.PricePoint;
 import com.example.Team8.utils.Resolution;
 import com.example.Team8.utils.SearchHistoryItem;
 import com.github.mikephil.charting.charts.LineChart;
@@ -40,6 +38,8 @@ public class GraphFragment extends Fragment {
     AnalysisType analysisType;
     List<AnalysisPoint> analysisPoints;
 
+    private boolean dataNotLoaded = true;
+
     public GraphFragment(SearchHistoryItem searchItem, AnalysisType analysisType) {
         this.searchItem = searchItem;
         this.analysisType = analysisType;
@@ -64,34 +64,37 @@ public class GraphFragment extends Fragment {
         dateFrom.setText(dateFormat.format(searchItem.getFrom()));
         dateTo.setText(dateFormat.format(searchItem.getTo()));
 
-        searchItem.getStock().fetchData(
-                Resolution.types.get("D"),
-                searchItem.getFrom(), searchItem.getTo(),
-                (price_points, stock) -> {
-                    if (price_points == null || price_points.size() == 0) {
-                        return;
-                    }
-                    // TODO Calculate the selected indicators, redirect user to Stock Chart view with tabs of the selected indicators enabled
-                    PricePoint p = price_points.get(price_points.size() - 1);
-                    List<DataPoint> stockPrices = p.getClose();
+        if (dataNotLoaded) {
+            searchItem.getStock().fetchData(
+                    Resolution.types.get("D"),
+                    searchItem.getFrom(), searchItem.getTo(),
+                    (price_points, stock) -> {
+                        if (price_points == null || price_points.size() == 0) {
+                            return;
+                        }
 
-                    // TODO this needs to fetch an actual stock using the symbol
+                        int analysisDays = searchItem.getAnalysisDays();
 
-                    switch (analysisType) {
-                        case EMA:
-                            analysisPoints = searchItem.getStock().calculateEMA(2);
-                            break;
-                        case SMA:
-                            analysisPoints = searchItem.getStock().calculateSMA(2);
-                            break;
-                        case MACD:
-                            analysisPoints = searchItem.getStock().calculateMACD(9, 26, 2);
-                        case MACDAVG:
-                            analysisPoints = searchItem.getStock().calculateMACDAVG();
-                    }
+                        switch (analysisType) {
+                            case EMA:
+                                analysisPoints = searchItem.getStock().calculateEMA(analysisDays);
+                                break;
+                            case SMA:
+                                analysisPoints = searchItem.getStock().calculateSMA(analysisDays);
+                                break;
+                            case MACD:
+                                analysisPoints = searchItem.getStock().calculateMACD(9, 25, 2);
+                            case MACDAVG:
+                                analysisPoints = searchItem.getStock().calculateMACDAVG();
+                        }
 
-                    createChart(graphView, analysisPoints);
-                });
+                        createChart(graphView, analysisPoints);
+                    });
+
+            dataNotLoaded = false;
+        } else {
+            createChart(graphView, analysisPoints);
+        }
 
         return graphView;
     }
@@ -99,8 +102,6 @@ public class GraphFragment extends Fragment {
     private List<Entry> analysisToEntry(List<AnalysisPoint> analysisPoints) {
         List<Entry> entryList = new ArrayList<>();
 
-        System.out.println("PRINTING SIZE OF ARRAY");
-        System.out.println(analysisPoints.size());
         for (AnalysisPoint point : analysisPoints) {
             entryList.add(new Entry(point.getDateTime().getTime(), point.getValue().floatValue()));
             System.out.println(entryList.get(entryList.size() - 1).toString());
@@ -110,7 +111,7 @@ public class GraphFragment extends Fragment {
     }
 
     private void createChart(View parentView, List<AnalysisPoint> analysisPoints) {
-        mpLineChart = (LineChart) parentView.findViewById(R.id.graph_frag_line_graph);
+        mpLineChart = parentView.findViewById(R.id.graph_frag_line_graph);
         LineDataSet lineDataset = new LineDataSet(analysisToEntry(analysisPoints), analysisType.name());
         ArrayList<ILineDataSet> dataSets = new ArrayList<>();
         dataSets.add(lineDataset);

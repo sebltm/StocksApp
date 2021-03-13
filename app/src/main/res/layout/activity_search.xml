@@ -183,27 +183,40 @@
         android:id="@+id/resetBttn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/search_reset"
         android:background="@drawable/gradient_bttn"
+        android:text="@string/search_reset"
         android:textColor="#f5f5f5"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/searchBttn"
-        app:layout_constraintTop_toBottomOf="@+id/analysisDays" />
+        app:layout_constraintTop_toTopOf="@+id/searchBttn" />
 
     <Button
         android:id="@+id/searchBttn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:background="@drawable/gradient_bttn"
         android:text="@string/search_button"
         android:textColor="#f5f5f5"
-        android:background="@drawable/gradient_bttn"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/resetBttn"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/analysisDays" />
+        app:layout_constraintTop_toBottomOf="@+id/analysisDays"
+        app:layout_constraintVertical_bias="0.25" />
+
+    <Button
+        android:id="@+id/search_history"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/gradient_bttn"
+        android:padding="1dp"
+        android:text="@string/search_history_title"
+        android:textColor="#f5f5f5"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/resetBttn"
+        app:layout_constraintStart_toStartOf="@+id/searchBttn"
+        app:layout_constraintTop_toBottomOf="@+id/resetBttn" />
 
     <Button
         android:id="@+id/searchSymbol"

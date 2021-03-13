@@ -32,18 +32,23 @@ public class SearchHistoryItem implements Serializable {
     @TypeConverters(StockHistoryConverter.class)
     private List<AnalysisType> analysisTypes;
 
-    public SearchHistoryItem(@NonNull Stock stock, Calendar from, Calendar to, @NonNull List<AnalysisType> analysisTypes) {
+    @ColumnInfo(name = "analysis_days")
+    private Integer analysisDays;
+
+    public SearchHistoryItem(@NonNull Stock stock, Calendar from, Calendar to, @NonNull List<AnalysisType> analysisTypes, Integer analysisDays) {
         this.stock = stock;
         this.from = from.getTime();
         this.to = to.getTime();
         this.analysisTypes = analysisTypes;
+        this.analysisDays = analysisDays;
     }
 
-    public SearchHistoryItem(@NonNull Stock stock, @NonNull Date from, @NonNull Date to, @NonNull List<AnalysisType> analysisTypes) {
+    public SearchHistoryItem(@NonNull Stock stock, @NonNull Date from, @NonNull Date to, @NonNull List<AnalysisType> analysisTypes, Integer analysisDays) {
         this.stock = stock;
         this.from = from;
         this.to = to;
         this.analysisTypes = analysisTypes;
+        this.analysisDays = analysisDays;
     }
 
     @NonNull
@@ -80,5 +85,13 @@ public class SearchHistoryItem implements Serializable {
 
     public void setStock(@NonNull Stock stock) {
         this.stock = stock;
+    }
+
+    public Integer getAnalysisDays() {
+        return analysisDays;
+    }
+
+    public void setAnalysisDays(Integer analysisDays) {
+        this.analysisDays = analysisDays;
     }
 }

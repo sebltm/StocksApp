@@ -22,7 +22,6 @@ import com.example.Team8.utils.AnalysisType;
 import com.example.Team8.utils.SearchHistoryItem;
 import com.example.Team8.utils.Stock;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,19 +35,19 @@ public class SearchActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
 
-        ProgressBar spinner = (ProgressBar)findViewById(R.id.progressBar);
+        ProgressBar spinner = findViewById(R.id.progressBar);
         spinner.setVisibility(View.GONE);
 
         // Create date picker selection interface
-        EditText editTextFromDate = (EditText) findViewById(R.id.mDatePickerFrom);
-        EditText editTextToDate = (EditText) findViewById(R.id.mDatePickerTo);
+        EditText editTextFromDate = findViewById(R.id.mDatePickerFrom);
+        EditText editTextToDate = findViewById(R.id.mDatePickerTo);
 
         DatePickerFragment fromDate = new DatePickerFragment(editTextFromDate, this);
         DatePickerFragment toDate = new DatePickerFragment(editTextToDate, this);
 
         // Create stock selection interface
         StockAdapter stockAdapter = new StockAdapter(this, R.layout.stock_dropdown_item, STOCKS);
-        AutoCompleteTextView stockAutocomplete = (AutoCompleteTextView) findViewById(R.id.stockDropdown);
+        AutoCompleteTextView stockAutocomplete = findViewById(R.id.stockDropdown);
         stockAutocomplete.setAdapter(stockAdapter);
 
         stockAutocomplete.setOnItemClickListener((parent, view, position, id) -> {
@@ -62,14 +61,14 @@ public class SearchActivity extends AppCompatActivity {
         stockAutocomplete.addTextChangedListener(autoCompleteWatcher);
 
         // Create analysis selection interface
-        CheckBox smaCheckbox = (CheckBox) findViewById(R.id.SMAcheckbox);
-        CheckBox emaCheckbox = (CheckBox) findViewById(R.id.EMAcheckbox);
-        CheckBox macdCheckbox = (CheckBox) findViewById(R.id.MACDcheckbox);
-        CheckBox macdavgCheckbox = (CheckBox) findViewById(R.id.MACDAVGcheckbox);
+        CheckBox smaCheckbox = findViewById(R.id.SMAcheckbox);
+        CheckBox emaCheckbox = findViewById(R.id.EMAcheckbox);
+        CheckBox macdCheckbox = findViewById(R.id.MACDcheckbox);
+        CheckBox macdavgCheckbox = findViewById(R.id.MACDAVGcheckbox);
 
-        TextView analysisDaysView = (TextView) findViewById(R.id.analysisDays);
+        TextView analysisDaysView = findViewById(R.id.analysisDays);
 
-        Button resetBttn = (Button) findViewById(R.id.resetBttn);
+        Button resetBttn = findViewById(R.id.resetBttn);
         resetBttn.setOnClickListener(v -> {
             fromDate.clear();
             toDate.clear();
@@ -87,22 +86,27 @@ public class SearchActivity extends AppCompatActivity {
             if (current != null) current.clearFocus();
         });
 
+        Button searchHistory = findViewById(R.id.search_history);
+        searchHistory.setOnClickListener(v -> {
+            Intent intent = new Intent(SearchActivity.this, SearchHistoryActivity.class);
+            context.startActivity(intent);
+        });
+
         SearchHistoryDatabase database = SearchHistoryDatabase.getInstance(this);
 
         // Create Search button
-        Button searchBttn = (Button) findViewById(R.id.searchBttn);
+        Button searchBttn = findViewById(R.id.searchBttn);
         searchBttn.setOnClickListener(v -> {
-            TextView stockView = (TextView) findViewById(R.id.stockDropdown);
-            String stockSymbol = stockView.getText().toString();
+            String stockSymbol = stockAutocomplete.getText().toString();
 
-            if(analysisDaysView.getText().toString() == null || analysisDaysView.getText().toString().isEmpty()) {
+            if (analysisDaysView.getText().toString().isEmpty()) {
                 Toast.makeText(this, "Please fill in the number of days for SMA or EMA field", Toast.LENGTH_SHORT).show();
                 return;
             }
 
             int analysisDays = Integer.parseInt(analysisDaysView.getText().toString());
 
-            if(stockSymbol == null || stockSymbol.isEmpty()) {
+            if (stockSymbol.isEmpty()) {
                 Toast.makeText(this, "Please select the correct stock symbol to run the search", Toast.LENGTH_SHORT).show();
                 return;
             }
@@ -134,21 +138,18 @@ public class SearchActivity extends AppCompatActivity {
 
             if (fromDate.getCal().compareTo(toDate.getCal()) <= 0) {
 
-                SearchHistoryItem searchHistoryItem = new SearchHistoryItem(selectedStock, fromDate.getCal(), toDate.getCal(), analysisTypes);
+                SearchHistoryItem searchHistoryItem = new SearchHistoryItem(selectedStock, fromDate.getCal(), toDate.getCal(), analysisTypes, analysisDays);
 
                 // Insert search history object into the database
-                // TODO deal with duplicates (e.g same stock, date from and to and analysis types)
                 try {
                     new Thread(() -> database.getSearchHistoryDao().insert(searchHistoryItem)).start();
                 } catch (SQLiteConstraintException error) {
                     System.out.println("This search has already been added to the database");
                 }
 
-                System.out.println("About to start intent");
                 Intent intent = new Intent(SearchActivity.this, GraphActivity.class);
-                intent.putExtra("SearchItem", (Serializable) searchHistoryItem);
+                intent.putExtra("SearchItem", searchHistoryItem);
                 context.startActivity(intent);
-                System.out.println("Intent should have started");
             } else {
                 Toast.makeText(this, "\"From\" date must be smaller or equal \"to\" date", Toast.LENGTH_LONG).show();
                 fromDate.setDayEqual(toDate);

@@ -48,11 +48,11 @@
         android:text="@string/search"
         app:layout_constraintBottom_toBottomOf="@+id/search_history_description"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/button"
+        app:layout_constraintStart_toEndOf="@+id/search_hist_item_repeat"
         app:layout_constraintTop_toTopOf="@+id/search_history_date_from" />
 
     <Button
-        android:id="@+id/button"
+        android:id="@+id/search_hist_item_repeat"
         android:layout_width="49dp"
         android:layout_height="46dp"
         android:text="@string/summary"

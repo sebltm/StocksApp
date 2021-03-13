@@ -10,10 +10,12 @@ import com.example.Team8.ui.main.GraphFragment;
 import com.example.Team8.utils.AnalysisType;
 import com.example.Team8.utils.SearchHistoryItem;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class GraphAdapter extends FragmentPagerAdapter {
 
+    List<GraphFragment> fragments;
     SearchHistoryItem searchItem;
     List<AnalysisType> analysisTypes;
     int numTabs;
@@ -26,12 +28,27 @@ public class GraphAdapter extends FragmentPagerAdapter {
         this.searchItem = searchItem;
         this.analysisTypes = searchItem.getAnalysisTypes();
         this.numTabs = analysisTypes.size();
+
+        this.fragments = new ArrayList<>();
+        for (int i = 0; i < analysisTypes.size(); i++) {
+            GraphFragment graphFragment = new GraphFragment(this.searchItem, this.analysisTypes.get(i));
+            fragments.add(graphFragment);
+        }
     }
 
     @NonNull
     @Override
     public Fragment getItem(int position) {
-        return new GraphFragment(this.searchItem, this.analysisTypes.get(position));
+
+        GraphFragment graphFragment;
+        if (fragments.size() - 1 < position || fragments.get(position) == null) {
+            graphFragment = new GraphFragment(this.searchItem, this.analysisTypes.get(position));
+            fragments.set(position, graphFragment);
+        } else {
+            graphFragment = fragments.get(position);
+        }
+
+        return graphFragment;
     }
 
     @Nullable

@@ -27,10 +27,10 @@ public class SearchHistoryActivity extends AppCompatActivity {
         int numItems = preferences.getInt("num_items", 5);
 
         SearchHistoryDatabase database = SearchHistoryDatabase.getInstance(this);
-        RecyclerView searchHistoryList = (RecyclerView) findViewById(R.id.search_history_list);
+        RecyclerView searchHistoryList = findViewById(R.id.search_history_list);
 
         List<SearchHistoryItem> historyItems = new ArrayList<>();
-        SearchHistoryAdapter adapter = new SearchHistoryAdapter(historyItems);
+        SearchHistoryAdapter adapter = new SearchHistoryAdapter(historyItems, this);
         searchHistoryList.setAdapter(adapter);
         searchHistoryList.setLayoutManager(new LinearLayoutManager(this));
 
@@ -38,7 +38,6 @@ public class SearchHistoryActivity extends AppCompatActivity {
             historyItems.addAll(database.getSearchHistoryDao().loadN(numItems));
             SearchHistoryActivity.this.runOnUiThread(adapter::notifyDataSetChanged);
         }).start();
-
 
         TextView textView = findViewById(R.id.search_history_subtitle);
         textView.setText(getString(R.string.search_history_num_items, numItems));

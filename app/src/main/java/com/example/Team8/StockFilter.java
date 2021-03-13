@@ -1,8 +1,8 @@
 package com.example.Team8;
 
-import android.widget.ArrayAdapter;
 import android.widget.Filter;
 
+import com.example.Team8.adapters.StockAdapter;
 import com.example.Team8.utils.Stock;
 
 import java.util.ArrayList;
@@ -10,9 +10,9 @@ import java.util.List;
 
 public class StockFilter extends Filter {
 
-    ArrayAdapter<Stock> parent;
+    StockAdapter parent;
 
-    public StockFilter(ArrayAdapter<Stock> parent) {
+    public StockFilter(StockAdapter parent) {
         this.parent = parent;
     }
 
@@ -27,12 +27,14 @@ public class StockFilter extends Filter {
         List<Stock> stockSuggestions = new ArrayList<>();
 
         if (constraint != null) {
-            for (int i = 0; i < parent.getCount(); i++) {
-                Stock stock = parent.getItem(i);
+            List<Stock> originalStock = parent.getOriginalStock();
+            for (Stock stock : originalStock) {
                 if (stock.getDisplaySymbol().toLowerCase()
-                        .startsWith(constraint.toString().toLowerCase())
+                        .contains(constraint.toString().toLowerCase())
                         || stock.getDescription().toLowerCase()
-                        .startsWith(constraint.toString().toLowerCase())) {
+                        .contains(constraint.toString().toLowerCase())
+                        || stock.getSymbol().toLowerCase()
+                        .contains(constraint.toString().toLowerCase())) {
                     stockSuggestions.add(stock);
                 }
             }
@@ -47,6 +49,7 @@ public class StockFilter extends Filter {
     @Override
     protected void publishResults(CharSequence constraint, FilterResults results) {
         if (results != null && results.count > 0) {
+            parent.setFilteredStock((List<Stock>) results.values);
             parent.notifyDataSetChanged();
         } else if (constraint == null) {
             parent.notifyDataSetInvalidated();

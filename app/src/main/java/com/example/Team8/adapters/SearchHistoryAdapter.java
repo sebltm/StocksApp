@@ -1,13 +1,17 @@
 package com.example.Team8.adapters;
 
+import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.Team8.GraphActivity;
 import com.example.Team8.R;
 import com.example.Team8.utils.AnalysisType;
 import com.example.Team8.utils.SearchHistoryItem;
@@ -21,9 +25,11 @@ public class SearchHistoryAdapter extends RecyclerView.Adapter<SearchHistoryAdap
     private static final String format = "dd MMM yyyy";
     private static final SimpleDateFormat dateFormat = new SimpleDateFormat(format, Locale.UK);
     private final List<SearchHistoryItem> localItems;
+    private final Context context;
 
-    public SearchHistoryAdapter(List<SearchHistoryItem> searchHistoryItems) {
+    public SearchHistoryAdapter(List<SearchHistoryItem> searchHistoryItems, Context context) {
         this.localItems = searchHistoryItems;
+        this.context = context;
     }
 
     @NonNull
@@ -38,6 +44,8 @@ public class SearchHistoryAdapter extends RecyclerView.Adapter<SearchHistoryAdap
     public void onBindViewHolder(@NonNull SearchHistoryHolder holder, int position) {
         SearchHistoryItem item = localItems.get(position);
 
+        holder.setSearchHistoryItem(item);
+
         holder.getDateFrom().setText(dateFormat.format(item.getFrom()));
         holder.getDateTo().setText(dateFormat.format(item.getTo()));
         holder.getSymbol().setText(item.getStock().getDisplaySymbol());
@@ -47,7 +55,10 @@ public class SearchHistoryAdapter extends RecyclerView.Adapter<SearchHistoryAdap
             analysisBuilder.append(analysisType.name()).append(", ");
         }
 
-        String analysisTypeStr = analysisBuilder.deleteCharAt(analysisBuilder.length() - 1).toString();
+        String analysisTypeStr = analysisBuilder.
+                deleteCharAt(analysisBuilder.length() - 1)
+                .deleteCharAt(analysisBuilder.length() - 1)
+                .toString();
         holder.getAnalysisTypes().setText(analysisTypeStr);
         holder.getDescription().setText(item.getStock().getDescription());
     }
@@ -57,7 +68,7 @@ public class SearchHistoryAdapter extends RecyclerView.Adapter<SearchHistoryAdap
         return localItems.size();
     }
 
-    public static class SearchHistoryHolder extends RecyclerView.ViewHolder {
+    public class SearchHistoryHolder extends RecyclerView.ViewHolder {
 
         private final TextView dateFrom;
         private final TextView dateTo;
@@ -66,15 +77,21 @@ public class SearchHistoryAdapter extends RecyclerView.Adapter<SearchHistoryAdap
         private final TextView analysisTypes;
         private final TextView description;
 
+        private final Button repeatSearch;
+
+        private SearchHistoryItem searchHistoryItem;
+
         public SearchHistoryHolder(@NonNull View itemView) {
             super(itemView);
 
-            this.dateFrom = (TextView) itemView.findViewById(R.id.search_history_date_from);
-            this.dateTo = (TextView) itemView.findViewById(R.id.search_history_date_to);
-            this.symbol = (TextView) itemView.findViewById(R.id.search_history_symbol);
-            this.exchange = (TextView) itemView.findViewById(R.id.search_history_exchange);
-            this.analysisTypes = (TextView) itemView.findViewById(R.id.search_history_analysis_types);
-            this.description = (TextView) itemView.findViewById(R.id.search_history_description);
+            this.dateFrom = itemView.findViewById(R.id.search_history_date_from);
+            this.dateTo = itemView.findViewById(R.id.search_history_date_to);
+            this.symbol = itemView.findViewById(R.id.search_history_symbol);
+            this.exchange = itemView.findViewById(R.id.search_history_exchange);
+            this.analysisTypes = itemView.findViewById(R.id.search_history_analysis_types);
+            this.description = itemView.findViewById(R.id.search_history_description);
+
+            this.repeatSearch = itemView.findViewById(R.id.search_hist_item_repeat);
         }
 
         public TextView getDateFrom() {
@@ -99,6 +116,16 @@ public class SearchHistoryAdapter extends RecyclerView.Adapter<SearchHistoryAdap
 
         public TextView getDescription() {
             return description;
+        }
+
+        public void setSearchHistoryItem(SearchHistoryItem searchHistoryItem) {
+            this.searchHistoryItem = searchHistoryItem;
+
+            this.repeatSearch.setOnClickListener(v -> {
+                Intent intent = new Intent(SearchHistoryAdapter.this.context, GraphActivity.class);
+                intent.putExtra("SearchItem", this.searchHistoryItem);
+                SearchHistoryAdapter.this.context.startActivity(intent);
+            });
         }
     }
 

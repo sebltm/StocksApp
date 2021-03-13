@@ -4,8 +4,9 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
 import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -15,20 +16,21 @@ import com.example.Team8.R;
 import com.example.Team8.StockFilter;
 import com.example.Team8.utils.Stock;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
-public class StockAdapter extends ArrayAdapter<Stock> {
+public class StockAdapter extends BaseAdapter implements Filterable {
 
     protected Filter filter;
     private final int resource;
-    private final List<Stock> stocks;
+    private final List<Stock> originalStock;
+    private final LayoutInflater mInflater;
+    private List<Stock> filteredStock;
 
     public StockAdapter(@NonNull Context context, int resource, @NonNull List<Stock> stocks) {
-        super(context, resource, stocks);
-        this.stocks = stocks;
+        this.originalStock = stocks;
+        this.filteredStock = stocks;
         this.resource = resource;
+        mInflater = LayoutInflater.from(context);
         this.filter = new StockFilter(this);
     }
 
@@ -39,19 +41,18 @@ public class StockAdapter extends ArrayAdapter<Stock> {
         ViewHolderItem viewHolder;
 
         if (convertView == null) {
-            LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            convertView = inflater.inflate(this.resource, parent, false);
+            convertView = mInflater.inflate(this.resource, parent, false);
 
             viewHolder = new ViewHolderItem();
-            viewHolder.stockSymbol = (TextView) convertView.findViewById(R.id.stockSymbol);
-            viewHolder.stockDesc = (TextView) convertView.findViewById(R.id.stockDescription);
+            viewHolder.stockSymbol = convertView.findViewById(R.id.stockSymbol);
+            viewHolder.stockDesc = convertView.findViewById(R.id.stockDescription);
 
             convertView.setTag(viewHolder);
         } else {
             viewHolder = (ViewHolderItem) convertView.getTag();
         }
 
-        Stock stock = getItem(position);
+        Stock stock = filteredStock.get(position);
 
         if (stock != null) {
             viewHolder.stock = stock;
@@ -61,39 +62,38 @@ public class StockAdapter extends ArrayAdapter<Stock> {
         return convertView;
     }
 
-
-    @Override
-    public void add(@Nullable Stock object) {
-        stocks.add(object);
-        notifyDataSetChanged();
-    }
-
     @Override
     public int getCount() {
-        return stocks.size();
-    }
-
-    @Override
-    public void addAll(Stock... items) {
-        stocks.addAll(new ArrayList<>(Arrays.asList(items)));
-        notifyDataSetChanged();
+        return filteredStock.size();
     }
 
     @Nullable
     @Override
     public Stock getItem(int position) {
-        return stocks.get(position);
+        return filteredStock.get(position);
+    }
+
+    @Override
+    public long getItemId(int position) {
+        return position;
+    }
+
+    public void addAll(List<Stock> stocks) {
+        originalStock.addAll(stocks);
+    }
+
+    public List<Stock> getOriginalStock() {
+        return originalStock;
+    }
+
+    public void setFilteredStock(List<Stock> filteredStock) {
+        this.filteredStock = filteredStock;
     }
 
     @NonNull
     @Override
     public Filter getFilter() {
         return filter;
-    }
-
-    @Override
-    public void clear() {
-        stocks.clear();
     }
 
     public static class ViewHolderItem {

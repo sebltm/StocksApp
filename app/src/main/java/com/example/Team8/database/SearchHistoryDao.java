@@ -29,4 +29,10 @@ public interface SearchHistoryDao {
 
     @Delete
     void delete(SearchHistoryItem searchHistoryItem);
+
+    @Query("SELECT count(*) FROM SearchHistory")
+    int getNumItems();
+
+    @Query("DELETE FROM SearchHistory")
+    void deleteAll();
 }

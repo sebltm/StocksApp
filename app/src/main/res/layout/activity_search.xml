@@ -8,16 +8,25 @@
     android:focusable="true"
     tools:context=".SearchActivity">
 
+    <android.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/colorPrimary"
+        android:minHeight="?attr/actionBarSize"
+        android:theme="?attr/actionBarTheme"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <TextView
         android:id="@+id/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="16dp"
         android:text="@string/search_title"
         android:textAppearance="@style/TextAppearance.AppCompat.Large"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/toolbar" />
 
     <TextView
         android:id="@+id/textView2"
@@ -91,7 +100,7 @@
         android:dropDownHeight="wrap_content"
         android:hint="@string/search_symbol_hint"
         android:textAppearance="@style/TextAppearance.AppCompat.Small"
-        app:layout_constraintEnd_toStartOf="@+id/searchSymbol"
+        app:layout_constraintEnd_toEndOf="@+id/mDatePickerTo"
         app:layout_constraintStart_toStartOf="@+id/textView5"
         app:layout_constraintTop_toBottomOf="@+id/textView5" />
 
@@ -142,8 +151,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/MACDAVG"
-        app:layout_constraintEnd_toEndOf="@+id/searchSymbol"
-        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintEnd_toEndOf="@+id/stockDropdown"
         app:layout_constraintStart_toEndOf="@+id/MACDcheckbox"
         app:layout_constraintTop_toTopOf="@+id/MACDcheckbox" />
 
@@ -218,17 +226,6 @@
         app:layout_constraintStart_toStartOf="@+id/searchBttn"
         app:layout_constraintTop_toBottomOf="@+id/resetBttn" />
 
-    <Button
-        android:id="@+id/searchSymbol"
-        android:layout_width="39dp"
-        android:layout_height="40dp"
-        android:layout_marginEnd="36dp"
-        android:text="🔍"
-        app:layout_constraintBottom_toTopOf="@+id/textView6"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/mDatePickerTo"
-        app:layout_constraintVertical_bias="0.531" />
-
     <TextView
         android:id="@+id/textView10"
         android:layout_width="189dp"
@@ -236,8 +233,6 @@
         android:text=" Press the button to search for the stock"
         android:textSize="10dp"
         app:layout_constraintBottom_toTopOf="@+id/textView6"
-        app:layout_constraintEnd_toEndOf="@+id/searchSymbol"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/stockDropdown"
         app:layout_constraintTop_toBottomOf="@+id/stockDropdown"
         app:layout_constraintVertical_bias="0.0" />
@@ -248,11 +243,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:indeterminateTint="@android:color/holo_blue_dark"
-        app:layout_constraintBottom_toTopOf="@+id/mDatePickerTo"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.827"
         app:layout_constraintStart_toEndOf="@+id/textView"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.283" />
+        app:layout_constraintTop_toTopOf="@+id/textView" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

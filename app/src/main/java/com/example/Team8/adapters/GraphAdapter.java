@@ -1,10 +1,9 @@
 package com.example.Team8.adapters;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentPagerAdapter;
+import androidx.fragment.app.FragmentActivity;
+import androidx.viewpager2.adapter.FragmentStateAdapter;
 
 import com.example.Team8.ui.main.GraphFragment;
 import com.example.Team8.utils.AnalysisType;
@@ -13,15 +12,15 @@ import com.example.Team8.utils.SearchHistoryItem;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GraphAdapter extends FragmentPagerAdapter {
+public class GraphAdapter extends FragmentStateAdapter {
 
     private List<GraphFragment> fragments;
     private SearchHistoryItem searchItem;
     private List<AnalysisType> analysisTypes;
     private int numTabs;
 
-    public GraphAdapter(@NonNull FragmentManager fm, int behavior) {
-        super(fm, behavior);
+    public GraphAdapter(@NonNull FragmentActivity fragmentActivity) {
+        super(fragmentActivity);
     }
 
     public void setAttributes(SearchHistoryItem searchItem) {
@@ -37,7 +36,7 @@ public class GraphAdapter extends FragmentPagerAdapter {
 
     @NonNull
     @Override
-    public Fragment getItem(int position) {
+    public Fragment createFragment(int position) {
 
         GraphFragment graphFragment;
         if (fragments.size() - 1 < position || fragments.get(position) == null) {
@@ -50,14 +49,8 @@ public class GraphAdapter extends FragmentPagerAdapter {
         return graphFragment;
     }
 
-    @Nullable
     @Override
-    public CharSequence getPageTitle(int position) {
-        return analysisTypes.get(position).name();
-    }
-
-    @Override
-    public int getCount() {
+    public int getItemCount() {
         return this.numTabs;
     }
 }

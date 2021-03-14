@@ -1,5 +1,6 @@
 package com.example.Team8;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -12,8 +13,7 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import androidx.appcompat.app.AppCompatActivity;
+import android.widget.Toolbar;
 
 import com.example.Team8.adapters.StockAdapter;
 import com.example.Team8.database.SearchHistoryDao;
@@ -29,7 +29,7 @@ import java.util.List;
 
 import static com.example.Team8.utils.AnalysisType.EMA;
 
-public class SearchActivity extends AppCompatActivity {
+public class SearchActivity extends Activity {
     private static Stock selectedStock;
     private final Context context = this;
     private static final ArrayList<Stock> STOCKS = new ArrayList<>();
@@ -38,6 +38,9 @@ public class SearchActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
+
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setActionBar(toolbar);
 
         ProgressBar spinner = findViewById(R.id.progressBar);
         spinner.setVisibility(View.GONE);
@@ -101,6 +104,7 @@ public class SearchActivity extends AppCompatActivity {
         // Create Search button
         Button searchBttn = findViewById(R.id.searchBttn);
         searchBttn.setOnClickListener(v -> {
+            spinner.setVisibility(View.VISIBLE);
             String stockSymbol = stockAutocomplete.getText().toString();
 
             if (analysisDaysView.getText().toString().isEmpty()) {
@@ -154,7 +158,6 @@ public class SearchActivity extends AppCompatActivity {
                                 Resolution.types.get("D"),
                                 fromDate.getCal().getTime(), toDate.getCal().getTime(),
                                 (price_points, stock) -> {
-                                    runOnUiThread(() -> spinner.setVisibility(View.VISIBLE));
 
                                     if (price_points == null || price_points.getClose().size() == 0) {
                                         return;
@@ -176,6 +179,7 @@ public class SearchActivity extends AppCompatActivity {
                     }
                 }).start();
             } else {
+                spinner.setVisibility(View.VISIBLE);
                 Toast.makeText(this, "\"From\" date must be smaller or equal \"to\" date", Toast.LENGTH_LONG).show();
                 fromDate.setDayEqual(toDate);
             }

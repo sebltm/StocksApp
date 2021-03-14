@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.Team8.GraphActivity;
 import com.example.Team8.R;
+import com.example.Team8.database.SearchHistoryDatabase;
 import com.example.Team8.utils.AnalysisType;
 import com.example.Team8.utils.SearchHistoryItem;
 
@@ -61,6 +62,13 @@ public class SearchHistoryAdapter extends RecyclerView.Adapter<SearchHistoryAdap
                 .toString();
         holder.getAnalysisTypes().setText(analysisTypeStr);
         holder.getDescription().setText(item.getStock().getDescription());
+    }
+
+    public void refreshInternalList(Integer numItems) {
+        localItems.clear();
+
+        SearchHistoryDatabase db = SearchHistoryDatabase.getInstance(context);
+        localItems.addAll(db.getSearchHistoryDao().loadN(numItems));
     }
 
     @Override

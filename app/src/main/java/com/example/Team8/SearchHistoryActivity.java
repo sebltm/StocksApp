@@ -1,11 +1,13 @@
 package com.example.Team8;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toolbar;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -16,12 +18,15 @@ import com.example.Team8.utils.SearchHistoryItem;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SearchHistoryActivity extends AppCompatActivity {
+public class SearchHistoryActivity extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search_history);
+
+        Toolbar toolbar = findViewById(R.id.search_history_toolbar);
+        setActionBar(toolbar);
 
         SharedPreferences preferences = this.getPreferences(Context.MODE_PRIVATE);
         int numItems = preferences.getInt("num_items", 5);
@@ -41,5 +46,13 @@ public class SearchHistoryActivity extends AppCompatActivity {
 
         TextView textView = findViewById(R.id.search_history_subtitle);
         textView.setText(getString(R.string.search_history_num_items, numItems));
+
+        Button clearHistory = findViewById(R.id.search_history_clear);
+        clearHistory.setOnClickListener(v -> new Thread(() -> {
+            SearchHistoryDatabase db = SearchHistoryDatabase.getInstance(this);
+            db.getSearchHistoryDao().deleteAll();
+            adapter.refreshInternalList(numItems);
+            runOnUiThread(adapter::notifyDataSetChanged);
+        }).start());
     }
 }

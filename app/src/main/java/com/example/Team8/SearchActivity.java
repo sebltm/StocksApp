@@ -2,7 +2,6 @@ package com.example.Team8;
 
 import android.content.Context;
 import android.content.Intent;
-import android.database.sqlite.SQLiteConstraintException;
 import android.os.Bundle;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -17,6 +16,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.Team8.adapters.StockAdapter;
+import com.example.Team8.database.SearchHistoryDao;
 import com.example.Team8.database.SearchHistoryDatabase;
 import com.example.Team8.ui.main.DatePickerFragment;
 import com.example.Team8.utils.AnalysisType;
@@ -141,31 +141,40 @@ public class SearchActivity extends AppCompatActivity {
             }
 
             if (fromDate.getCal().compareTo(toDate.getCal()) <= 0) {
+                new Thread(() -> {
+                    SearchHistoryDao dao = database.getSearchHistoryDao();
+                    if (dao.exists(selectedStock, fromDate.getCal().getTime(), toDate.getCal().getTime(), analysisTypes)) {
+                        SearchHistoryItem searchHistoryItem = dao.getItem(selectedStock, fromDate.getCal().getTime(), toDate.getCal().getTime(), analysisTypes);
 
-                selectedStock.fetchData(
-                        Resolution.types.get("D"),
-                        fromDate.getCal().getTime(), toDate.getCal().getTime(),
-                        (price_points, stock) -> {
-                            spinner.setVisibility(View.VISIBLE);
+                        Intent intent = new Intent(SearchActivity.this, GraphActivity.class);
+                        intent.putExtra("SearchItem", searchHistoryItem);
+                        context.startActivity(intent);
+                    } else {
+                        selectedStock.fetchData(
+                                Resolution.types.get("D"),
+                                fromDate.getCal().getTime(), toDate.getCal().getTime(),
+                                (price_points, stock) -> {
+                                    runOnUiThread(() -> spinner.setVisibility(View.VISIBLE));
 
-                            if (price_points == null || price_points.getClose().size() == 0) {
-                                return;
-                            }
+                                    if (price_points == null || price_points.getClose().size() == 0) {
+                                        return;
+                                    }
 
-                            SearchHistoryItem searchHistoryItem = new SearchHistoryItem(selectedStock, fromDate.getCal(), toDate.getCal(), analysisTypes, analysisDays);
+                                    SearchHistoryItem searchHistoryItem = new SearchHistoryItem(selectedStock, fromDate.getCal(), toDate.getCal(), analysisTypes, analysisDays);
 
-                            // Insert search history object into the database
-                            try {
-                                new Thread(() -> database.getSearchHistoryDao().insert(searchHistoryItem)).start();
-                            } catch (SQLiteConstraintException error) {
-                                System.out.println("This search has already been added to the database");
-                            }
+                                    // Insert search history object into the database
+                                    dao.insert(searchHistoryItem);
 
-                            spinner.setVisibility(View.INVISIBLE);
-                            Intent intent = new Intent(SearchActivity.this, GraphActivity.class);
-                            intent.putExtra("SearchItem", searchHistoryItem);
-                            context.startActivity(intent);
-                        });
+                                    runOnUiThread(() -> {
+                                        spinner.setVisibility(View.INVISIBLE);
+
+                                        Intent intent = new Intent(SearchActivity.this, GraphActivity.class);
+                                        intent.putExtra("SearchItem", searchHistoryItem);
+                                        context.startActivity(intent);
+                                    });
+                                });
+                    }
+                }).start();
             } else {
                 Toast.makeText(this, "\"From\" date must be smaller or equal \"to\" date", Toast.LENGTH_LONG).show();
                 fromDate.setDayEqual(toDate);

@@ -2,10 +2,11 @@ package com.example.Team8.utils;
 
 import androidx.annotation.NonNull;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
 
-public class DataPoint {
+public class DataPoint implements Serializable {
     BigDecimal value;
     Date dateTime;
     protected String pointType = "data_point";

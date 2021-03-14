@@ -20,11 +20,14 @@ import com.example.Team8.adapters.StockAdapter;
 import com.example.Team8.database.SearchHistoryDatabase;
 import com.example.Team8.ui.main.DatePickerFragment;
 import com.example.Team8.utils.AnalysisType;
+import com.example.Team8.utils.Resolution;
 import com.example.Team8.utils.SearchHistoryItem;
 import com.example.Team8.utils.Stock;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.example.Team8.utils.AnalysisType.EMA;
 
 public class SearchActivity extends AppCompatActivity {
     private static Stock selectedStock;
@@ -126,7 +129,7 @@ public class SearchActivity extends AppCompatActivity {
             }
 
             if (emaCheckbox.isChecked()) {
-                analysisTypes.add(AnalysisType.EMA);
+                analysisTypes.add(EMA);
             }
 
             if (macdCheckbox.isChecked()) {
@@ -139,18 +142,30 @@ public class SearchActivity extends AppCompatActivity {
 
             if (fromDate.getCal().compareTo(toDate.getCal()) <= 0) {
 
-                SearchHistoryItem searchHistoryItem = new SearchHistoryItem(selectedStock, fromDate.getCal(), toDate.getCal(), analysisTypes, analysisDays);
+                selectedStock.fetchData(
+                        Resolution.types.get("D"),
+                        fromDate.getCal().getTime(), toDate.getCal().getTime(),
+                        (price_points, stock) -> {
+                            spinner.setVisibility(View.VISIBLE);
 
-                // Insert search history object into the database
-                try {
-                    new Thread(() -> database.getSearchHistoryDao().insert(searchHistoryItem)).start();
-                } catch (SQLiteConstraintException error) {
-                    System.out.println("This search has already been added to the database");
-                }
+                            if (price_points == null || price_points.getClose().size() == 0) {
+                                return;
+                            }
 
-                Intent intent = new Intent(SearchActivity.this, GraphActivity.class);
-                intent.putExtra("SearchItem", searchHistoryItem);
-                context.startActivity(intent);
+                            SearchHistoryItem searchHistoryItem = new SearchHistoryItem(selectedStock, fromDate.getCal(), toDate.getCal(), analysisTypes, analysisDays);
+
+                            // Insert search history object into the database
+                            try {
+                                new Thread(() -> database.getSearchHistoryDao().insert(searchHistoryItem)).start();
+                            } catch (SQLiteConstraintException error) {
+                                System.out.println("This search has already been added to the database");
+                            }
+
+                            spinner.setVisibility(View.INVISIBLE);
+                            Intent intent = new Intent(SearchActivity.this, GraphActivity.class);
+                            intent.putExtra("SearchItem", searchHistoryItem);
+                            context.startActivity(intent);
+                        });
             } else {
                 Toast.makeText(this, "\"From\" date must be smaller or equal \"to\" date", Toast.LENGTH_LONG).show();
                 fromDate.setDayEqual(toDate);

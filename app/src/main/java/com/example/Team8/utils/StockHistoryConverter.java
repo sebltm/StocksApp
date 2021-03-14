@@ -68,4 +68,28 @@ public class StockHistoryConverter {
         }.getType();
         return gson.fromJson(stockString, type);
     }
+
+    @TypeConverter
+    public String fromPricePoint(PricePoint pricePoint) {
+        if (pricePoint == null) {
+            return null;
+        }
+
+        Gson gson = new Gson();
+        Type type = new TypeToken<PricePoint>() {
+        }.getType();
+        return gson.toJson(pricePoint, type);
+    }
+
+    @TypeConverter
+    public PricePoint toPricePoint(String pricePointString) {
+        if (pricePointString == null) {
+            return null;
+        }
+
+        Gson gson = new Gson();
+        Type type = new TypeToken<PricePoint>() {
+        }.getType();
+        return gson.fromJson(pricePointString, type);
+    }
 }

@@ -10,14 +10,12 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.SwitchCompat;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
 
 import com.example.Team8.R;
 import com.example.Team8.utils.AnalysisPoint;
 import com.example.Team8.utils.AnalysisType;
 import com.example.Team8.utils.DateTimeHelper;
 import com.example.Team8.utils.PricePoint;
-import com.example.Team8.utils.Resolution;
 import com.example.Team8.utils.SearchHistoryItem;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.AxisBase;
@@ -72,7 +70,6 @@ public class GraphFragment extends Fragment {
         dateTo.setText(dateFormat.format(searchItem.getTo()));
 
         togglePrice.setChecked(globalPriceActive);
-        togglePrice.setEnabled(false);
 
         togglePrice.setOnCheckedChangeListener((buttonView, isChecked) -> {
             globalPriceActive = isChecked;
@@ -87,38 +84,25 @@ public class GraphFragment extends Fragment {
         });
 
         if (dataNotLoaded) {
-            searchItem.getStock().fetchData(
-                    Resolution.types.get("D"),
-                    searchItem.getFrom(), searchItem.getTo(),
-                    (price_points, stock) -> {
-                        if (price_points == null || price_points.getClose().size() == 0) {
-                            return;
-                        }
+            switch (analysisType) {
+                case EMA:
+                    analysisPoints = searchItem.getStock().calculateEMA(searchItem.getAnalysisDays());
+                    break;
+                case SMA:
+                    analysisPoints = searchItem.getStock().calculateSMA(searchItem.getAnalysisDays());
+                    break;
+                case MACD:
+                    analysisPoints = searchItem.getStock().calculateMACD(9, 25, 2);
+                case MACDAVG:
+                    analysisPoints = searchItem.getStock().calculateMACDAVG();
+            }
 
-                        int analysisDays = searchItem.getAnalysisDays();
-
-                        switch (analysisType) {
-                            case EMA:
-                                analysisPoints = searchItem.getStock().calculateEMA(analysisDays);
-                                break;
-                            case SMA:
-                                analysisPoints = searchItem.getStock().calculateSMA(analysisDays);
-                                break;
-                            case MACD:
-                                analysisPoints = searchItem.getStock().calculateMACD(9, 25, 2);
-                            case MACDAVG:
-                                analysisPoints = searchItem.getStock().calculateMACDAVG();
-                        }
-
-                        if (localPriceActive) {
-                            PricePoint priceHistory = searchItem.getStock().getPriceHistory();
-                            createChart(graphView, analysisPoints, priceHistory);
-                        } else {
-                            createChart(graphView, analysisPoints, null);
-                        }
-
-                        togglePrice.setEnabled(true);
-                    });
+            if (localPriceActive) {
+                PricePoint priceHistory = searchItem.getStock().getPriceHistory();
+                createChart(graphView, analysisPoints, priceHistory);
+            } else {
+                createChart(graphView, analysisPoints, null);
+            }
 
             dataNotLoaded = false;
         } else {
@@ -128,10 +112,6 @@ public class GraphFragment extends Fragment {
             } else {
                 createChart(graphView, analysisPoints, null);
             }
-
-            togglePrice.setEnabled(true);
-            FragmentTransaction ftr = getParentFragmentManager().beginTransaction();
-            ftr.detach(GraphFragment.this).attach(GraphFragment.this).commit();
         }
 
         return graphView;
@@ -188,8 +168,6 @@ public class GraphFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-
-        System.out.println("WE RESUME THIS FRAGMENT");
 
         if (localPriceActive != globalPriceActive) {
             localPriceActive = globalPriceActive;

@@ -11,7 +11,7 @@ import java.util.Map;
 public class JSON {
     private final String str_data;
 
-    private HashMap<?, ?> data_obj = null;
+    private HashMap<String, Object> data_obj = null;
     private Object[] data_arr = null;
 
     private String type = null;
@@ -22,13 +22,13 @@ public class JSON {
 
             if (isObj(s)) {
                 type = "object";
-                data_obj = (HashMap<?, ?>) toMap(new JSONObject(s));
+                data_obj = (HashMap<String, Object>) toMap(new JSONObject(s));
             } else if (isArray(s)) {
                 type = "array";
                 data_arr = toArray(new JSONArray(s));
             }
-        } catch (Exception ignored) {
-            //TODO can't just catch and ignore...
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -95,8 +95,7 @@ public class JSON {
         return data_arr;
     }
 
-    //TODO need to parametrize return type
-    public HashMap getDataObj() {
+    public HashMap<String, Object> getDataObj() {
         return data_obj;
     }
 

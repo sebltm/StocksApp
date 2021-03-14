@@ -7,6 +7,8 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
+import static com.example.Team8.utils.ArrayUtils.getArrItemOrDefault;
+import static com.example.Team8.utils.ArrayUtils.parseObjToArr;
 import static com.example.Team8.utils.ArrayUtils.toStringArr;
 
 public class PricePoint implements Serializable {
@@ -29,34 +31,33 @@ public class PricePoint implements Serializable {
     public PricePoint() {
     }
 
-    public PricePoint(HashMap<?, ?> data) {
+    public PricePoint(HashMap<String, Object> data) {
         this.setData(data);
     }
 
-    //TODO deal with possible null values here, e.g data.getOrDefault()
-    public void setData(HashMap<?, ?> data) {
-        Object[] open_arr = (Object[]) data.get("o");
-        Object[] high_arr = (Object[]) data.get("h");
-        Object[] low_arr = (Object[]) data.get("l");
-        Object[] close_arr = (Object[]) data.get("c");
-        String[] timestamps_arr = toStringArr((Object[]) data.get("t"));
+    public void setData(HashMap<String, Object> data) {
+        Object[] open_arr = parseObjToArr(data.get("o"));
+        Object[] high_arr = parseObjToArr(data.get("h"));
+        Object[] low_arr = parseObjToArr(data.get("l"));
+        Object[] close_arr = parseObjToArr(data.get("c"));
+        String[] timestamps_arr = toStringArr(parseObjToArr(data.get("t")));
         timestamps = Arrays.asList(timestamps_arr);
 
         for (int i = 0; i < timestamps_arr.length; i++) {
             open.add(new DataPoint(
-                    new BigDecimal(String.valueOf(open_arr[i])),
+                    new BigDecimal(String.valueOf(getArrItemOrDefault(open_arr, i,0.0))),
                     DateTimeHelper.toDateTime(timestamps_arr[i])
             ));
             high.add(new DataPoint(
-                    new BigDecimal(String.valueOf(high_arr[i])),
+                    new BigDecimal(String.valueOf(getArrItemOrDefault(high_arr, i,0.0))),
                     DateTimeHelper.toDateTime(timestamps_arr[i])
             ));
             low.add(new DataPoint(
-                    new BigDecimal(String.valueOf(low_arr[i])),
+                    new BigDecimal(String.valueOf(getArrItemOrDefault(low_arr, i,0.0))),
                     DateTimeHelper.toDateTime(timestamps_arr[i])
             ));
             close.add(new DataPoint(
-                    new BigDecimal(String.valueOf(close_arr[i])),
+                    new BigDecimal(String.valueOf(getArrItemOrDefault(close_arr, i,0.0))),
                     DateTimeHelper.toDateTime(timestamps_arr[i])
             ));
         }

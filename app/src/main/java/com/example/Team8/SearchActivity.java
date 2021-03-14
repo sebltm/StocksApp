@@ -26,6 +26,7 @@ import com.example.Team8.utils.Stock;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 
 import static com.example.Team8.utils.AnalysisType.EMA;
 
@@ -33,6 +34,8 @@ public class SearchActivity extends Activity {
     private static Stock selectedStock;
     private final Context context = this;
     private static final ArrayList<Stock> STOCKS = new ArrayList<>();
+
+    private static final HashMap<AnalysisType, List<AnalysisPoint>> ANALYSIS_POINTS = new HashMap<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,7 +45,7 @@ public class SearchActivity extends Activity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setActionBar(toolbar);
 
-        ProgressBar spinner = findViewById(R.id.progressBar);
+        ProgressBar spinner =  findViewById(R.id.progressBar);
         spinner.setVisibility(View.GONE);
 
         // Create date picker selection interface
@@ -133,7 +136,7 @@ public class SearchActivity extends Activity {
             }
 
             if (emaCheckbox.isChecked()) {
-                analysisTypes.add(EMA);
+                analysisTypes.add(AnalysisType.EMA);
             }
 
             if (macdCheckbox.isChecked()) {

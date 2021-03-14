@@ -50,12 +50,13 @@ public class HTTP_REQUEST<T extends HTTPCallback> {
             if (response.isSuccessful()) {
                 ResponseBody body = response.body();
 
-                //TODO need a null check here
+                if(body == null) return null;
+
                 body_str = body.string();
                 body.close();
             }
-        } catch (Exception ignored) {
-            //TODO not a good idea to ignore exceptions
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         return body_str;
     }

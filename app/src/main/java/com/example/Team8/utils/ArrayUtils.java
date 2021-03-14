@@ -47,4 +47,13 @@ public class ArrayUtils {
         }
         return d;
     }
+
+    public static Object[] parseObjToArr(Object obj){
+        Object[] o = (Object[]) obj;
+        return o != null? o : new Object[0];
+    }
+
+    public static Object getArrItemOrDefault(Object[] arr, int index, Object value){
+        return arr != null && index < arr.length? arr[index] : value;
+    }
 }

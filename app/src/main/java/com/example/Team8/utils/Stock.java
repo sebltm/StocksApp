@@ -30,7 +30,7 @@ public class Stock {
     private final List<PricePoint> priceHistory = new ArrayList<>();
 
 
-    public Stock(HashMap<String, Object> data) {
+    public Stock(HashMap<String, ?> data) {
         currency = (String) data.get("currency");
         description = (String) data.get("description");
         displaySymbol = (String) data.get("displaySymbol");
@@ -96,7 +96,7 @@ public class Stock {
                         new BigDecimal(String.valueOf(a_values[i])),
                         DateTimeHelper.toDateTime(timestamps_arr.get(i))
                 );
-                printAnalysis(i, prices, a_type, a_point);
+//                printAnalysis(i, prices, a_type, a_point);
                 add(a_point);
             }
         }};
@@ -170,7 +170,7 @@ public class Stock {
                     get_double_prices(close_prices), fastPeriod, slowPeriod, signalPeriod
             );
 
-            if(macd_calc == null) return new ArrayList<>();
+            if (macd_calc == null) return new ArrayList<>();
 
             double[] close_macd = macd_calc.getMACD();
 
@@ -182,7 +182,7 @@ public class Stock {
     }
 
     public List<AnalysisPoint> calculateMACD() {
-        return calculateMACD(12,26,9);
+        return calculateMACD(12, 26, 9);
     }
 
     public List<AnalysisPoint> calculateMACDAVG() {
@@ -194,7 +194,7 @@ public class Stock {
         try {
             MovingAverageConvergenceDivergence macd_calc = getDefaultMACDCalc(get_double_prices(close_prices));
 
-            if(macd_calc == null) return new ArrayList<>();
+            if (macd_calc == null) return new ArrayList<>();
 
             //SIGNAL IS MACDAVG
             double[] close_macd_signal = macd_calc.getSignal();
@@ -226,8 +226,8 @@ public class Stock {
         int stockPricesCount = stockPrices.size();
 
         analysisTypes.forEach(analysisType -> {
-            String macd_error_msg = String.format("The difference between the from and to dates must be greater than or equal to 38 for the %s analysis", analysisType);
-            String sma_ema_error_msg_1 = String.format("Days should be between 1 and %s for this %s analysis", analysisType == AnalysisType.EMA? stockPricesCount-1 : stockPricesCount, analysisType);
+            String macd_error_msg = String.format("The difference between the from and to dates must be greater for the %s analysis", analysisType);
+            String sma_ema_error_msg_1 = String.format("Days should be between 1 and %s for this %s analysis", analysisType == AnalysisType.EMA ? stockPricesCount - 1 : stockPricesCount, analysisType);
 
             switch (analysisType) {
                 case SMA:
@@ -248,14 +248,14 @@ public class Stock {
                     a_points.put(AnalysisType.EMA, calculateEMA(nDays));
                     break;
                 case MACD:
-                    if (!validateMACD(fromDateTime, toDateTime)) {
+                    if (!validateMACD(fromDateTime, toDateTime, stockPricesCount)) {
                         errors.add(macd_error_msg);
                         break;
                     }
                     a_points.put(AnalysisType.MACD, calculateMACD());
                     break;
                 case MACDAVG:
-                    if (!validateMACD(fromDateTime, toDateTime)) {
+                    if (!validateMACD(fromDateTime, toDateTime, stockPricesCount)) {
                         errors.add(macd_error_msg);
                         break;
                     }
@@ -267,8 +267,8 @@ public class Stock {
         return a_points;
     }
 
-    private boolean validateMACD(Date date_1, Date date_2) {
-        return DateTimeHelper.dateDiff(date_1, date_2) >= 38;
+    private boolean validateMACD(Date date_1, Date date_2, int prices_length) {
+        return DateTimeHelper.dateDiff(date_1, date_2) > 0 && prices_length >= 27;
     }
 
     private boolean validateSMA(int nDays, int prices_length) {

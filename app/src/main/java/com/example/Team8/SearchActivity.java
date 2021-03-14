@@ -19,16 +19,15 @@ import com.example.Team8.adapters.StockAdapter;
 import com.example.Team8.database.SearchHistoryDao;
 import com.example.Team8.database.SearchHistoryDatabase;
 import com.example.Team8.ui.main.DatePickerFragment;
+import com.example.Team8.utils.AnalysisPoint;
 import com.example.Team8.utils.AnalysisType;
 import com.example.Team8.utils.Resolution;
 import com.example.Team8.utils.SearchHistoryItem;
 import com.example.Team8.utils.Stock;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-import java.util.function.Consumer;
-
-import static com.example.Team8.utils.AnalysisType.EMA;
 
 public class SearchActivity extends Activity {
     private static Stock selectedStock;

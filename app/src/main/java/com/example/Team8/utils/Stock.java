@@ -212,13 +212,12 @@ public class Stock implements Serializable {
         HashMap<AnalysisType, List<AnalysisPoint>> a_points = new HashMap<>();
         List<String> errors = new ArrayList<>();
 
-        if (priceHistory.isEmpty()) {
+        if (priceHistory == null) {
             onErrorCallback.accept(errors);
             return a_points;
         }
 
-        PricePoint pricePoint = priceHistory.get(priceHistory.size() - 1);
-        List<DataPoint> stockPrices = pricePoint.getClose();
+        List<DataPoint> stockPrices = priceHistory.getClose();
         int stockPricesCount = stockPrices.size();
 
         analysisTypes.forEach(analysisType -> {

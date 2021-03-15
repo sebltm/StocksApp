@@ -21,7 +21,7 @@ public class Graph extends AppCompatActivity {
     LineChart mpLineChart;
     ArrayList<Float> xVAL;
     ArrayList<Float> yVAL;
-
+//hi
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.graph);

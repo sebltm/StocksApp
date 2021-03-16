@@ -150,8 +150,10 @@ public class GraphFragment extends Fragment {
 
         if (pricePoint != null) {
             LineDataSet priceDataset = new LineDataSet(pointToEntry(pricePoint), "Price");
-            priceDataset.setColor(getResources().getColor(R.color.green, getActivity().getTheme()));
-            priceDataset.setCircleColor(getResources().getColor(R.color.green, getActivity().getTheme()));
+            if (getActivity() != null && getActivity().getTheme() != null) {
+                priceDataset.setColor(getResources().getColor(R.color.green, getActivity().getTheme()));
+                priceDataset.setCircleColor(getResources().getColor(R.color.green, getActivity().getTheme()));
+            }
             dataSets.add(priceDataset);
         }
 

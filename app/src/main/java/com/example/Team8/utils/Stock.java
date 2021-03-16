@@ -20,7 +20,7 @@ import static com.example.Team8.utils.ArrayUtils.doubleArr;
 
 public class Stock implements Serializable {
 
-    public static ArrayList<Stock> stocks = new ArrayList<>();
+    public static final ArrayList<Stock> stocks = new ArrayList<>();
     private final String currency;
     private final String description;
     private final String displaySymbol;
@@ -30,14 +30,14 @@ public class Stock implements Serializable {
     private final String type;
     private PricePoint priceHistory;
 
-    public Stock(HashMap<String, Object> data) {
-        currency = (String) data.get("currency");
-        description = (String) data.get("description");
-        displaySymbol = (String) data.get("displaySymbol");
-        figi = (String) data.get("figi");
-        mic = (String) data.get("mic");
-        symbol = (String) data.get("symbol");
-        type = (String) data.get("type");
+    public Stock(HashMap<String, String> data) {
+        currency = data.get("currency");
+        description = data.get("description");
+        displaySymbol = data.get("displaySymbol");
+        figi = data.get("figi");
+        mic = data.get("mic");
+        symbol = data.get("symbol");
+        type = data.get("type");
         stocks.add(this);
     }
 
@@ -84,7 +84,7 @@ public class Stock implements Serializable {
     }
 
     private double[] get_double_prices(List<DataPoint> prices) {
-        return doubleArr(prices.stream().map((data_point) -> data_point.value.doubleValue()).toArray());
+        return doubleArr(prices.stream().map((data_point) -> data_point.getValue().doubleValue()).toArray());
     }
 
     private List<AnalysisPoint> generateAnalysisPoints(PricePoint pricePoint, List<DataPoint> prices, AnalysisType a_type, double[] a_values) {
@@ -166,7 +166,7 @@ public class Stock implements Serializable {
                     get_double_prices(close_prices), fastPeriod, slowPeriod, signalPeriod
             );
 
-            if(macd_calc == null) return new ArrayList<>();
+            if (macd_calc == null) return new ArrayList<>();
 
             double[] close_macd = macd_calc.getMACD();
 
@@ -178,7 +178,7 @@ public class Stock implements Serializable {
     }
 
     public List<AnalysisPoint> calculateMACD() {
-        return calculateMACD(12,26,9);
+        return calculateMACD(12, 26, 9);
     }
 
     public List<AnalysisPoint> calculateMACDAVG() {
@@ -189,7 +189,7 @@ public class Stock implements Serializable {
         try {
             MovingAverageConvergenceDivergence macd_calc = getDefaultMACDCalc(get_double_prices(close_prices));
 
-            if(macd_calc == null) return new ArrayList<>();
+            if (macd_calc == null) return new ArrayList<>();
 
             //SIGNAL IS MACDAVG
             double[] close_macd_signal = macd_calc.getSignal();
@@ -221,7 +221,7 @@ public class Stock implements Serializable {
 
         analysisTypes.forEach(analysisType -> {
             String macd_error_msg = String.format("The difference between the from and to dates must be greater than or equal to 38 for the %s analysis", analysisType);
-            String sma_ema_error_msg_1 = String.format("Days should be between 1 and %s for this %s analysis", analysisType == AnalysisType.EMA? stockPricesCount-1 : stockPricesCount, analysisType);
+            String sma_ema_error_msg_1 = String.format("Days should be between 1 and %s for this %s analysis", analysisType == AnalysisType.EMA ? stockPricesCount - 1 : stockPricesCount, analysisType);
 
             switch (analysisType) {
                 case SMA:

@@ -126,11 +126,9 @@ public class Test1 {
                     }
                     if (response.getType().equals("array")) {
                         for (Object o : response.getDataArray()) {
-                            Stock s = new Stock((HashMap<String, Object>) o);
+                            Stock s = new Stock((HashMap<String, String>) o);
                         }
-                        Stock.stocks.forEach(stockSymbol -> {
-                            System.out.println(stockSymbol.getSymbol());
-                        });
+                        Stock.stocks.forEach(stockSymbol -> System.out.println(stockSymbol.getSymbol()));
                         System.out.println(Stock.stocks.size());
                     }
                 });
@@ -142,16 +140,16 @@ public class Test1 {
         HTTP_JSON.fetch(API.getInstance().getStockSymbolsURL(),
                 response -> {
                     if (response == null) {
-                        callback.response(new ArrayList<Stock>());
+                        callback.response(new ArrayList<>());
                         return;
                     }
                     if (response.getType().equals("array")) {
                         for (Object o : response.getDataArray()) {
-                            Stock s = new Stock((HashMap<String, Object>) o);
+                            Stock s = new Stock((HashMap<String, String>) o);
                         }
                         callback.response(Stock.stocks);
                     } else {
-                        callback.response(new ArrayList<Stock>());
+                        callback.response(new ArrayList<>());
                     }
                 });
         return this;
@@ -254,7 +252,7 @@ public class Test1 {
                             Object[] results = (Object[]) data.get("result");
                             System.out.println(String.format("SEARCH COUNT >> %s %s", count, results != null? results.length : 0));
                             for (Object o : results) {
-                                HashMap<String, Object> r = (HashMap<String, Object>) o;
+                                HashMap<String, String> r = (HashMap<String, String>) o;
 //                                System.out.println(new Stock(r));
                                 FETCH_data_TEST(r);
 
@@ -269,7 +267,7 @@ public class Test1 {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
-    public Test1 FETCH_data_TEST(HashMap<String, Object> stock_info) {
+    public void FETCH_data_TEST(HashMap<String, String> stock_info) {
         Stock s = new Stock(stock_info);
         s.fetchData(
                 Resolution.types.get("15"),
@@ -291,11 +289,10 @@ public class Test1 {
                     });
                 }
         );
-        return this;
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
-    public Test1 SMA_TEST(HashMap<String, Object> stock_info) {
+    public Test1 SMA_TEST(HashMap<String, String> stock_info) {
         Stock s = new Stock(stock_info);
         s.fetchData(
                 Resolution.types.get("15"),
@@ -314,7 +311,7 @@ public class Test1 {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
-    public Test1 EMA_TEST(HashMap<String, Object> stock_info) {
+    public Test1 EMA_TEST(HashMap<String, String> stock_info) {
         Stock s = new Stock(stock_info);
         s.fetchData(
                 Resolution.types.get("15"),
@@ -333,7 +330,7 @@ public class Test1 {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
-    public Test1 MACD_TEST(HashMap<String, Object> stock_info) {
+    public Test1 MACD_TEST(HashMap<String, String> stock_info) {
         Stock s = new Stock(stock_info);
         s.fetchData(
                 Resolution.types.get("15"),
@@ -352,7 +349,7 @@ public class Test1 {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
-    public Test1 MACDAVG_TEST(HashMap<String, Object> stock_info) {
+    public Test1 MACDAVG_TEST(HashMap<String, String> stock_info) {
         Stock s = new Stock(stock_info);
         s.fetchData(
                 Resolution.types.get("15"),

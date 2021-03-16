@@ -12,7 +12,8 @@ import okhttp3.Callback;
 import okhttp3.Request;
 import okhttp3.Response;
 
-public class JSON_REQUEST extends HTTP_REQUEST<HTTPCallback<JSON>> {
+public class JSON_REQUEST extends HTTP_REQUEST<HTTPCallback<JSON>, JSON> {
+
     public JSON_REQUEST(String url) {
         super(url);
     }
@@ -44,12 +45,13 @@ public class JSON_REQUEST extends HTTP_REQUEST<HTTPCallback<JSON>> {
                     } else {
                         error = true;
                     }
-                }catch (Exception e){
+                } catch (Exception e) {
                     e.printStackTrace();
                     error = true;
                 }
-                setResponse(onResponse, error? null : j);
+                setResponse(onResponse, error ? null : j);
             }
         };
     }
+
 }

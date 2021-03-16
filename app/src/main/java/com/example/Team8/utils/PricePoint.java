@@ -45,19 +45,19 @@ public class PricePoint implements Serializable {
 
         for (int i = 0; i < timestamps_arr.length; i++) {
             open.add(new DataPoint(
-                    new BigDecimal(String.valueOf(getArrItemOrDefault(open_arr, i,0.0))),
+                    new BigDecimal(String.valueOf(getArrItemOrDefault(open_arr, i, 0.0))),
                     DateTimeHelper.toDateTime(timestamps_arr[i])
             ));
             high.add(new DataPoint(
-                    new BigDecimal(String.valueOf(getArrItemOrDefault(high_arr, i,0.0))),
+                    new BigDecimal(String.valueOf(getArrItemOrDefault(high_arr, i, 0.0))),
                     DateTimeHelper.toDateTime(timestamps_arr[i])
             ));
             low.add(new DataPoint(
-                    new BigDecimal(String.valueOf(getArrItemOrDefault(low_arr, i,0.0))),
+                    new BigDecimal(String.valueOf(getArrItemOrDefault(low_arr, i, 0.0))),
                     DateTimeHelper.toDateTime(timestamps_arr[i])
             ));
             close.add(new DataPoint(
-                    new BigDecimal(String.valueOf(getArrItemOrDefault(close_arr, i,0.0))),
+                    new BigDecimal(String.valueOf(getArrItemOrDefault(close_arr, i, 0.0))),
                     DateTimeHelper.toDateTime(timestamps_arr[i])
             ));
         }

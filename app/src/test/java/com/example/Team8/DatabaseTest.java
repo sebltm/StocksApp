@@ -26,10 +26,10 @@ public class DatabaseTest {
     @Mock
     Stock stock;
 
-    Context context = ApplicationProvider.getApplicationContext();
+    final Context context = ApplicationProvider.getApplicationContext();
 
-    SearchHistoryDatabase database = SearchHistoryDatabase.getInstance(context);
-    List<AnalysisType> analysisTypeList = new ArrayList<>();
+    final SearchHistoryDatabase database = SearchHistoryDatabase.getInstance(context);
+    final List<AnalysisType> analysisTypeList = new ArrayList<>();
 
     @Test
     public void test_insert_one_item() {

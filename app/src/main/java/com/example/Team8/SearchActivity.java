@@ -30,12 +30,11 @@ import java.util.HashMap;
 import java.util.List;
 
 public class SearchActivity extends Activity implements StockAutoCompleteWatcher.EventHandler {
+    private static final ArrayList<Stock> STOCKS = new ArrayList<>();
+    private static final HashMap<AnalysisType, List<AnalysisPoint>> ANALYSIS_POINTS = new HashMap<>();
     private static Stock selectedStock;
     private final Context context = this;
-    private static final ArrayList<Stock> STOCKS = new ArrayList<>();
     private ProgressBar spinner;
-
-    private static final HashMap<AnalysisType, List<AnalysisPoint>> ANALYSIS_POINTS = new HashMap<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -123,8 +122,8 @@ public class SearchActivity extends Activity implements StockAutoCompleteWatcher
                 return;
             }
 
-            if(smaCheckbox.isChecked() || emaCheckbox.isChecked()) {
-                if(analysisDays <= 0) {
+            if (smaCheckbox.isChecked() || emaCheckbox.isChecked()) {
+                if (analysisDays <= 0) {
                     Toast.makeText(this, "Please enter the correct number of days for SMA or EMA analysis", Toast.LENGTH_SHORT).show();
                     return;
                 }

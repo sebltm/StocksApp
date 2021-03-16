@@ -5,7 +5,6 @@ import android.os.Build;
 import androidx.annotation.RequiresApi;
 
 import com.example.Team8.utils.API;
-import com.example.Team8.utils.DataPoint;
 import com.example.Team8.utils.DateTimeHelper;
 import com.example.Team8.utils.PricePoint;
 import com.example.Team8.utils.Resolution;
@@ -19,7 +18,6 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 
 public class Test {
 
@@ -129,11 +127,9 @@ public class Test {
                     }
                     if (response.getType().equals("array")) {
                         for (Object o : response.getDataArray()) {
-                            Stock s = new Stock((HashMap<String, Object>) o);
+                            Stock s = new Stock((HashMap<String, String>) o);
                         }
-                        Stock.stocks.forEach(stockSymbol -> {
-                            System.out.println(stockSymbol.getSymbol());
-                        });
+                        Stock.stocks.forEach(stockSymbol -> System.out.println(stockSymbol.getSymbol()));
                         System.out.println(Stock.stocks.size());
                     }
                 });
@@ -145,16 +141,16 @@ public class Test {
         HTTP_JSON.fetch(API.getInstance().getStockSymbolsURL(),
                 response -> {
                     if (response == null) {
-                        callback.response(new ArrayList<Stock>());
+                        callback.response(new ArrayList<>());
                         return;
                     }
                     if (response.getType().equals("array")) {
                         for (Object o : response.getDataArray()) {
-                            Stock s = new Stock((HashMap<String, Object>) o);
+                            Stock s = new Stock((HashMap<String, String>) o);
                         }
                         callback.response(Stock.stocks);
                     } else {
-                        callback.response(new ArrayList<Stock>());
+                        callback.response(new ArrayList<>());
                     }
                 });
         return this;
@@ -257,7 +253,7 @@ public class Test {
                             Object[] results = (Object[]) data.get("result");
                             System.out.println(String.format("SEARCH COUNT >> %s %s", count, results != null ? results.length : 0));
                             for (Object o : results) {
-                                HashMap<String, Object> r = (HashMap<String, Object>) o;
+                                HashMap<String, String> r = (HashMap<String, String>) o;
 //                                System.out.println(new Stock(r));
                                 FETCH_data_TEST(r);
 
@@ -272,7 +268,7 @@ public class Test {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
-    public Test FETCH_data_TEST(HashMap<String, Object> stock_info) {
+    public void FETCH_data_TEST(HashMap<String, String> stock_info) {
         Stock s = new Stock(stock_info);
         s.fetchData(
                 Resolution.types.get("15"),
@@ -285,20 +281,17 @@ public class Test {
 //                        System.out.println(String.format("API ERROR, DATA NOT FOUND FOR SYMBOL: %s", s.getSymbol()));
                         return;
                     }
-                    priceHistory.forEach((pp) -> {
-                        System.out.println(pp.getOpen());
-                        System.out.println(pp.getHigh());
-                        System.out.println(pp.getLow());
-                        System.out.println(pp.getClose());
-                        System.out.println(pp.getTimestamps());
-                    });
-                }
-        );
-        return this;
+
+                    System.out.println(priceHistory.getOpen());
+                    System.out.println(priceHistory.getHigh());
+                    System.out.println(priceHistory.getLow());
+                    System.out.println(priceHistory.getClose());
+                    System.out.println(priceHistory.getTimestamps());
+                });
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
-    public Test SMA_TEST(HashMap<String, Object> stock_info) {
+    public Test SMA_TEST(HashMap<String, String> stock_info) {
         Stock s = new Stock(stock_info);
         s.fetchData(
                 Resolution.types.get("D"),
@@ -307,7 +300,7 @@ public class Test {
                 (price_points, stock) -> {
                     if (PricePointsNotFound(price_points)) return;
                     printClosePrices(price_points);
-                    System.out.println(validateSMA(getClosePrice(price_points).size()-1,getClosePrice(price_points).size()));
+                    System.out.println(validateSMA(price_points.getClose().size() - 1, price_points.getClose().size()));
                     System.out.println(stock.calculateSMA(1).size());
                 }
         );
@@ -315,7 +308,7 @@ public class Test {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
-    public Test EMA_TEST(HashMap<String, Object> stock_info) {
+    public Test EMA_TEST(HashMap<String, String> stock_info) {
         Stock s = new Stock(stock_info);
         s.fetchData(
                 Resolution.types.get("D"),
@@ -343,9 +336,9 @@ public class Test {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
-    public Test MACD_TEST(HashMap<String, Object> stock_info) {
+    public Test MACD_TEST(HashMap<String, String> stock_info) {
         boolean valid = validateMACD(DateTimeHelper.toDate(LocalDate.now().minusDays(38)), DateTimeHelper.toDate(LocalDate.now()));
-        ;
+
         System.out.println(valid);
         Stock s = new Stock(stock_info);
         s.fetchData(
@@ -362,7 +355,7 @@ public class Test {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
-    public Test MACDAVG_TEST(HashMap<String, Object> stock_info) {
+    public Test MACDAVG_TEST(HashMap<String, String> stock_info) {
         Stock s = new Stock(stock_info);
         s.fetchData(
                 Resolution.types.get("D"),
@@ -377,21 +370,15 @@ public class Test {
         return this;
     }
 
-    private boolean PricePointsNotFound(List<PricePoint> price_points) {
+    private boolean PricePointsNotFound(PricePoint price_points) {
 //        API IS LIMITED IN FREE TIER
 //        System.out.println(String.format("API ERROR, DATA NOT FOUND FOR SYMBOL");
-        return price_points == null || price_points.isEmpty();
+        return price_points == null || price_points.getClose().isEmpty();
     }
 
-    private List<DataPoint> getClosePrice(List<PricePoint> price_points) {
-        PricePoint p = price_points.get(price_points.size() - 1);
-        List<DataPoint> stockPrices = p.getClose();
-        return stockPrices;
-    }
-
-    private void printClosePrices(List<PricePoint> price_points) {
+    private void printClosePrices(PricePoint price_points) {
         System.out.print("Stock prices: ");
-        System.out.println(getClosePrice(price_points));
-        System.out.println(getClosePrice(price_points).size());
+        System.out.println(price_points.getClose());
+        System.out.println(price_points.getClose().size());
     }
 }

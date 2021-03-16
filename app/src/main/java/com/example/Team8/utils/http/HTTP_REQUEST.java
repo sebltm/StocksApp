@@ -2,18 +2,13 @@ package com.example.Team8.utils.http;
 
 import com.example.Team8.utils.callbacks.HTTPCallback;
 
-import org.jetbrains.annotations.NotNull;
-
-import java.io.IOException;
-
-import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
 
-public class HTTP_REQUEST<T extends HTTPCallback> {
+public abstract class HTTP_REQUEST<T extends HTTPCallback<A>, A> {
 
     private final OkHttpClient client = new OkHttpClient();
     protected Request request = null;
@@ -33,8 +28,7 @@ public class HTTP_REQUEST<T extends HTTPCallback> {
                 .build();
     }
 
-    @SuppressWarnings("unchecked")
-    protected void setResponse(T onResponse, Object value){
+    protected void setResponse(T onResponse, A value) {
         try {
             if (onResponse != null) {
                 onResponse.response(value);
@@ -44,13 +38,13 @@ public class HTTP_REQUEST<T extends HTTPCallback> {
         }
     }
 
-    protected String getBodyStr(Response response){
+    protected String getBodyStr(Response response) {
         String body_str = null;
         try {
             if (response.isSuccessful()) {
                 ResponseBody body = response.body();
 
-                if(body == null) return null;
+                if (body == null) return null;
 
                 body_str = body.string();
                 body.close();
@@ -61,20 +55,7 @@ public class HTTP_REQUEST<T extends HTTPCallback> {
         return body_str;
     }
 
-    protected Callback setCallback(T onResponse) {
-        return new Callback() {
-            @Override
-            public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                e.printStackTrace();
-                setResponse(onResponse, null);
-            }
-
-            @Override
-            public void onResponse(@NotNull Call call, @NotNull Response response) {
-                setResponse(onResponse, getBodyStr(response));
-            }
-        };
-    }
+    protected abstract Callback setCallback(T onResponse);
 
     public void Run(T onResponse) {
         try {

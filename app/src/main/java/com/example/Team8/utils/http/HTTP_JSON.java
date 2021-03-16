@@ -13,7 +13,8 @@ public class HTTP_JSON {
     /**
      * Unused
      * Uses background threads with FutureTask
-     * @param url: String type
+     *
+     * @param url:           String type
      * @param json_callback: returns JSON type response
      */
     public static void fetch_IntAccVer(String url, JSONCallback json_callback) {
@@ -43,10 +44,11 @@ public class HTTP_JSON {
 
     /**
      * OkHttp Request: uses Background threads
-     * @param url: String type
+     *
+     * @param url:      String type
      * @param callback: returns JSON type response
      */
-    public static void fetch(String url, HTTPCallback<JSON> callback){
+    public static void fetch(String url, HTTPCallback<JSON> callback) {
         new JSON_REQUEST(url).Run(callback);
     }
 }

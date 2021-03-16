@@ -20,10 +20,10 @@ import java.util.List;
 
 public class StockAdapter extends BaseAdapter implements Filterable {
 
-    protected Filter filter;
     private final int resource;
     private final List<Stock> originalStock;
     private final LayoutInflater mInflater;
+    protected final Filter filter;
     private List<Stock> filteredStock;
 
     public StockAdapter(@NonNull Context context, int resource, @NonNull List<Stock> stocks) {

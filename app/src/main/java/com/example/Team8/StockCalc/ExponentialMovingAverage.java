@@ -60,13 +60,13 @@ public class ExponentialMovingAverage {
         StringBuilder sb = new StringBuilder();
 
         for (int i = 0; i < this.prices.length; i++) {
-            sb.append(String.format(Locale.US,"%02.2f", this.prices[i]));
+            sb.append(String.format(Locale.US, "%02.2f", this.prices[i]));
             sb.append(" ");
-            sb.append(String.format(Locale.US,"%02.2f", this.periodSma[i]));
+            sb.append(String.format(Locale.US, "%02.2f", this.periodSma[i]));
             sb.append(" ");
-            sb.append(String.format(Locale.US,"%02.2f", this.smoothingConstant));
+            sb.append(String.format(Locale.US, "%02.2f", this.smoothingConstant));
             sb.append(" ");
-            sb.append(String.format(Locale.US,"%02.2f", this.periodEma[i]));
+            sb.append(String.format(Locale.US, "%02.2f", this.periodEma[i]));
             sb.append("\n");
         }
 

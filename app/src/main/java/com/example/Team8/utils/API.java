@@ -25,7 +25,7 @@ public class API {
         return instance;
     }
 
-    public String join(String path){
+    public String join(String path) {
         String endpoint = "/api/v1";
         String API_KEY = "c0kg3ln48v6und6ris7g";
 
@@ -35,15 +35,15 @@ public class API {
         return String.format("%1$s%2$s%3$s&token=%4$s", domain, endpoint, path, API_KEY);
     }
 
-    public String getStockSymbolsURL(String exchange){
+    public String getStockSymbolsURL(String exchange) {
         return join(String.format("/stock/symbol?exchange=%1$s", exchange));
     }
 
-    public String getStockSymbolsURL(){
+    public String getStockSymbolsURL() {
         return getStockSymbolsURL("US");
     }
 
-    public String getStockCandlesURL(String symbol, String resolution, Date from, Date to){
+    public String getStockCandlesURL(String symbol, String resolution, Date from, Date to) {
         return join(String.format("/stock/candle?symbol=%1$s&resolution=%2$s&from=%3$s&to=%4$s", symbol, resolution, DateTimeHelper.toEpoch(from), DateTimeHelper.toEpoch(to)));
     }
 
@@ -51,8 +51,8 @@ public class API {
         return join(String.format("/search?q=%1$s", encodeValue(q)));
     }
 
-    public boolean isValidStatus(String s){
-        ArrayList<String> invalid_status = new ArrayList<String>(){{
+    public boolean isValidStatus(String s) {
+        ArrayList<String> invalid_status = new ArrayList<String>() {{
             add("no_data");
         }};
         return !invalid_status.contains(s);
@@ -89,7 +89,8 @@ public class API {
                         HashMap<String, Object> data = response.getDataObj();
                         int count = 0;
                         try {
-                            count = (int) data.get("count");
+                            Object countObj = data.get("count");
+                            if (countObj instanceof Integer) count = (int) countObj;
                         } catch (Exception ignored) {
                         }
 
@@ -98,7 +99,7 @@ public class API {
                                 Object[] results = (Object[]) data.get("result");
                                 results = results != null ? results : new Object[0];
                                 for (Object object : results) {
-                                    add(new Stock((HashMap<String, Object>) object));
+                                    add(new Stock((HashMap<String, String>) object));
                                 }
                             }};
 

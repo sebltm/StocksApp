@@ -28,8 +28,6 @@ public class GraphActivity extends FragmentActivity {
         viewPager.setAdapter(graphAdapter);
 
         TabLayout tabLayout = findViewById(R.id.tabs);
-        new TabLayoutMediator(tabLayout, viewPager, (tab, position) -> {
-            tab.setText(this.searchItem.getAnalysisTypes().get(position).name());
-        }).attach();
+        new TabLayoutMediator(tabLayout, viewPager, (tab, position) -> tab.setText(this.searchItem.getAnalysisTypes().get(position).name())).attach();
     }
 }

@@ -11,7 +11,6 @@ import com.example.Team8.utils.API;
 import com.example.Team8.utils.Stock;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.Executor;
@@ -21,9 +20,8 @@ import java.util.concurrent.TimeUnit;
 
 public class StockAutoCompleteWatcher implements TextWatcher {
 
-    private final HashMap<String, List<Stock>> pastRequests = new HashMap<>();
-    private static Date lastRequest;
     final Executor mainExecutor;
+    private final HashMap<String, List<Stock>> pastRequests = new HashMap<>();
     private final StockAdapter stockAdapter;
     private final EventHandler eventHandler;
     private final List<Boolean> loading;

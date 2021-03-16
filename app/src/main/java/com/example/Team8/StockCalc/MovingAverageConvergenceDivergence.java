@@ -79,15 +79,15 @@ public class MovingAverageConvergenceDivergence {
         StringBuilder sb = new StringBuilder();
 
         for (int i = 0; i < this.prices.length; i++) {
-            sb.append(String.format(Locale.US,"%02.2f", this.prices[i]));
+            sb.append(String.format(Locale.US, "%02.2f", this.prices[i]));
             sb.append(" ");
-            sb.append(String.format(Locale.US,"%02.2f", this.macd[i]));
+            sb.append(String.format(Locale.US, "%02.2f", this.macd[i]));
             sb.append(" ");
-            sb.append(String.format(Locale.US,"%02.2f", this.signal[i]));
+            sb.append(String.format(Locale.US, "%02.2f", this.signal[i]));
             sb.append(" ");
-            sb.append(String.format(Locale.US,"%02.2f", this.diff[i]));
+            sb.append(String.format(Locale.US, "%02.2f", this.diff[i]));
             sb.append(" ");
-            sb.append(String.format(Locale.US,"%d", this.crossover[i]));
+            sb.append(String.format(Locale.US, "%d", this.crossover[i]));
             sb.append(" ");
             sb.append("\n");
         }

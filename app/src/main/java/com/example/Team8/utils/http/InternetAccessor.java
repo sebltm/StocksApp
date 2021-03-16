@@ -10,9 +10,9 @@ import java.net.URL;
 import java.util.concurrent.Callable;
 
 public class InternetAccessor implements Callable<String> {
+    private final String url;
     private InternetCallback delegate = null;
     private boolean CallbackUsed = false;
-    private final String url;
 
     public InternetAccessor(String url) {
         this.url = url;
@@ -23,7 +23,7 @@ public class InternetAccessor implements Callable<String> {
     }
 
     private String fetchUrl(String url) {
-        String urlContent = "";
+        String urlContent;
         StringBuilder myStrBuff = new StringBuilder();
 
         try {
@@ -42,7 +42,7 @@ public class InternetAccessor implements Callable<String> {
             }
 
         } catch (Exception e) {
-            if(!CallbackUsed) {
+            if (!CallbackUsed) {
                 CallbackUsed = true;
                 delegate.internetAccessCompleted(null);
             }
@@ -53,8 +53,8 @@ public class InternetAccessor implements Callable<String> {
     }
 
     @Override
-    public String call() throws Exception {
-        String myData = "";
+    public String call() {
+        String myData;
         try {
             myData = fetchUrl(this.url);
         } catch (Exception _e) {

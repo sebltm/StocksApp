@@ -10,7 +10,7 @@ import java.util.List;
 
 public class StockFilter extends Filter {
 
-    StockAdapter parent;
+    private final StockAdapter parent;
 
     public StockFilter(StockAdapter parent) {
         this.parent = parent;

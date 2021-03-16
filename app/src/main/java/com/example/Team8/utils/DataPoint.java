@@ -7,9 +7,9 @@ import java.math.BigDecimal;
 import java.util.Date;
 
 public class DataPoint implements Serializable {
-    BigDecimal value;
-    Date dateTime;
     protected String pointType = "data_point";
+    private final BigDecimal value;
+    private final Date dateTime;
 
     public DataPoint(BigDecimal value, Date dateTime) {
         this.value = value;

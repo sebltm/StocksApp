@@ -31,7 +31,7 @@ public class ArrayUtils {
     public static DataPoint[] toDataPointArr(Object[] arr, String[] timestamps) {
         ArrayList<DataPoint> d_p_l = new ArrayList<>();
         for (int i = 0; i < arr.length; i++) {
-            Double price_val = Double.valueOf(String.valueOf(arr[i]));
+            double price_val = Double.parseDouble(String.valueOf(arr[i]));
             d_p_l.add(new DataPoint(
                     new BigDecimal(price_val),
                     DateTimeHelper.toDateTime(timestamps[i])
@@ -48,12 +48,12 @@ public class ArrayUtils {
         return d;
     }
 
-    public static Object[] parseObjToArr(Object obj){
+    public static Object[] parseObjToArr(Object obj) {
         Object[] o = (Object[]) obj;
-        return o != null? o : new Object[0];
+        return o != null ? o : new Object[0];
     }
 
-    public static Object getArrItemOrDefault(Object[] arr, int index, Object value){
-        return arr != null && index < arr.length? arr[index] : value;
+    public static Object getArrItemOrDefault(Object[] arr, int index, Object value) {
+        return arr != null && index < arr.length ? arr[index] : value;
     }
 }

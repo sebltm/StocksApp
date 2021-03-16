@@ -187,6 +187,7 @@ public class SearchActivity extends Activity {
             } else {
                 spinner.setVisibility(View.INVISIBLE);
                 Toast.makeText(this, "Please select a stock smybol from the autcomplete list", Toast.LENGTH_LONG).show();
+                stockAutocomplete.showDropDown();
             }
         });
     }

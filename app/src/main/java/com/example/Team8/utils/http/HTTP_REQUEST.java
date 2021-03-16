@@ -35,11 +35,11 @@ public class HTTP_REQUEST<T extends HTTPCallback> {
 
     @SuppressWarnings("unchecked")
     protected void setResponse(T onResponse, Object value){
-        try{
-            if(onResponse != null){
+        try {
+            if (onResponse != null) {
                 onResponse.response(value);
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             onResponse.response(null);
         }
     }

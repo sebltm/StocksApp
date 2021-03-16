@@ -29,10 +29,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class SearchActivity extends Activity {
+public class SearchActivity extends Activity implements StockAutoCompleteWatcher.EventHandler {
     private static Stock selectedStock;
     private final Context context = this;
     private static final ArrayList<Stock> STOCKS = new ArrayList<>();
+    private ProgressBar spinner;
 
     private static final HashMap<AnalysisType, List<AnalysisPoint>> ANALYSIS_POINTS = new HashMap<>();
 
@@ -44,7 +45,7 @@ public class SearchActivity extends Activity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setActionBar(toolbar);
 
-        ProgressBar spinner =  findViewById(R.id.progressBar);
+        spinner = findViewById(R.id.progressBar);
         spinner.setVisibility(View.GONE);
 
         // Create date picker selection interface
@@ -66,7 +67,7 @@ public class SearchActivity extends Activity {
             selectedStock = stockItem.stock;
         });
 
-        StockAutoCompleteWatcher autoCompleteWatcher = StockAutoCompleteWatcher.getInstance(stockAdapter);
+        StockAutoCompleteWatcher autoCompleteWatcher = new StockAutoCompleteWatcher(stockAdapter, this);
         stockAutocomplete.addTextChangedListener(autoCompleteWatcher);
 
         // Create analysis selection interface
@@ -83,6 +84,7 @@ public class SearchActivity extends Activity {
             toDate.clear();
 
             stockAutocomplete.getText().clear();
+            spinner.setVisibility(View.INVISIBLE);
 
             smaCheckbox.setChecked(false);
             emaCheckbox.setChecked(false);
@@ -190,5 +192,10 @@ public class SearchActivity extends Activity {
                 stockAutocomplete.showDropDown();
             }
         });
+    }
+
+    @Override
+    public void handleLoadingSymbols(int visibility) {
+        spinner.setVisibility(visibility);
     }
 }

@@ -96,7 +96,6 @@ public class Stock implements Serializable {
                         new BigDecimal(String.valueOf(a_values[i])),
                         DateTimeHelper.toDateTime(timestamps_arr.get(i))
                 );
-                printAnalysis(i, prices, a_type, a_point);
                 add(a_point);
             }
         }};
@@ -283,8 +282,6 @@ public class Stock implements Serializable {
     public void fetchData(String resolution, Date from, Date to, StockDataCallback callback) {
         API api = API.getInstance();
         String getStockCandlesURL;
-
-        System.out.println(String.format("THIS IS OUTPUT: PRICE HISTORY IS %s", priceHistory));
 
         if (priceHistory != null) {
             setResponseCallback(callback, priceHistory);

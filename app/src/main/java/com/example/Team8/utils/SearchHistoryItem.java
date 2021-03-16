@@ -5,6 +5,8 @@ import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.TypeConverters;
 
+import com.example.Team8.database.StockHistoryConverter;
+
 import java.io.Serializable;
 import java.util.Calendar;
 import java.util.Date;

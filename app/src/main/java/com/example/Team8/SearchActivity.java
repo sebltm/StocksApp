@@ -19,19 +19,16 @@ import com.example.Team8.adapters.StockAdapter;
 import com.example.Team8.database.SearchHistoryDao;
 import com.example.Team8.database.SearchHistoryDatabase;
 import com.example.Team8.ui.main.DatePickerFragment;
-import com.example.Team8.utils.AnalysisPoint;
 import com.example.Team8.utils.AnalysisType;
 import com.example.Team8.utils.Resolution;
 import com.example.Team8.utils.SearchHistoryItem;
 import com.example.Team8.utils.Stock;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 public class SearchActivity extends Activity implements StockAutoCompleteWatcher.EventHandler {
     private static final ArrayList<Stock> STOCKS = new ArrayList<>();
-    private static final HashMap<AnalysisType, List<AnalysisPoint>> ANALYSIS_POINTS = new HashMap<>();
     private static Stock selectedStock;
     private final Context context = this;
     private ProgressBar spinner;
@@ -108,6 +105,11 @@ public class SearchActivity extends Activity implements StockAutoCompleteWatcher
     @Override
     public void handleLoadingSymbols(int visibility) {
         runOnUiThread(() -> spinner.setVisibility(visibility));
+    }
+
+    @Override
+    public void handleNetworkError() {
+        runOnUiThread(() -> Toast.makeText(SearchActivity.this, "Network error, please try again.", Toast.LENGTH_LONG).show());
     }
 
     private void resetView(View v) {

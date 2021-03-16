@@ -9,13 +9,13 @@ import com.example.Team8.utils.DateTimeHelper;
 import com.example.Team8.utils.PricePoint;
 import com.example.Team8.utils.Resolution;
 import com.example.Team8.utils.Stock;
-import com.example.Team8.utils.StockCandle;
 import com.example.Team8.utils.callbacks.StocksCallback;
 import com.example.Team8.utils.http.HTTP_JSON;
 
 import java.io.UnsupportedEncodingException;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 
@@ -157,39 +157,6 @@ public class Test {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
-    public Test getStockCandlesTEST() {
-//        Toast.makeText(ctx, "FETCHING STOCK CANDLES", Toast.LENGTH_SHORT).show();
-        API api = API.getInstance();
-        String getStockCandlesURL = api.getStockCandlesURL(
-                "AAPL",
-                String.valueOf(15),
-                DateTimeHelper.toDate(LocalDate.now().minusDays(100)),
-                DateTimeHelper.toDate(LocalDate.now())
-        );
-
-        HTTP_JSON.fetch(getStockCandlesURL,
-                response -> {
-                    if (response.getType().equals("object")) {
-                        HashMap<String, Object> data = response.getDataObj();
-                        boolean status = api.isValidStatus((String) data.get("s"));
-                        if (!status) {
-                            System.out.println("NO DATA FOUND");
-                            return;
-                        }
-                        StockCandle s_c = new StockCandle(data);
-                        System.out.println(s_c.getO());
-                        System.out.println(s_c.getH());
-                        System.out.println(s_c.getL());
-                        System.out.println(s_c.getC());
-                        System.out.println(s_c.getV());
-                        System.out.println(s_c.getT());
-                        System.out.println(getStockCandlesURL);
-                    }
-                });
-        return this;
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.O)
     public Test getPricePointTEST() {
 //        Toast.makeText(ctx, "FETCHING STOCK CANDLES", Toast.LENGTH_SHORT).show();
         API api = API.getInstance();
@@ -270,10 +237,14 @@ public class Test {
     @RequiresApi(api = Build.VERSION_CODES.O)
     public void FETCH_data_TEST(HashMap<String, String> stock_info) {
         Stock s = new Stock(stock_info);
+        Calendar cal1 = (Calendar) Calendar.getInstance().clone();
+        Calendar cal2 = (Calendar) Calendar.getInstance().clone();
+        cal1.setTime(new Date(System.currentTimeMillis()));
+        cal2.setTime(new Date(System.currentTimeMillis()));
+        cal1.add(Calendar.DAY_OF_MONTH, -5);
         s.fetchData(
                 Resolution.types.get("15"),
-                DateTimeHelper.toDate(LocalDate.now().minusDays(5)),
-                DateTimeHelper.toDate(LocalDate.now()),
+                cal1, cal2, 15,
                 (priceHistory, stock) -> {
                     System.out.println(String.format("%s %s", s.getSymbol(), priceHistory == null ? null : "DATA!!"));
                     if (priceHistory == null) {
@@ -293,10 +264,14 @@ public class Test {
     @RequiresApi(api = Build.VERSION_CODES.O)
     public Test SMA_TEST(HashMap<String, String> stock_info) {
         Stock s = new Stock(stock_info);
+        Calendar cal1 = (Calendar) Calendar.getInstance().clone();
+        Calendar cal2 = (Calendar) Calendar.getInstance().clone();
+        cal1.setTime(new Date(System.currentTimeMillis()));
+        cal2.setTime(new Date(System.currentTimeMillis()));
+        cal1.add(Calendar.DAY_OF_MONTH, -5);
         s.fetchData(
-                Resolution.types.get("D"),
-                DateTimeHelper.toDate(LocalDate.now().minusDays(15)),
-                DateTimeHelper.toDate(LocalDate.now()),
+                Resolution.types.get("15"),
+                cal1, cal2, 15,
                 (price_points, stock) -> {
                     if (PricePointsNotFound(price_points)) return;
                     printClosePrices(price_points);
@@ -310,10 +285,14 @@ public class Test {
     @RequiresApi(api = Build.VERSION_CODES.O)
     public Test EMA_TEST(HashMap<String, String> stock_info) {
         Stock s = new Stock(stock_info);
+        Calendar cal1 = (Calendar) Calendar.getInstance().clone();
+        Calendar cal2 = (Calendar) Calendar.getInstance().clone();
+        cal1.setTime(new Date(System.currentTimeMillis()));
+        cal2.setTime(new Date(System.currentTimeMillis()));
+        cal1.add(Calendar.DAY_OF_MONTH, -5);
         s.fetchData(
-                Resolution.types.get("D"),
-                DateTimeHelper.toDate(LocalDate.now().minusDays(22)),
-                DateTimeHelper.toDate(LocalDate.now()),
+                Resolution.types.get("15"),
+                cal1, cal2, 15,
                 (price_points, stock) -> {
                     if (PricePointsNotFound(price_points)) return;
                     printClosePrices(price_points);
@@ -338,13 +317,17 @@ public class Test {
     @RequiresApi(api = Build.VERSION_CODES.O)
     public Test MACD_TEST(HashMap<String, String> stock_info) {
         boolean valid = validateMACD(DateTimeHelper.toDate(LocalDate.now().minusDays(38)), DateTimeHelper.toDate(LocalDate.now()));
+        assert (valid);
 
-        System.out.println(valid);
         Stock s = new Stock(stock_info);
+        Calendar cal1 = (Calendar) Calendar.getInstance().clone();
+        Calendar cal2 = (Calendar) Calendar.getInstance().clone();
+        cal1.setTime(new Date(System.currentTimeMillis()));
+        cal2.setTime(new Date(System.currentTimeMillis()));
+        cal1.add(Calendar.DAY_OF_MONTH, -5);
         s.fetchData(
-                Resolution.types.get("D"),
-                DateTimeHelper.toDate(LocalDate.now().minusDays(38)),
-                DateTimeHelper.toDate(LocalDate.now()),
+                Resolution.types.get("15"),
+                cal1, cal2, 15,
                 (price_points, stock) -> {
                     if (PricePointsNotFound(price_points)) return;
                     printClosePrices(price_points);
@@ -357,10 +340,14 @@ public class Test {
     @RequiresApi(api = Build.VERSION_CODES.O)
     public Test MACDAVG_TEST(HashMap<String, String> stock_info) {
         Stock s = new Stock(stock_info);
+        Calendar cal1 = (Calendar) Calendar.getInstance().clone();
+        Calendar cal2 = (Calendar) Calendar.getInstance().clone();
+        cal1.setTime(new Date(System.currentTimeMillis()));
+        cal2.setTime(new Date(System.currentTimeMillis()));
+        cal1.add(Calendar.DAY_OF_MONTH, -5);
         s.fetchData(
-                Resolution.types.get("D"),
-                DateTimeHelper.toDate(LocalDate.now().minusDays(38)),
-                DateTimeHelper.toDate(LocalDate.now()),
+                Resolution.types.get("15"),
+                cal1, cal2, 15,
                 (price_points, stock) -> {
                     if (PricePointsNotFound(price_points)) return;
                     printClosePrices(price_points);

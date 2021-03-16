@@ -9,7 +9,6 @@ import androidx.room.TypeConverters;
 import com.example.Team8.utils.AnalysisType;
 import com.example.Team8.utils.SearchHistoryItem;
 import com.example.Team8.utils.Stock;
-import com.example.Team8.utils.StockHistoryConverter;
 
 import java.util.Date;
 import java.util.List;

@@ -57,7 +57,7 @@ public abstract class HTTP_REQUEST<T extends HTTPCallback<A>, A> {
 
     protected abstract Callback setCallback(T onResponse);
 
-    public void Run(T onResponse) {
+    public void run(T onResponse) {
         try {
             client.newCall(request).enqueue(setCallback(onResponse));
         } catch (Exception e) {

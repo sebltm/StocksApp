@@ -15,12 +15,12 @@ import androidx.fragment.app.Fragment;
 import com.example.Team8.R;
 import com.example.Team8.utils.AnalysisPoint;
 import com.example.Team8.utils.AnalysisType;
-import com.example.Team8.utils.DataPoint;
 import com.example.Team8.utils.DateTimeHelper;
 import com.example.Team8.utils.PricePoint;
 import com.example.Team8.utils.SearchHistoryItem;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.AxisBase;
+import com.github.mikephil.charting.components.Description;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
@@ -140,7 +140,14 @@ public class GraphFragment extends Fragment {
         mpLineChart = parentView.findViewById(R.id.graph_frag_line_graph);
         mpLineChart.setPinchZoom(true);
 
+        Description description = new Description();
+        description.setText("");
+        mpLineChart.setDescription(description);
+
+        mpLineChart.setNoDataText("Not enough data available to show a graph.\nPlease select a wider range of dates.");
+
         LineDataSet analysisDataset = new LineDataSet(pointToEntry(analysisPoints), analysisType.name());
+        analysisDataset.setValueTextSize(9);
         ArrayList<ILineDataSet> dataSets = new ArrayList<>();
         dataSets.add(analysisDataset);
 
@@ -150,6 +157,7 @@ public class GraphFragment extends Fragment {
                 priceDataset.setColor(getResources().getColor(R.color.green, getActivity().getTheme()));
                 priceDataset.setCircleColor(getResources().getColor(R.color.green, getActivity().getTheme()));
             }
+            priceDataset.setValueTextSize(9);
             dataSets.add(priceDataset);
         }
 
@@ -158,7 +166,6 @@ public class GraphFragment extends Fragment {
         xAxis.setValueFormatter(new StockPriceFormat());
         xAxis.setLabelRotationAngle(30);
 
-        DataPoint firstPoint = pricePoint.getClose().get(searchItem.getAnalysisDays());
         xAxis.setAxisMinimum(searchItem.getFrom().getTime());
 
         LineData data = new LineData(dataSets);

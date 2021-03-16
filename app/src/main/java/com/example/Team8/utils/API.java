@@ -92,21 +92,19 @@ public class API {
                             Object countObj = data.get("count");
                             if (countObj instanceof Integer) count = (int) countObj;
                         } catch (Exception ignored) {
+                            setSearchCallback(callback, new ArrayList<>());
                         }
 
+                        List<Stock> retrievedStocks = new ArrayList<>();
                         if (count > 0) {
-                            List<Stock> retrievedStocks = new ArrayList<Stock>() {{
-                                Object[] results = (Object[]) data.get("result");
-                                results = results != null ? results : new Object[0];
-                                for (Object object : results) {
-                                    add(new Stock((HashMap<String, String>) object));
-                                }
-                            }};
-
-                            setSearchCallback(callback, retrievedStocks.size() > 0 ? retrievedStocks : null);
-                        } else {
-                            setSearchCallback(callback, null);
+                            Object[] results = (Object[]) data.get("result");
+                            results = results != null ? results : new Object[0];
+                            for (Object object : results) {
+                                retrievedStocks.add(new Stock((HashMap<String, String>) object));
+                            }
                         }
+
+                        setSearchCallback(callback, retrievedStocks);
                     }
                 });
     }

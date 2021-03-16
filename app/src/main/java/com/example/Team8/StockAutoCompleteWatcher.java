@@ -1,5 +1,6 @@
 package com.example.Team8;
 
+import android.app.Activity;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
@@ -23,12 +24,14 @@ public class StockAutoCompleteWatcher implements TextWatcher {
     private final HashMap<String, List<Stock>> pastRequests = new HashMap<>();
     private final StockAdapter stockAdapter;
     private final EventHandler eventHandler;
+    private final Activity activity;
     Future<?> scheduleFuture;
     Runnable runnable;
 
     public StockAutoCompleteWatcher(StockAdapter stockAdapter, SearchActivity activity) {
         this.stockAdapter = stockAdapter;
         this.eventHandler = activity;
+        this.activity = activity;
         mainExecutor = ContextCompat.getMainExecutor(activity);
     }
 
@@ -59,10 +62,14 @@ public class StockAutoCompleteWatcher implements TextWatcher {
                     if (stocks != null) {
                         pastRequests.put(symbolReq, stocks);
                         stockAdapter.addAll(stocks);
+                    } else {
+                        eventHandler.handleNetworkError();
                     }
 
-                    stockAdapter.notifyDataSetChanged();
-                    stockAdapter.getFilter().filter(symbolReq);
+                    activity.runOnUiThread(() -> {
+                        stockAdapter.notifyDataSetChanged();
+                        stockAdapter.getFilter().filter(symbolReq);
+                    });
 
                     eventHandler.handleLoadingSymbols(View.INVISIBLE);
                 });
@@ -77,5 +84,7 @@ public class StockAutoCompleteWatcher implements TextWatcher {
 
     public interface EventHandler {
         void handleLoadingSymbols(int visibility);
+
+        void handleNetworkError();
     }
 }

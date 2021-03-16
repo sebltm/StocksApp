@@ -27,7 +27,6 @@ public class JSON_REQUEST extends HTTP_REQUEST<HTTPCallback<JSON>, JSON> {
         return new Callback() {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                e.printStackTrace();
                 setResponse(onResponse, null);
             }
 
@@ -49,7 +48,7 @@ public class JSON_REQUEST extends HTTP_REQUEST<HTTPCallback<JSON>, JSON> {
                     e.printStackTrace();
                     error = true;
                 }
-                setResponse(onResponse, error ? null : j);
+                setResponse(onResponse, error ? new JSON("") : j);
             }
         };
     }

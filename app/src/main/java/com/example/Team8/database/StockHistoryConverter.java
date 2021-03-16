@@ -1,7 +1,10 @@
-package com.example.Team8.utils;
+package com.example.Team8.database;
 
 import androidx.room.TypeConverter;
 
+import com.example.Team8.utils.AnalysisType;
+import com.example.Team8.utils.PricePoint;
+import com.example.Team8.utils.Stock;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 

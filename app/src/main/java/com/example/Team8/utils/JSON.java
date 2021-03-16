@@ -19,7 +19,6 @@ public class JSON {
     public JSON(String s) {
         str_data = s;
         try {
-
             if (isObj(s)) {
                 type = "object";
                 data_obj = (HashMap<String, Object>) toMap(new JSONObject(s));

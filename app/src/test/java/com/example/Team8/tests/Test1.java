@@ -9,13 +9,14 @@ import com.example.Team8.utils.DateTimeHelper;
 import com.example.Team8.utils.PricePoint;
 import com.example.Team8.utils.Resolution;
 import com.example.Team8.utils.Stock;
-import com.example.Team8.utils.StockCandle;
 import com.example.Team8.utils.callbacks.StocksCallback;
 import com.example.Team8.utils.http.HTTP_JSON;
 
 import java.io.UnsupportedEncodingException;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 
 public class Test1 {
@@ -156,39 +157,6 @@ public class Test1 {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
-    public Test1 getStockCandlesTEST() {
-//        Toast.makeText(ctx, "FETCHING STOCK CANDLES", Toast.LENGTH_SHORT).show();
-        API api = API.getInstance();
-        String getStockCandlesURL = api.getStockCandlesURL(
-                "AAPL",
-                String.valueOf(15),
-                DateTimeHelper.toDate(LocalDate.now().minusDays(100)),
-                DateTimeHelper.toDate(LocalDate.now())
-        );
-
-        HTTP_JSON.fetch(getStockCandlesURL,
-                response -> {
-                    if (response.getType().equals("object")) {
-                        HashMap<String, Object> data = response.getDataObj();
-                        boolean status = api.isValidStatus((String) data.get("s"));
-                        if (!status) {
-                            System.out.println("NO DATA FOUND");
-                            return;
-                        }
-                        StockCandle s_c = new StockCandle(data);
-                        System.out.println(s_c.getO());
-                        System.out.println(s_c.getH());
-                        System.out.println(s_c.getL());
-                        System.out.println(s_c.getC());
-                        System.out.println(s_c.getV());
-                        System.out.println(s_c.getT());
-                        System.out.println(getStockCandlesURL);
-                    }
-                });
-        return this;
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.O)
     public Test1 getPricePointTEST() {
 //        Toast.makeText(ctx, "FETCHING STOCK CANDLES", Toast.LENGTH_SHORT).show();
         API api = API.getInstance();
@@ -269,10 +237,14 @@ public class Test1 {
     @RequiresApi(api = Build.VERSION_CODES.O)
     public void FETCH_data_TEST(HashMap<String, String> stock_info) {
         Stock s = new Stock(stock_info);
+        Calendar cal1 = (Calendar) Calendar.getInstance().clone();
+        Calendar cal2 = (Calendar) Calendar.getInstance().clone();
+        cal1.setTime(new Date(System.currentTimeMillis()));
+        cal2.setTime(new Date(System.currentTimeMillis()));
+        cal1.add(Calendar.DAY_OF_MONTH, -5);
         s.fetchData(
                 Resolution.types.get("15"),
-                DateTimeHelper.toDate(LocalDate.now().minusDays(5)),
-                DateTimeHelper.toDate(LocalDate.now()),
+                cal1, cal2, 15,
                 (priceHistory, stock) -> {
                     System.out.println(String.format("%s %s", s.getSymbol(), priceHistory == null ? null : "DATA!!"));
                     if (priceHistory == null) {
@@ -294,10 +266,14 @@ public class Test1 {
     @RequiresApi(api = Build.VERSION_CODES.O)
     public Test1 SMA_TEST(HashMap<String, String> stock_info) {
         Stock s = new Stock(stock_info);
+        Calendar cal1 = (Calendar) Calendar.getInstance().clone();
+        Calendar cal2 = (Calendar) Calendar.getInstance().clone();
+        cal1.setTime(new Date(System.currentTimeMillis()));
+        cal2.setTime(new Date(System.currentTimeMillis()));
+        cal1.add(Calendar.DAY_OF_MONTH, -5);
         s.fetchData(
                 Resolution.types.get("15"),
-                DateTimeHelper.toDate(LocalDate.now().minusDays(5)),
-                DateTimeHelper.toDate(LocalDate.now()),
+                cal1, cal2, 15,
                 (priceHistory, stock) -> {
                     if (priceHistory == null) {
 //                        API IS LIMITED IN FREE TIER
@@ -313,10 +289,14 @@ public class Test1 {
     @RequiresApi(api = Build.VERSION_CODES.O)
     public Test1 EMA_TEST(HashMap<String, String> stock_info) {
         Stock s = new Stock(stock_info);
+        Calendar cal1 = (Calendar) Calendar.getInstance().clone();
+        Calendar cal2 = (Calendar) Calendar.getInstance().clone();
+        cal1.setTime(new Date(System.currentTimeMillis()));
+        cal2.setTime(new Date(System.currentTimeMillis()));
+        cal1.add(Calendar.DAY_OF_MONTH, -5);
         s.fetchData(
                 Resolution.types.get("15"),
-                DateTimeHelper.toDate(LocalDate.now().minusDays(5)),
-                DateTimeHelper.toDate(LocalDate.now()),
+                cal1, cal2, 15,
                 (priceHistory, stock) -> {
                     if (priceHistory == null) {
 //                        API IS LIMITED IN FREE TIER
@@ -332,10 +312,14 @@ public class Test1 {
     @RequiresApi(api = Build.VERSION_CODES.O)
     public Test1 MACD_TEST(HashMap<String, String> stock_info) {
         Stock s = new Stock(stock_info);
+        Calendar cal1 = (Calendar) Calendar.getInstance().clone();
+        Calendar cal2 = (Calendar) Calendar.getInstance().clone();
+        cal1.setTime(new Date(System.currentTimeMillis()));
+        cal2.setTime(new Date(System.currentTimeMillis()));
+        cal1.add(Calendar.DAY_OF_MONTH, -5);
         s.fetchData(
                 Resolution.types.get("15"),
-                DateTimeHelper.toDate(LocalDate.now().minusDays(5)),
-                DateTimeHelper.toDate(LocalDate.now()),
+                cal1, cal2, 15,
                 (priceHistory, stock) -> {
                     if (priceHistory == null) {
 //                        API IS LIMITED IN FREE TIER
@@ -351,10 +335,14 @@ public class Test1 {
     @RequiresApi(api = Build.VERSION_CODES.O)
     public Test1 MACDAVG_TEST(HashMap<String, String> stock_info) {
         Stock s = new Stock(stock_info);
+        Calendar cal1 = (Calendar) Calendar.getInstance().clone();
+        Calendar cal2 = (Calendar) Calendar.getInstance().clone();
+        cal1.setTime(new Date(System.currentTimeMillis()));
+        cal2.setTime(new Date(System.currentTimeMillis()));
+        cal1.add(Calendar.DAY_OF_MONTH, -5);
         s.fetchData(
                 Resolution.types.get("15"),
-                DateTimeHelper.toDate(LocalDate.now().minusDays(5)),
-                DateTimeHelper.toDate(LocalDate.now()),
+                cal1, cal2, 15,
                 (priceHistory, stock) -> {
                     if (priceHistory == null) {
 //                        API IS LIMITED IN FREE TIER

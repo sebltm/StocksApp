@@ -16,7 +16,7 @@ import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 import java.util.ArrayList;
 import java.util.Random;
 
-public class Graph extends AppCompatActivity {
+public class Graph extends AppCompatActivity { //hi
 
     LineChart mpLineChart;
     ArrayList<Float> xVAL;

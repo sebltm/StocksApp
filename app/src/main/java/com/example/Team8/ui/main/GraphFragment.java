@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -14,6 +15,7 @@ import androidx.fragment.app.Fragment;
 import com.example.Team8.R;
 import com.example.Team8.utils.AnalysisPoint;
 import com.example.Team8.utils.AnalysisType;
+import com.example.Team8.utils.DataPoint;
 import com.example.Team8.utils.DateTimeHelper;
 import com.example.Team8.utils.PricePoint;
 import com.example.Team8.utils.SearchHistoryItem;
@@ -40,9 +42,11 @@ public class GraphFragment extends Fragment {
     private final AnalysisType analysisType;
     private LineChart mpLineChart;
     private List<AnalysisPoint> analysisPoints;
+    private PricePoint pricePoint;
     private View graphView;
     private boolean localPriceActive = false;
     private boolean dataNotLoaded = true;
+    private SwitchCompat togglePrice;
 
     public GraphFragment(SearchHistoryItem searchItem, AnalysisType analysisType) {
         this.searchItem = searchItem;
@@ -62,7 +66,7 @@ public class GraphFragment extends Fragment {
         TextView stockSymbol = graphView.findViewById(R.id.graph_frag_stock_symbol);
         TextView dateFrom = graphView.findViewById(R.id.graph_frag_date_from);
         TextView dateTo = graphView.findViewById(R.id.graph_frag_date_to);
-        SwitchCompat togglePrice = graphView.findViewById(R.id.toggle_price_line);
+        togglePrice = graphView.findViewById(R.id.toggle_price_line);
         mpLineChart = graphView.findViewById(R.id.graph_frag_line_graph);
 
         stockSymbol.setText(searchItem.getStock().getDisplaySymbol());
@@ -70,49 +74,41 @@ public class GraphFragment extends Fragment {
         dateTo.setText(dateFormat.format(searchItem.getTo()));
 
         togglePrice.setChecked(globalPriceActive);
+        pricePoint = searchItem.getStock().getPriceHistory();
 
         togglePrice.setOnCheckedChangeListener((buttonView, isChecked) -> {
             globalPriceActive = isChecked;
             localPriceActive = isChecked;
 
-            if (localPriceActive) {
-                PricePoint priceHistory = searchItem.getStock().getPriceHistory();
-                createChart(graphView, analysisPoints, priceHistory);
-            } else {
-                createChart(graphView, analysisPoints, null);
-            }
+            createChart(graphView, analysisPoints, pricePoint, localPriceActive);
         });
 
-        if (dataNotLoaded) {
-            switch (analysisType) {
-                case EMA:
-                    analysisPoints = searchItem.getStock().calculateEMA(searchItem.getAnalysisDays());
-                    break;
-                case SMA:
-                    analysisPoints = searchItem.getStock().calculateSMA(searchItem.getAnalysisDays());
-                    break;
-                case MACD:
-                    analysisPoints = searchItem.getStock().calculateMACD(9, 25, 2);
-                case MACDAVG:
-                    analysisPoints = searchItem.getStock().calculateMACDAVG();
+        new Thread(() -> {
+            ProgressBar spinner = graphView.findViewById(R.id.spinner_graph);
+
+            if (dataNotLoaded) {
+                switch (analysisType) {
+                    case SMA:
+                        analysisPoints = searchItem.getStock().calculateSMA(searchItem.getAnalysisDays());
+                        break;
+                    case EMA:
+                        analysisPoints = searchItem.getStock().calculateEMA(searchItem.getAnalysisDays());
+                        break;
+                    case MACD:
+                        analysisPoints = searchItem.getStock().calculateMACD(9, 25, 2);
+                    case MACDAVG:
+                        analysisPoints = searchItem.getStock().calculateMACDAVG();
+                }
+
+                createChart(graphView, analysisPoints, pricePoint, localPriceActive);
+
+                dataNotLoaded = false;
+            } else {
+                createChart(graphView, analysisPoints, pricePoint, localPriceActive);
             }
 
-            if (localPriceActive) {
-                PricePoint priceHistory = searchItem.getStock().getPriceHistory();
-                createChart(graphView, analysisPoints, priceHistory);
-            } else {
-                createChart(graphView, analysisPoints, null);
-            }
-
-            dataNotLoaded = false;
-        } else {
-            if (localPriceActive) {
-                PricePoint priceHistory = searchItem.getStock().getPriceHistory();
-                createChart(graphView, analysisPoints, priceHistory);
-            } else {
-                createChart(graphView, analysisPoints, null);
-            }
-        }
+            getActivity().runOnUiThread(() -> spinner.setVisibility(View.INVISIBLE));
+        }).start();
 
         return graphView;
     }
@@ -140,7 +136,7 @@ public class GraphFragment extends Fragment {
         return entryList;
     }
 
-    private void createChart(View parentView, List<AnalysisPoint> analysisPoints, PricePoint pricePoint) {
+    private void createChart(View parentView, List<AnalysisPoint> analysisPoints, PricePoint pricePoint, boolean displayPrice) {
         mpLineChart = parentView.findViewById(R.id.graph_frag_line_graph);
         mpLineChart.setPinchZoom(true);
 
@@ -148,7 +144,7 @@ public class GraphFragment extends Fragment {
         ArrayList<ILineDataSet> dataSets = new ArrayList<>();
         dataSets.add(analysisDataset);
 
-        if (pricePoint != null) {
+        if (displayPrice) {
             LineDataSet priceDataset = new LineDataSet(pointToEntry(pricePoint), "Price");
             if (getActivity() != null && getActivity().getTheme() != null) {
                 priceDataset.setColor(getResources().getColor(R.color.green, getActivity().getTheme()));
@@ -162,6 +158,9 @@ public class GraphFragment extends Fragment {
         xAxis.setValueFormatter(new StockPriceFormat());
         xAxis.setLabelRotationAngle(30);
 
+        DataPoint firstPoint = pricePoint.getClose().get(searchItem.getAnalysisDays());
+        xAxis.setAxisMinimum(searchItem.getFrom().getTime());
+
         LineData data = new LineData(dataSets);
         mpLineChart.setData(data);
         mpLineChart.invalidate();
@@ -174,13 +173,10 @@ public class GraphFragment extends Fragment {
         if (localPriceActive != globalPriceActive) {
             localPriceActive = globalPriceActive;
 
-            if (localPriceActive) {
-                PricePoint priceHistory = searchItem.getStock().getPriceHistory();
-                createChart(this.graphView, analysisPoints, priceHistory);
-            } else {
-                createChart(this.graphView, analysisPoints, null);
-            }
+            createChart(this.graphView, analysisPoints, pricePoint, localPriceActive);
         }
+
+        togglePrice.setChecked(localPriceActive);
     }
 
     static class StockPriceFormat extends ValueFormatter {

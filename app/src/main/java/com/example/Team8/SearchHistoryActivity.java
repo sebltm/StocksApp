@@ -4,7 +4,9 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toolbar;
 
@@ -29,7 +31,7 @@ public class SearchHistoryActivity extends Activity {
         setActionBar(toolbar);
 
         SharedPreferences preferences = this.getPreferences(Context.MODE_PRIVATE);
-        int numItems = preferences.getInt("num_items", 5);
+        int numItems = preferences.getInt("num_items", 25);
 
         SearchHistoryDatabase database = SearchHistoryDatabase.getInstance(this);
         RecyclerView searchHistoryList = findViewById(R.id.search_history_list);
@@ -46,6 +48,11 @@ public class SearchHistoryActivity extends Activity {
 
         TextView textView = findViewById(R.id.search_history_subtitle);
         textView.setText(getString(R.string.search_history_num_items, numItems));
+
+        Spinner spinner = findViewById(R.id.dropdown_database_elements);
+        ArrayAdapter<CharSequence> dropdownDatabaseAdapater = ArrayAdapter.createFromResource(this, R.array.database_elements, android.R.layout.simple_spinner_item);
+        dropdownDatabaseAdapater.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(dropdownDatabaseAdapater);
 
         Button clearHistory = findViewById(R.id.search_history_clear);
         clearHistory.setOnClickListener(v -> new Thread(() -> {

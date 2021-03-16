@@ -6,10 +6,18 @@ import androidx.annotation.RequiresApi;
 
 import java.time.LocalDate;
 import java.time.ZoneId;
+import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 public class DateTimeHelper {
+
+    private static final List<Integer> NON_BUSINESS_DAYS = Arrays.asList(
+            Calendar.SATURDAY,
+            Calendar.SUNDAY
+    );
 
     public static String toEpoch(Date d) {
         return String.valueOf(d.getTime() / 1000L);
@@ -30,5 +38,19 @@ public class DateTimeHelper {
         Date d2 = date_1.compareTo(date_2) > 0 ? date_1 : date_2;
         long diffInMillies = Math.abs(d1.getTime() - d2.getTime());
         return TimeUnit.DAYS.convert(diffInMillies, TimeUnit.MILLISECONDS);
+    }
+
+    public static Calendar addBusinessDays(Calendar cal, int businessDays) {
+        Calendar calCopy = (Calendar) cal.clone();
+
+        for (int i = 0; i < Math.abs(businessDays); ) {
+            calCopy.add(Calendar.DAY_OF_MONTH, businessDays > 0 ? 1 : -1);
+
+            if (!NON_BUSINESS_DAYS.contains(calCopy.get(Calendar.DAY_OF_WEEK))) {
+                i++;
+            }
+        }
+
+        return calCopy;
     }
 }

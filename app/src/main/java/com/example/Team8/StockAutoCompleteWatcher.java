@@ -10,7 +10,6 @@ import com.example.Team8.adapters.StockAdapter;
 import com.example.Team8.utils.API;
 import com.example.Team8.utils.Stock;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.Executor;
@@ -24,14 +23,12 @@ public class StockAutoCompleteWatcher implements TextWatcher {
     private final HashMap<String, List<Stock>> pastRequests = new HashMap<>();
     private final StockAdapter stockAdapter;
     private final EventHandler eventHandler;
-    private final List<Boolean> loading;
     Future<?> scheduleFuture;
     Runnable runnable;
 
     public StockAutoCompleteWatcher(StockAdapter stockAdapter, SearchActivity activity) {
         this.stockAdapter = stockAdapter;
         this.eventHandler = activity;
-        loading = new ArrayList<>();
         mainExecutor = ContextCompat.getMainExecutor(activity);
     }
 
@@ -51,14 +48,11 @@ public class StockAutoCompleteWatcher implements TextWatcher {
     public void afterTextChanged(Editable s) {
 
         runnable = () -> {
+            eventHandler.handleLoadingSymbols(View.VISIBLE);
             String symbolReq = s.toString().toLowerCase();
 
             if (!pastRequests.containsKey(symbolReq)) {
 
-                System.err.println(String.format("FETCHING FOR %s", symbolReq));
-
-                int currentSize = loading.size();
-                loading.add(true);
                 eventHandler.handleLoadingSymbols(View.VISIBLE);
                 API.getInstance().search(symbolReq, stocks -> {
 
@@ -67,29 +61,13 @@ public class StockAutoCompleteWatcher implements TextWatcher {
                         stockAdapter.addAll(stocks);
                     }
 
-                    System.err.println(String.format("FILTERING FOR %s", symbolReq));
                     stockAdapter.notifyDataSetChanged();
                     stockAdapter.getFilter().filter(symbolReq);
 
-                    loading.set(currentSize, false);
-                    int visible = View.INVISIBLE;
-                    for (boolean setVisible : loading) {
-                        if (setVisible) {
-                            visible = View.VISIBLE;
-                            break;
-                        }
-                    }
-                    eventHandler.handleLoadingSymbols(visible);
+                    eventHandler.handleLoadingSymbols(View.INVISIBLE);
                 });
             } else {
-                int visible = View.INVISIBLE;
-                for (boolean setInvisible : loading) {
-                    if (!setInvisible) {
-                        visible = View.VISIBLE;
-                        break;
-                    }
-                }
-                eventHandler.handleLoadingSymbols(visible);
+                eventHandler.handleLoadingSymbols(View.INVISIBLE);
             }
         };
 

@@ -35,6 +35,15 @@ public class SearchActivity extends Activity implements StockAutoCompleteWatcher
     private static Stock selectedStock;
     private final Context context = this;
     private ProgressBar spinner;
+    private DatePickerFragment fromDate;
+    private DatePickerFragment toDate;
+    private AutoCompleteTextView stockAutocomplete;
+    private CheckBox smaCheckbox;
+    private CheckBox emaCheckbox;
+    private CheckBox macdCheckbox;
+    private CheckBox macdavgCheckbox;
+    private TextView analysisDaysView;
+    private SearchHistoryDatabase database;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,12 +60,12 @@ public class SearchActivity extends Activity implements StockAutoCompleteWatcher
         EditText editTextFromDate = findViewById(R.id.mDatePickerFrom);
         EditText editTextToDate = findViewById(R.id.mDatePickerTo);
 
-        DatePickerFragment fromDate = new DatePickerFragment(editTextFromDate, this);
-        DatePickerFragment toDate = new DatePickerFragment(editTextToDate, this);
+        fromDate = new DatePickerFragment(editTextFromDate, this);
+        toDate = new DatePickerFragment(editTextToDate, this);
 
         // Create stock selection interface
         StockAdapter stockAdapter = new StockAdapter(this, R.layout.stock_dropdown_item, STOCKS);
-        AutoCompleteTextView stockAutocomplete = findViewById(R.id.stockDropdown);
+        stockAutocomplete = findViewById(R.id.stockDropdown);
         stockAutocomplete.setAdapter(stockAdapter);
 
         stockAutocomplete.setOnItemClickListener((parent, view, position, id) -> {
@@ -70,31 +79,15 @@ public class SearchActivity extends Activity implements StockAutoCompleteWatcher
         stockAutocomplete.addTextChangedListener(autoCompleteWatcher);
 
         // Create analysis selection interface
-        CheckBox smaCheckbox = findViewById(R.id.SMAcheckbox);
-        CheckBox emaCheckbox = findViewById(R.id.EMAcheckbox);
-        CheckBox macdCheckbox = findViewById(R.id.MACDcheckbox);
-        CheckBox macdavgCheckbox = findViewById(R.id.MACDAVGcheckbox);
+        smaCheckbox = findViewById(R.id.SMAcheckbox);
+        emaCheckbox = findViewById(R.id.EMAcheckbox);
+        macdCheckbox = findViewById(R.id.MACDcheckbox);
+        macdavgCheckbox = findViewById(R.id.MACDAVGcheckbox);
 
-        TextView analysisDaysView = findViewById(R.id.analysisDays);
+        analysisDaysView = findViewById(R.id.analysisDays);
 
         Button resetBttn = findViewById(R.id.resetBttn);
-        resetBttn.setOnClickListener(v -> {
-            fromDate.clear();
-            toDate.clear();
-
-            stockAutocomplete.getText().clear();
-            spinner.setVisibility(View.INVISIBLE);
-
-            smaCheckbox.setChecked(false);
-            emaCheckbox.setChecked(false);
-            macdCheckbox.setChecked(false);
-            macdavgCheckbox.setChecked(false);
-
-            analysisDaysView.setText("");
-
-            View current = getCurrentFocus();
-            if (current != null) current.clearFocus();
-        });
+        resetBttn.setOnClickListener(this::resetView);
 
         Button searchHistory = findViewById(R.id.search_history);
         searchHistory.setOnClickListener(v -> {
@@ -102,99 +95,122 @@ public class SearchActivity extends Activity implements StockAutoCompleteWatcher
             context.startActivity(intent);
         });
 
-        SearchHistoryDatabase database = SearchHistoryDatabase.getInstance(this);
+        database = SearchHistoryDatabase.getInstance(this);
 
         // Create Search button
         Button searchBttn = findViewById(R.id.searchBttn);
-        searchBttn.setOnClickListener(v -> {
-            spinner.setVisibility(View.VISIBLE);
-            String stockSymbol = stockAutocomplete.getText().toString();
+        searchBttn.setOnClickListener(this::executeSearch);
 
-            if (analysisDaysView.getText().toString().isEmpty()) {
-                Toast.makeText(this, "Please fill in the number of days for SMA or EMA field", Toast.LENGTH_SHORT).show();
-                return;
-            }
-
-            int analysisDays = Integer.parseInt(analysisDaysView.getText().toString());
-
-            if (stockSymbol.isEmpty()) {
-                Toast.makeText(this, "Please select the correct stock symbol to run the search", Toast.LENGTH_SHORT).show();
-                return;
-            }
-
-            if (smaCheckbox.isChecked() || emaCheckbox.isChecked()) {
-                if (analysisDays <= 0) {
-                    Toast.makeText(this, "Please enter the correct number of days for SMA or EMA analysis", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-            }
-
-            List<AnalysisType> analysisTypes = new ArrayList<>();
-
-            if (smaCheckbox.isChecked()) {
-                analysisTypes.add(AnalysisType.SMA);
-            }
-
-            if (emaCheckbox.isChecked()) {
-                analysisTypes.add(AnalysisType.EMA);
-            }
-
-            if (macdCheckbox.isChecked()) {
-                analysisTypes.add(AnalysisType.MACD);
-            }
-
-            if (macdavgCheckbox.isChecked()) {
-                analysisTypes.add(AnalysisType.MACDAVG);
-            }
-
-            if (fromDate.getCal().compareTo(toDate.getCal()) <= 0 && selectedStock != null) {
-                new Thread(() -> {
-                    SearchHistoryDao dao = database.getSearchHistoryDao();
-                    if (dao.exists(selectedStock, fromDate.getCal().getTime(), toDate.getCal().getTime(), analysisTypes)) {
-                        SearchHistoryItem searchHistoryItem = dao.getItem(selectedStock, fromDate.getCal().getTime(), toDate.getCal().getTime(), analysisTypes);
-
-                        Intent intent = new Intent(SearchActivity.this, GraphActivity.class);
-                        intent.putExtra("SearchItem", searchHistoryItem);
-                        context.startActivity(intent);
-                    } else {
-                        selectedStock.fetchData(
-                                Resolution.types.get("D"),
-                                fromDate.getCal().getTime(), toDate.getCal().getTime(),
-                                (price_points, stock) -> {
-
-                                    if (price_points == null || price_points.getClose().size() == 0) {
-                                        return;
-                                    }
-
-                                    SearchHistoryItem searchHistoryItem = new SearchHistoryItem(selectedStock, fromDate.getCal(), toDate.getCal(), analysisTypes, analysisDays);
-
-                                    // Insert search history object into the database
-                                    dao.insert(searchHistoryItem);
-
-                                    runOnUiThread(() -> {
-                                        spinner.setVisibility(View.INVISIBLE);
-
-                                        Intent intent = new Intent(SearchActivity.this, GraphActivity.class);
-                                        intent.putExtra("SearchItem", searchHistoryItem);
-                                        context.startActivity(intent);
-                                    });
-                                });
-                    }
-                }).start();
-            } else if (selectedStock != null) {
-                spinner.setVisibility(View.INVISIBLE);
-                Toast.makeText(this, "\"From\" date must be smaller or equal \"to\" date", Toast.LENGTH_LONG).show();
-                fromDate.setDayEqual(toDate);
-            } else {
-                spinner.setVisibility(View.INVISIBLE);
-                Toast.makeText(this, "Please select a stock smybol from the autcomplete list", Toast.LENGTH_LONG).show();
-                stockAutocomplete.showDropDown();
-            }
-        });
+        //Reset all to null
+        resetView(null);
     }
 
     @Override
     public void handleLoadingSymbols(int visibility) {
-        spinner.setVisibility(visibility);
+        runOnUiThread(() -> spinner.setVisibility(visibility));
+    }
+
+    private void resetView(View v) {
+        fromDate.clear();
+        toDate.clear();
+
+        stockAutocomplete.getText().clear();
+        spinner.setVisibility(View.INVISIBLE);
+
+        smaCheckbox.setChecked(false);
+        emaCheckbox.setChecked(false);
+        macdCheckbox.setChecked(false);
+        macdavgCheckbox.setChecked(false);
+
+        analysisDaysView.setText("");
+
+        View current = SearchActivity.this.getCurrentFocus();
+        if (current != null) current.clearFocus();
+    }
+
+    private void executeSearch(View v) {
+        spinner.setVisibility(View.VISIBLE);
+        String stockSymbol = stockAutocomplete.getText().toString();
+
+        if (analysisDaysView.getText().toString().isEmpty()) {
+            Toast.makeText(SearchActivity.this, "Please fill in the number of days for SMA or EMA field", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        int analysisDays = Integer.parseInt(analysisDaysView.getText().toString());
+
+        if (stockSymbol.isEmpty()) {
+            Toast.makeText(SearchActivity.this, "Please select the correct stock symbol to run the search", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if (smaCheckbox.isChecked() || emaCheckbox.isChecked()) {
+            if (analysisDays <= 0) {
+                Toast.makeText(SearchActivity.this, "Please enter the correct number of days for SMA or EMA analysis", Toast.LENGTH_SHORT).show();
+                return;
+            }
+        }
+
+        List<AnalysisType> analysisTypes = new ArrayList<>();
+
+        if (smaCheckbox.isChecked()) {
+            analysisTypes.add(AnalysisType.SMA);
+        }
+
+        if (emaCheckbox.isChecked()) {
+            analysisTypes.add(AnalysisType.EMA);
+        }
+
+        if (macdCheckbox.isChecked()) {
+            analysisTypes.add(AnalysisType.MACD);
+        }
+
+        if (macdavgCheckbox.isChecked()) {
+            analysisTypes.add(AnalysisType.MACDAVG);
+        }
+
+        if (fromDate.getCal().compareTo(toDate.getCal()) <= 0 && selectedStock != null && !analysisTypes.isEmpty()) {
+            new Thread(() -> {
+                SearchHistoryDao dao = database.getSearchHistoryDao();
+                if (dao.exists(selectedStock, fromDate.getCal().getTime(), toDate.getCal().getTime(), analysisTypes)) {
+                    SearchHistoryItem searchHistoryItem = dao.getItem(selectedStock, fromDate.getCal().getTime(), toDate.getCal().getTime(), analysisTypes);
+                    searchHistoryItem.setAnalysisDays(analysisDays);
+
+                    Intent intent = new Intent(SearchActivity.this, GraphActivity.class);
+                    intent.putExtra("SearchItem", searchHistoryItem);
+                    context.startActivity(intent);
+                } else {
+                    selectedStock.fetchData(
+                            Resolution.types.get("D"),
+                            fromDate.getCal(), toDate.getCal(), analysisDays,
+                            (price_points, stock) -> {
+
+                                if (price_points == null || price_points.getClose().size() == 0) {
+                                    return;
+                                }
+
+                                SearchHistoryItem searchHistoryItem = new SearchHistoryItem(selectedStock, fromDate.getCal(), toDate.getCal(), analysisTypes, analysisDays);
+                                // Insert search history object into the database
+                                dao.insert(searchHistoryItem);
+
+                                SearchActivity.this.runOnUiThread(() -> {
+                                    spinner.setVisibility(View.INVISIBLE);
+
+                                    Intent intent = new Intent(SearchActivity.this, GraphActivity.class);
+                                    intent.putExtra("SearchItem", searchHistoryItem);
+                                    context.startActivity(intent);
+                                });
+                            });
+                }
+            }).start();
+        } else if (selectedStock != null) {
+            spinner.setVisibility(View.INVISIBLE);
+            Toast.makeText(SearchActivity.this, "\"From\" date must be smaller or equal \"to\" date", Toast.LENGTH_LONG).show();
+            fromDate.setDayEqual(toDate);
+        } else {
+            spinner.setVisibility(View.INVISIBLE);
+            Toast.makeText(SearchActivity.this, "Please select a stock smybol from the autcomplete list", Toast.LENGTH_LONG).show();
+            stockAutocomplete.showDropDown();
+        }
     }
 }

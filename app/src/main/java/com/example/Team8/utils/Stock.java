@@ -11,6 +11,7 @@ import com.example.Team8.utils.http.HTTP_JSON;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -279,7 +280,7 @@ public class Stock implements Serializable {
         }
     }
 
-    public void fetchData(String resolution, Date from, Date to, StockDataCallback callback) {
+    public void fetchData(String resolution, Calendar from, Calendar to, int numDays, StockDataCallback callback) {
         API api = API.getInstance();
         String getStockCandlesURL;
 
@@ -288,8 +289,13 @@ public class Stock implements Serializable {
             return;
         }
 
+        //Compensate for analysis latent days
+        Calendar extraDays = DateTimeHelper.addBusinessDays(from, -numDays);
+        Date dateFrom = extraDays.getTime();
+        Date dateTo = to.getTime();
+
         try {
-            getStockCandlesURL = api.getStockCandlesURL(symbol, Resolution.types.get(resolution), from, to);
+            getStockCandlesURL = api.getStockCandlesURL(symbol, Resolution.types.get(resolution), dateFrom, dateTo);
         } catch (Exception e) {
             setResponseCallback(callback, null);
             throw new NoSuchFieldError();

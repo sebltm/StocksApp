@@ -146,7 +146,7 @@ public class SearchActivity extends Activity {
                 analysisTypes.add(AnalysisType.MACDAVG);
             }
 
-            if (fromDate.getCal().compareTo(toDate.getCal()) <= 0) {
+            if (fromDate.getCal().compareTo(toDate.getCal()) <= 0 && selectedStock != null) {
                 new Thread(() -> {
                     SearchHistoryDao dao = database.getSearchHistoryDao();
                     if (dao.exists(selectedStock, fromDate.getCal().getTime(), toDate.getCal().getTime(), analysisTypes)) {
@@ -180,10 +180,13 @@ public class SearchActivity extends Activity {
                                 });
                     }
                 }).start();
-            } else {
-                spinner.setVisibility(View.VISIBLE);
+            } else if (selectedStock != null) {
+                spinner.setVisibility(View.INVISIBLE);
                 Toast.makeText(this, "\"From\" date must be smaller or equal \"to\" date", Toast.LENGTH_LONG).show();
                 fromDate.setDayEqual(toDate);
+            } else {
+                spinner.setVisibility(View.INVISIBLE);
+                Toast.makeText(this, "Please select a stock smybol from the autcomplete list", Toast.LENGTH_LONG).show();
             }
         });
     }

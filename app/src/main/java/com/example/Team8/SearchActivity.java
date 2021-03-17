@@ -3,6 +3,7 @@ package com.example.Team8;
 import android.content.Context;
 import android.database.sqlite.SQLiteConstraintException;
 import android.os.Bundle;
+import android.util.Pair;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.WindowManager;
@@ -31,6 +32,7 @@ import com.example.Team8.utils.API;
 import com.example.Team8.utils.callbacks.StockDataCallback;
 import com.example.Team8.utils.callbacks.StocksCallback;
 
+import java.math.BigDecimal;
 import java.sql.SQLOutput;
 import java.util.ArrayList;
 import java.util.Date;
@@ -39,7 +41,7 @@ import java.util.List;
 
 public class SearchActivity extends AppCompatActivity {
     private static Stock selectedStock;
-
+    private Graph graphInstance;
     private static final ArrayList<Stock> STOCKS = new ArrayList<>();
 
     @Override
@@ -103,6 +105,7 @@ public class SearchActivity extends AppCompatActivity {
         // Create Search button
         Button searchBttn = (Button) findViewById(R.id.searchBttn);
         searchBttn.setOnClickListener(v -> {
+            System.out.print("Button Click Test!!!! ");
             TextView stockView = (TextView) findViewById(R.id.stockDropdown);
             String stockSymbol = stockView.getText().toString();
 
@@ -169,6 +172,18 @@ public class SearchActivity extends AppCompatActivity {
 //                            stock.calculateMACD(params);
 //                            stock.calculateMACDAVG(params);
                             spinner.setVisibility(View.GONE);
+
+
+                            ArrayList<BigDecimal> valueList = new ArrayList<BigDecimal>();
+                            ArrayList<Date> dateList = new ArrayList<Date>();
+
+                            for (int i=0; i < stockPrices.size(); i++) {
+
+                                valueList.add((stockPrices.get(i).getValuePrice()));
+                                dateList.add((stockPrices.get(i).getDateTime()));
+                            }
+
+                             graphInstance.setValues(dateList,valueList);
                         });
 
 

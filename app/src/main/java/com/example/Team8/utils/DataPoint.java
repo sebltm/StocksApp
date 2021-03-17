@@ -20,4 +20,12 @@ public class DataPoint {
     public String toString() {
         return String.format("[%3$s] DateTime: \"%2$s\" | Value: \"%1$s\"", value,  dateTime, pointType.toUpperCase());
     }
+
+    public BigDecimal getValuePrice(){
+        return this.value;
+    }
+
+    public Date getDateTime(){
+        return this.dateTime;
+    }
 }

@@ -24,14 +24,6 @@
         app:layout_constraintTop_toBottomOf="@+id/search_history_date_from" />
 
     <TextView
-        android:id="@+id/search_history_exchange"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/stock_default_exchange"
-        app:layout_constraintStart_toEndOf="@+id/search_history_symbol"
-        app:layout_constraintTop_toTopOf="@+id/search_history_symbol" />
-
-    <TextView
         android:id="@+id/search_history_description"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -86,8 +78,8 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:text="-"
-        app:layout_constraintStart_toEndOf="@+id/search_history_exchange"
-        app:layout_constraintTop_toTopOf="@+id/search_history_exchange" />
+        app:layout_constraintStart_toEndOf="@+id/search_history_symbol"
+        app:layout_constraintTop_toTopOf="@+id/search_history_symbol" />
 
     <TextView
         android:id="@+id/search_history_analysis_types"
@@ -96,6 +88,6 @@
         android:layout_marginStart="8dp"
         android:text="@string/analysis_types"
         app:layout_constraintStart_toEndOf="@+id/textView17"
-        app:layout_constraintTop_toTopOf="@+id/search_history_exchange" />
+        app:layout_constraintTop_toTopOf="@+id/search_history_symbol" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

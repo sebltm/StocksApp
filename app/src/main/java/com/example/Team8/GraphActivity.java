@@ -12,14 +12,12 @@ import com.google.android.material.tabs.TabLayoutMediator;
 
 public class GraphActivity extends FragmentActivity {
 
-    SearchHistoryItem searchItem;
+    public static SearchHistoryItem searchItem;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_graph);
-
-        this.searchItem = (SearchHistoryItem) getIntent().getSerializableExtra("SearchItem");
 
         GraphAdapter graphAdapter = new GraphAdapter(this);
         graphAdapter.setAttributes(searchItem);
@@ -28,6 +26,6 @@ public class GraphActivity extends FragmentActivity {
         viewPager.setAdapter(graphAdapter);
 
         TabLayout tabLayout = findViewById(R.id.tabs);
-        new TabLayoutMediator(tabLayout, viewPager, (tab, position) -> tab.setText(this.searchItem.getAnalysisTypes().get(position).name())).attach();
+        new TabLayoutMediator(tabLayout, viewPager, (tab, position) -> tab.setText(GraphActivity.searchItem.getAnalysisTypes().get(position).name())).attach();
     }
 }

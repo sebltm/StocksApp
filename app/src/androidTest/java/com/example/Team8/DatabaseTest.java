@@ -36,7 +36,7 @@ public class DatabaseTest {
     }
 
     @Test
-    public void test_insert_one_item() {
+    public Stock test_insert_one_item() {
         Context context = InstrumentationRegistry.getInstrumentation().getTargetContext();
         SearchHistoryDatabase database = SearchHistoryDatabase.getInstance(context);
         List<AnalysisType> analysisTypeList = new ArrayList<>();
@@ -59,5 +59,13 @@ public class DatabaseTest {
         database.getSearchHistoryDao().insert(item);
 
         assert (database.getSearchHistoryDao().getNumItems() == 1);
+
+        return stock;
+    }
+
+    public void fetch_one_item() {
+        nuke_table();
+        Stock stock = test_insert_one_item();
+
     }
 }

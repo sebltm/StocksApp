@@ -2,7 +2,6 @@ package com.example.Team8.StockCalc;
 
 import androidx.annotation.NonNull;
 
-import java.util.Arrays;
 import java.util.Locale;
 
 public class ExponentialMovingAverage {
@@ -29,10 +28,9 @@ public class ExponentialMovingAverage {
 
         SimpleMovingAverage sma = new SimpleMovingAverage();
 
+        this.periodEma = sma.calculate(prices, this.period).getSMA();
+
         for (int i = (period - 1); i < this.prices.length; i++) {
-            double[] slice = Arrays.copyOfRange(this.prices, 0, i + 1);
-            double[] smaResults = sma.calculate(slice, this.period).getSMA();
-            this.periodSma[i] = smaResults[smaResults.length - 1];
 
             if (i == (period - 1)) {
                 this.periodEma[i] = this.periodSma[i];

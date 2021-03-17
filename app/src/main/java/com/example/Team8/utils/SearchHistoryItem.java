@@ -16,6 +16,11 @@ import java.util.List;
 public class SearchHistoryItem implements Serializable {
 
     @NonNull
+    @ColumnInfo(name = "date_executed")
+    @TypeConverters(StockHistoryConverter.class)
+    private Date dateExecuted;
+
+    @NonNull
     @TypeConverters(StockHistoryConverter.class)
     private Stock stock;
 
@@ -43,6 +48,8 @@ public class SearchHistoryItem implements Serializable {
         this.to = to.getTime();
         this.analysisTypes = analysisTypes;
         this.analysisDays = analysisDays;
+
+        this.dateExecuted = new Date(System.currentTimeMillis());
     }
 
     public SearchHistoryItem(@NonNull Stock stock, @NonNull Date from, @NonNull Date to, @NonNull List<AnalysisType> analysisTypes, Integer analysisDays) {
@@ -51,6 +58,8 @@ public class SearchHistoryItem implements Serializable {
         this.to = to;
         this.analysisTypes = analysisTypes;
         this.analysisDays = analysisDays;
+
+        this.dateExecuted = new Date(System.currentTimeMillis());
     }
 
     @NonNull
@@ -95,5 +104,14 @@ public class SearchHistoryItem implements Serializable {
 
     public void setAnalysisDays(Integer analysisDays) {
         this.analysisDays = analysisDays;
+    }
+
+    @NonNull
+    public Date getDateExecuted() {
+        return dateExecuted;
+    }
+
+    public void setDateExecuted(@NonNull Date dateExecuted) {
+        this.dateExecuted = dateExecuted;
     }
 }

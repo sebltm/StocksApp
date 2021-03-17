@@ -23,16 +23,6 @@
         android:layout_marginEnd="0dp"
         android:text="@string/stock_default_description" />
 
-    <TextView
-        android:id="@+id/stockExchange"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/stockSymbol"
-        android:layout_marginStart="0dp"
-        android:layout_marginBottom="0dp"
-        android:layout_toEndOf="@+id/stockSymbol"
-        android:text="@string/stock_default_exchange" />
-
     <View
         android:id="@+id/divider"
         android:layout_width="match_parent"

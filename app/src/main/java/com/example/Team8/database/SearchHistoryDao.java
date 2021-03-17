@@ -23,7 +23,7 @@ public interface SearchHistoryDao {
     @Query("SELECT * from SearchHistory WHERE date_from < (:dateFrom)")
     List<SearchHistoryItem> loadAllByDateFrom(Long dateFrom);
 
-    @Query("SELECT * from SearchHistory LIMIT (:n)")
+    @Query("SELECT * from SearchHistory ORDER BY date_executed DESC LIMIT (:n)")
     List<SearchHistoryItem> loadN(Integer n);
 
     @Query("SELECT EXISTS (SELECT 1 FROM SearchHistory WHERE stock = (:stock) AND  date_from = (:dateFrom) AND date_to = (:dateTo) AND analysis_type = (:analysisTypes))")

@@ -81,7 +81,6 @@ public class SearchHistoryAdapter extends RecyclerView.Adapter<SearchHistoryAdap
         private final TextView dateFrom;
         private final TextView dateTo;
         private final TextView symbol;
-        private final TextView exchange;
         private final TextView analysisTypes;
         private final TextView description;
 
@@ -95,7 +94,6 @@ public class SearchHistoryAdapter extends RecyclerView.Adapter<SearchHistoryAdap
             this.dateFrom = itemView.findViewById(R.id.search_history_date_from);
             this.dateTo = itemView.findViewById(R.id.search_history_date_to);
             this.symbol = itemView.findViewById(R.id.search_history_symbol);
-            this.exchange = itemView.findViewById(R.id.search_history_exchange);
             this.analysisTypes = itemView.findViewById(R.id.search_history_analysis_types);
             this.description = itemView.findViewById(R.id.search_history_description);
 
@@ -114,10 +112,6 @@ public class SearchHistoryAdapter extends RecyclerView.Adapter<SearchHistoryAdap
             return symbol;
         }
 
-        public TextView getExchange() {
-            return exchange;
-        }
-
         public TextView getAnalysisTypes() {
             return analysisTypes;
         }
@@ -131,7 +125,8 @@ public class SearchHistoryAdapter extends RecyclerView.Adapter<SearchHistoryAdap
 
             this.repeatSearch.setOnClickListener(v -> {
                 Intent intent = new Intent(SearchHistoryAdapter.this.context, GraphActivity.class);
-                intent.putExtra("SearchItem", this.searchHistoryItem);
+                GraphActivity.searchItem = this.searchHistoryItem;
+                // intent.putExtra("SearchItem", this.searchHistoryItem);
                 SearchHistoryAdapter.this.context.startActivity(intent);
             });
         }

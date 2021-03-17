@@ -1,5 +1,6 @@
 package com.example.Team8.ui.main;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -83,33 +84,6 @@ public class GraphFragment extends Fragment {
             createChart(graphView, analysisPoints, pricePoint, localPriceActive);
         });
 
-        new Thread(() -> {
-            ProgressBar spinner = graphView.findViewById(R.id.spinner_graph);
-
-            if (dataNotLoaded) {
-                switch (analysisType) {
-                    case SMA:
-                        analysisPoints = searchItem.getStock().calculateSMA(searchItem.getAnalysisDays());
-                        break;
-                    case EMA:
-                        analysisPoints = searchItem.getStock().calculateEMA(searchItem.getAnalysisDays());
-                        break;
-                    case MACD:
-                        analysisPoints = searchItem.getStock().calculateMACD(9, 25, 2);
-                    case MACDAVG:
-                        analysisPoints = searchItem.getStock().calculateMACDAVG();
-                }
-
-                createChart(graphView, analysisPoints, pricePoint, localPriceActive);
-
-                dataNotLoaded = false;
-            } else {
-                createChart(graphView, analysisPoints, pricePoint, localPriceActive);
-            }
-
-            getActivity().runOnUiThread(() -> spinner.setVisibility(View.INVISIBLE));
-        }).start();
-
         return graphView;
     }
 
@@ -177,13 +151,40 @@ public class GraphFragment extends Fragment {
     public void onResume() {
         super.onResume();
 
-        if (localPriceActive != globalPriceActive) {
-            localPriceActive = globalPriceActive;
+        new Thread(() -> {
+            ProgressBar spinner = graphView.findViewById(R.id.spinner_graph);
 
-            createChart(this.graphView, analysisPoints, pricePoint, localPriceActive);
-        }
+            if (dataNotLoaded) {
+                switch (analysisType) {
+                    case SMA:
+                        analysisPoints = searchItem.getStock().calculateSMA(searchItem.getAnalysisDays());
+                        break;
+                    case EMA:
+                        analysisPoints = searchItem.getStock().calculateEMA(searchItem.getAnalysisDays());
+                        break;
+                    case MACD:
+                        analysisPoints = searchItem.getStock().calculateMACD(9, 25, 2);
+                    case MACDAVG:
+                        analysisPoints = searchItem.getStock().calculateMACDAVG();
+                }
 
-        togglePrice.setChecked(localPriceActive);
+                createChart(graphView, analysisPoints, pricePoint, globalPriceActive);
+
+                dataNotLoaded = false;
+            } else {
+                if (localPriceActive != globalPriceActive) {
+                    localPriceActive = globalPriceActive;
+
+                    createChart(this.graphView, analysisPoints, pricePoint, localPriceActive);
+                }
+            }
+
+            Activity activity = getActivity();
+            if (activity != null) activity.runOnUiThread(() -> {
+                spinner.setVisibility(View.INVISIBLE);
+                togglePrice.setChecked(localPriceActive);
+            });
+        }).start();
     }
 
     static class StockPriceFormat extends ValueFormatter {

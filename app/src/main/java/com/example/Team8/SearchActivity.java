@@ -188,6 +188,8 @@ public class SearchActivity extends Activity implements StockAutoCompleteWatcher
                             (price_points, stock) -> {
 
                                 if (price_points == null || price_points.getClose().size() == 0) {
+                                    spinner.setVisibility(View.INVISIBLE);
+                                    handleNetworkError();
                                     return;
                                 }
 
@@ -198,8 +200,9 @@ public class SearchActivity extends Activity implements StockAutoCompleteWatcher
                                 SearchActivity.this.runOnUiThread(() -> {
                                     spinner.setVisibility(View.INVISIBLE);
 
+                                    GraphActivity.searchItem = searchHistoryItem;
                                     Intent intent = new Intent(SearchActivity.this, GraphActivity.class);
-                                    intent.putExtra("SearchItem", searchHistoryItem);
+                                    // intent.putExtra("SearchItem", searchHistoryItem);
                                     context.startActivity(intent);
                                 });
                             });

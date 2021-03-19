@@ -375,8 +375,7 @@ public class Stock implements Serializable {
                 DateTimeHelper.getDateStringOnly(to),
                 new DecimalFormat("#.##").format(diff_percent),
                 max,
-                min,
-                getMinPrice().doubleValue()
+                min
         );
         return summary;
     }

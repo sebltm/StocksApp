@@ -1,6 +1,11 @@
 package com.example.Team8.utils;
 
+import android.annotation.SuppressLint;
+import android.text.Html;
+import android.text.Spanned;
+
 import androidx.annotation.NonNull;
+import androidx.arch.core.util.Function;
 
 import com.example.Team8.StockCalc.ExponentialMovingAverage;
 import com.example.Team8.StockCalc.MovingAverageConvergenceDivergence;
@@ -10,12 +15,17 @@ import com.example.Team8.utils.http.HTTP_JSON;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.text.DecimalFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 import static com.example.Team8.utils.ArrayUtils.doubleArr;
 
@@ -280,11 +290,12 @@ public class Stock implements Serializable {
 
     /**
      * Compensate for analysis latent days
+     *
      * @param resolution: String
-     * @param from: Date
-     * @param to: Date
-     * @param numDays: int
-     * @param callback: StockDataCallback
+     * @param from:       Date
+     * @param to:         Date
+     * @param numDays:    int
+     * @param callback:   StockDataCallback
      */
     public void fetchData(String resolution, Calendar from, Calendar to, int numDays, StockDataCallback callback) {
         Calendar extraDays = DateTimeHelper.addBusinessDays(from, -numDays);
@@ -294,11 +305,10 @@ public class Stock implements Serializable {
     }
 
     /**
-     *
      * @param resolution: String
-     * @param from: Date
-     * @param to: Date
-     * @param callback: StockDataCallback
+     * @param from:       Date
+     * @param to:         Date
+     * @param callback:   StockDataCallback
      */
     public void fetchData(String resolution, Date from, Date to, StockDataCallback callback) {
         API api = API.getInstance();
@@ -343,5 +353,51 @@ public class Stock implements Serializable {
 
     public void setPriceHistory(PricePoint priceHistory) {
         this.priceHistory = priceHistory;
+    }
+
+    public Spanned getSummaryHTML(Date from, Date to) {
+        Function<String, Spanned> toHTML = (text) -> Html.fromHtml(text, Html.FROM_HTML_MODE_COMPACT);
+        return toHTML.apply(getSummary(from, to));
+    }
+
+    public String getSummary(Date from, Date to) {
+        double max = getMaxPrice().doubleValue();
+        double min = getMinPrice().doubleValue();
+        double diff = (max - min);
+        double diff_percent  = (diff / (max + min / 2)) * 100;
+        String summary = String.format(
+                "For stock <b>%1$s</b> (%2$s) from %3$s to %4$s. " +
+                        "The difference in the stock value was <b>%5$s%%</b>. " +
+                        "The highest value was <b>%6$s USD</b>, while the lowest value was <b>%7$s USD</b>.",
+                getSymbol(),
+                getDescription(),
+                DateTimeHelper.getDateStringOnly(from),
+                DateTimeHelper.getDateStringOnly(to),
+                new DecimalFormat("#.##").format(diff_percent),
+                max,
+                min,
+                getMinPrice().doubleValue()
+        );
+        return summary;
+    }
+
+    private List<BigDecimal> getClosePricesValues() {
+        return priceHistory.getClose()
+                .stream()
+                .map(DataPoint::getValue).collect(Collectors.toList());
+    }
+
+    private BigDecimal getMaxPrice() {
+        return getClosePricesValues()
+                .stream()
+                .max(Comparator.comparing(BigDecimal::doubleValue))
+                .orElseGet(() -> new BigDecimal("0.0"));
+    }
+
+    private BigDecimal getMinPrice() {
+        return getClosePricesValues()
+                .stream()
+                .min(Comparator.comparing(BigDecimal::doubleValue))
+                .orElseGet(() -> new BigDecimal("0.0"));
     }
 }

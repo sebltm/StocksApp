@@ -2,9 +2,11 @@ package com.example.Team8.ui.main;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -30,6 +32,7 @@ import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.formatter.ValueFormatter;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -73,6 +76,8 @@ public class GraphFragment extends Fragment {
         togglePrice = graphView.findViewById(R.id.toggle_price_line);
         mpLineChart = graphView.findViewById(R.id.graph_frag_line_graph);
 
+        setSummaryHandler();
+
         stockSymbol.setText(searchItem.getStock().getDisplaySymbol());
         dateFrom.setText(dateFormat.format(searchItem.getFrom()));
         dateTo.setText(dateFormat.format(searchItem.getTo()));
@@ -88,6 +93,16 @@ public class GraphFragment extends Fragment {
         });
 
         return graphView;
+    }
+
+    private void setSummaryHandler() {
+        Button summaryBtn = graphView.findViewById(R.id.summaryBtn);
+        summaryBtn.setOnClickListener((view) ->
+                new MaterialAlertDialogBuilder(getContext())
+                        .setTitle("Summary")
+                        .setMessage(searchItem.getStock().getSummaryHTML(searchItem.getFrom(), searchItem.getTo()))
+                        .show()
+        );
     }
 
     private List<Entry> pointToEntry(List<AnalysisPoint> analysisPoints) {

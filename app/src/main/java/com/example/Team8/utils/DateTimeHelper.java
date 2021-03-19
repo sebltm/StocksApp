@@ -1,9 +1,11 @@
 package com.example.Team8.utils;
 
+import android.annotation.SuppressLint;
 import android.os.Build;
 
 import androidx.annotation.RequiresApi;
 
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.Arrays;
@@ -53,4 +55,9 @@ public class DateTimeHelper {
 
         return calCopy;
     }
+
+    public static String getDateStringOnly(Date date){
+        @SuppressLint("SimpleDateFormat") SimpleDateFormat formatter = new SimpleDateFormat("dd MMMM yyyy");
+        return formatter.format(date);
+    };
 }

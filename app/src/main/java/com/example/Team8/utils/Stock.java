@@ -278,7 +278,29 @@ public class Stock implements Serializable {
         }
     }
 
+    /**
+     * Compensate for analysis latent days
+     * @param resolution: String
+     * @param from: Date
+     * @param to: Date
+     * @param numDays: int
+     * @param callback: StockDataCallback
+     */
     public void fetchData(String resolution, Calendar from, Calendar to, int numDays, StockDataCallback callback) {
+        Calendar extraDays = DateTimeHelper.addBusinessDays(from, -numDays);
+        Date dateFrom = extraDays.getTime();
+        Date dateTo = to.getTime();
+        fetchData(resolution, dateFrom, dateTo, callback);
+    }
+
+    /**
+     *
+     * @param resolution: String
+     * @param from: Date
+     * @param to: Date
+     * @param callback: StockDataCallback
+     */
+    public void fetchData(String resolution, Date from, Date to, StockDataCallback callback) {
         API api = API.getInstance();
         String getStockCandlesURL;
 
@@ -287,13 +309,8 @@ public class Stock implements Serializable {
             return;
         }
 
-        //Compensate for analysis latent days
-        Calendar extraDays = DateTimeHelper.addBusinessDays(from, -numDays);
-        Date dateFrom = extraDays.getTime();
-        Date dateTo = to.getTime();
-
         try {
-            getStockCandlesURL = api.getStockCandlesURL(symbol, Resolution.types.get(resolution), dateFrom, dateTo);
+            getStockCandlesURL = api.getStockCandlesURL(symbol, Resolution.types.get(resolution), from, to);
         } catch (Exception e) {
             setResponseCallback(callback, null);
             throw new NoSuchFieldError();

@@ -208,8 +208,8 @@ public class Stock implements Serializable {
         }
     }
 
-    public HashMap<AnalysisType, List<AnalysisPoint>> calculateSelectedIndicators(List<AnalysisType> analysisTypes, Date fromDateTime, Date toDateTime, int nDays, Consumer<List<String>> onErrorCallback) {
-        HashMap<AnalysisType, List<AnalysisPoint>> a_points = new HashMap<>();
+    public List<AnalysisPoint> calculateSelectedIndicators(AnalysisType analysisType, Date fromDateTime, Date toDateTime, int nDays, Consumer<List<String>> onErrorCallback) {
+        List<AnalysisPoint> a_points = new ArrayList<>();
         List<String> errors = new ArrayList<>();
 
         if (priceHistory == null) {
@@ -220,50 +220,48 @@ public class Stock implements Serializable {
         List<DataPoint> stockPrices = priceHistory.getClose();
         int stockPricesCount = stockPrices.size();
 
-        analysisTypes.forEach(analysisType -> {
-            String macd_error_msg = String.format("The difference between the from and to dates must be greater than or equal to 38 for the %s analysis", analysisType);
-            String sma_ema_error_msg_1 = String.format("Days should be between 1 and %s for this %s analysis", analysisType == AnalysisType.EMA ? stockPricesCount - 1 : stockPricesCount, analysisType);
+        String macd_error_msg = String.format("The difference between the from and to dates must be greater for the %s analysis", analysisType);
+        String sma_ema_error_msg_1 = String.format("Days should be between 1 and %s for this %s analysis", analysisType == AnalysisType.EMA ? stockPricesCount - 1 : stockPricesCount, analysisType);
 
-            switch (analysisType) {
-                case SMA:
-                    if (!validateSMA(nDays, stockPricesCount)) {
-                        String error_msg = stockPricesCount == 1 && nDays != 1 ? String.format("Days should be set to 1 for this %s analysis", analysisType) : sma_ema_error_msg_1;
-                        errors.add(error_msg);
-                        break;
-                    }
-                    a_points.put(AnalysisType.SMA, calculateSMA(nDays));
+        switch (analysisType) {
+            case SMA:
+                if (!validateSMA(nDays, stockPricesCount)) {
+                    String error_msg = stockPricesCount == 1 && nDays != 1 ? String.format("Days should be set to 1 for this %s analysis", analysisType) : sma_ema_error_msg_1;
+                    errors.add(error_msg);
                     break;
-                case EMA:
-                    if (!validateEMA(nDays, stockPricesCount)) {
-                        String error_msg_2 = stockPricesCount - 1 == 1 && nDays != 1 ? String.format("Days should be set to 1 for this %s analysis", analysisType) : sma_ema_error_msg_1;
-                        String error_msg = stockPricesCount < 2 ? String.format("The difference between the current dates needs to be greater for the %s analysis", analysisType) : error_msg_2;
-                        errors.add(error_msg);
-                        break;
-                    }
-                    a_points.put(AnalysisType.EMA, calculateEMA(nDays));
+                }
+                a_points = calculateSMA(nDays);
+                break;
+            case EMA:
+                if (!validateEMA(nDays, stockPricesCount)) {
+                    String error_msg_2 = stockPricesCount - 1 == 1 && nDays != 1 ? String.format("Days should be set to 1 for this %s analysis", analysisType) : sma_ema_error_msg_1;
+                    String error_msg = stockPricesCount < 2 ? String.format("The difference between the current dates needs to be greater for the %s analysis", analysisType) : error_msg_2;
+                    errors.add(error_msg);
                     break;
-                case MACD:
-                    if (!validateMACD(fromDateTime, toDateTime)) {
-                        errors.add(macd_error_msg);
-                        break;
-                    }
-                    a_points.put(AnalysisType.MACD, calculateMACD());
+                }
+                a_points = calculateEMA(nDays);
+                break;
+            case MACD:
+                if (!validateMACD(fromDateTime, toDateTime, stockPricesCount)) {
+                    errors.add(macd_error_msg);
                     break;
-                case MACDAVG:
-                    if (!validateMACD(fromDateTime, toDateTime)) {
-                        errors.add(macd_error_msg);
-                        break;
-                    }
-                    a_points.put(AnalysisType.MACDAVG, calculateMACDAVG());
+                }
+                a_points = calculateMACD();
+                break;
+            case MACDAVG:
+                if (!validateMACD(fromDateTime, toDateTime, stockPricesCount)) {
+                    errors.add(macd_error_msg);
                     break;
-            }
-        });
+                }
+                a_points = calculateMACDAVG();
+                break;
+        }
         onErrorCallback.accept(errors);
         return a_points;
     }
 
-    private boolean validateMACD(Date date_1, Date date_2) {
-        return DateTimeHelper.dateDiff(date_1, date_2) >= 38;
+    private boolean validateMACD(Date date_1, Date date_2, int prices_length) {
+        return DateTimeHelper.dateDiff(date_1, date_2) > 0 && prices_length >= 27;
     }
 
     private boolean validateSMA(int nDays, int prices_length) {

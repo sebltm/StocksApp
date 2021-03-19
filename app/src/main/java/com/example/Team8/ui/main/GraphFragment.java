@@ -7,12 +7,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.SwitchCompat;
 import androidx.fragment.app.Fragment;
 
+import com.example.Team8.GraphActivity;
 import com.example.Team8.R;
 import com.example.Team8.utils.AnalysisPoint;
 import com.example.Team8.utils.AnalysisType;
@@ -31,6 +33,7 @@ import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -155,18 +158,15 @@ public class GraphFragment extends Fragment {
             ProgressBar spinner = graphView.findViewById(R.id.spinner_graph);
 
             if (dataNotLoaded) {
-                switch (analysisType) {
-                    case SMA:
-                        analysisPoints = searchItem.getStock().calculateSMA(searchItem.getAnalysisDays());
-                        break;
-                    case EMA:
-                        analysisPoints = searchItem.getStock().calculateEMA(searchItem.getAnalysisDays());
-                        break;
-                    case MACD:
-                        analysisPoints = searchItem.getStock().calculateMACD(9, 25, 2);
-                    case MACDAVG:
-                        analysisPoints = searchItem.getStock().calculateMACDAVG();
-                }
+                analysisPoints = searchItem.getStock().calculateSelectedIndicators(
+                        analysisType,
+                        searchItem.getFrom(),
+                        searchItem.getTo(),
+                        searchItem.getAnalysisDays(),
+                        errors -> errors.forEach(error ->
+                                getActivity().runOnUiThread(() -> Toast.makeText(getActivity(), error, Toast.LENGTH_LONG).show())
+                        )
+                );
 
                 createChart(graphView, analysisPoints, pricePoint, globalPriceActive);
 

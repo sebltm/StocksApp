@@ -34,7 +34,7 @@
         app:layout_constraintTop_toBottomOf="@+id/search_history_symbol" />
 
     <Button
-        android:id="@+id/button2"
+        android:id="@+id/search_hist_item_summary"
         android:layout_width="49dp"
         android:layout_height="46dp"
         android:text="@string/search"

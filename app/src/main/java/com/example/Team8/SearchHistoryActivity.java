@@ -2,6 +2,7 @@ package com.example.Team8;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
@@ -18,11 +19,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.Team8.adapters.SearchHistoryAdapter;
 import com.example.Team8.database.SearchHistoryDatabase;
 import com.example.Team8.utils.SearchHistoryItem;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class SearchHistoryActivity extends Activity {
+public class SearchHistoryActivity extends Activity implements SearchHistoryAdapter.SearchHistoryHolder.SearchItemEvent {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,5 +93,20 @@ public class SearchHistoryActivity extends Activity {
             adapter.refreshInternalList(numItems[0]);
             runOnUiThread(adapter::notifyDataSetChanged);
         }).start());
+    }
+
+    @Override
+    public void showSummary(SearchHistoryItem searchHistoryItem) {
+        new MaterialAlertDialogBuilder(this)
+                .setTitle("Summary")
+                .setMessage(searchHistoryItem.getStock().getSummaryHTML(searchHistoryItem.getFrom(), searchHistoryItem.getTo()))
+                .show();
+    }
+
+    @Override
+    public void repeatSearch(SearchHistoryItem searchHistoryItem) {
+        Intent intent = new Intent(this, GraphActivity.class);
+        GraphActivity.searchItem = searchHistoryItem;
+        startActivity(intent);
     }
 }

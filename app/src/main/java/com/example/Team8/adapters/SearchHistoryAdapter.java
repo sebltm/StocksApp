@@ -1,7 +1,6 @@
 package com.example.Team8.adapters;
 
-import android.content.Context;
-import android.content.Intent;
+import android.app.Activity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,7 +10,6 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.Team8.GraphActivity;
 import com.example.Team8.R;
 import com.example.Team8.database.SearchHistoryDatabase;
 import com.example.Team8.utils.AnalysisType;
@@ -21,14 +19,14 @@ import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Locale;
 
-public class SearchHistoryAdapter extends RecyclerView.Adapter<SearchHistoryAdapter.SearchHistoryHolder> {
+public class SearchHistoryAdapter<T extends Activity & SearchHistoryAdapter.SearchHistoryHolder.SearchItemEvent> extends RecyclerView.Adapter<SearchHistoryAdapter.SearchHistoryHolder> {
 
     private static final String format = "dd MMM yyyy";
     private static final SimpleDateFormat dateFormat = new SimpleDateFormat(format, Locale.UK);
     private final List<SearchHistoryItem> localItems;
-    private final Context context;
+    private final T context;
 
-    public SearchHistoryAdapter(List<SearchHistoryItem> searchHistoryItems, Context context) {
+    public SearchHistoryAdapter(List<SearchHistoryItem> searchHistoryItems, T context) {
         this.localItems = searchHistoryItems;
         this.context = context;
     }
@@ -38,7 +36,7 @@ public class SearchHistoryAdapter extends RecyclerView.Adapter<SearchHistoryAdap
     public SearchHistoryHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.search_history_item, parent, false);
 
-        return new SearchHistoryHolder(view);
+        return new SearchHistoryHolder(view, context);
     }
 
     @Override
@@ -86,7 +84,7 @@ public class SearchHistoryAdapter extends RecyclerView.Adapter<SearchHistoryAdap
         return localItems.size();
     }
 
-    public class SearchHistoryHolder extends RecyclerView.ViewHolder {
+    public static class SearchHistoryHolder extends RecyclerView.ViewHolder {
 
         private final TextView dateFrom;
         private final TextView dateTo;
@@ -95,10 +93,11 @@ public class SearchHistoryAdapter extends RecyclerView.Adapter<SearchHistoryAdap
         private final TextView description;
 
         private final Button repeatSearch;
+        private final Button showSummary;
 
-        private SearchHistoryItem searchHistoryItem;
+        private final SearchItemEvent searchItemEvent;
 
-        public SearchHistoryHolder(@NonNull View itemView) {
+        public SearchHistoryHolder(@NonNull View itemView, SearchItemEvent context) {
             super(itemView);
 
             this.dateFrom = itemView.findViewById(R.id.search_history_date_from);
@@ -108,6 +107,9 @@ public class SearchHistoryAdapter extends RecyclerView.Adapter<SearchHistoryAdap
             this.description = itemView.findViewById(R.id.search_history_description);
 
             this.repeatSearch = itemView.findViewById(R.id.search_hist_item_repeat);
+            this.showSummary = itemView.findViewById(R.id.search_hist_item_summary);
+
+            this.searchItemEvent = context;
         }
 
         public TextView getDateFrom() {
@@ -131,14 +133,19 @@ public class SearchHistoryAdapter extends RecyclerView.Adapter<SearchHistoryAdap
         }
 
         public void setSearchHistoryItem(SearchHistoryItem searchHistoryItem) {
-            this.searchHistoryItem = searchHistoryItem;
-
             this.repeatSearch.setOnClickListener(v -> {
-                Intent intent = new Intent(SearchHistoryAdapter.this.context, GraphActivity.class);
-                GraphActivity.searchItem = this.searchHistoryItem;
-                // intent.putExtra("SearchItem", this.searchHistoryItem);
-                SearchHistoryAdapter.this.context.startActivity(intent);
+                searchItemEvent.repeatSearch(searchHistoryItem);
             });
+
+            this.showSummary.setOnClickListener(v -> {
+                searchItemEvent.showSummary(searchHistoryItem);
+            });
+        }
+
+        public interface SearchItemEvent {
+            void showSummary(SearchHistoryItem searchHistoryItem);
+
+            void repeatSearch(SearchHistoryItem searchHistoryItem);
         }
     }
 

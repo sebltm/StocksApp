@@ -387,6 +387,7 @@ public class Stock implements Serializable {
     }
 
     private List<BigDecimal> getClosePricesValues() {
+        if(priceHistory == null) return new ArrayList<>();
         return priceHistory.getClose()
                 .stream()
                 .map(DataPoint::getValue).collect(Collectors.toList());

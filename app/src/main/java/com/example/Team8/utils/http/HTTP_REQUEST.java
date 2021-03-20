@@ -30,9 +30,7 @@ public abstract class HTTP_REQUEST<T extends HTTPCallback<A>, A> {
 
     protected void setResponse(T onResponse, A value) {
         try {
-            if (onResponse != null) {
-                onResponse.response(value);
-            }
+            if (onResponse != null) onResponse.response(value);
         } catch (Exception e) {
             onResponse.response(null);
         }

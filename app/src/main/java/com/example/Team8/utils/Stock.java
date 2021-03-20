@@ -1,5 +1,6 @@
 package com.example.Team8.utils;
 
+import android.content.Context;
 import android.text.Html;
 import android.text.Spanned;
 
@@ -11,6 +12,7 @@ import com.example.Team8.StockCalc.MovingAverageConvergenceDivergence;
 import com.example.Team8.StockCalc.SimpleMovingAverage;
 import com.example.Team8.utils.callbacks.StockDataCallback;
 import com.example.Team8.utils.http.HTTP_JSON;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -280,9 +282,7 @@ public class Stock implements Serializable {
     }
 
     private void setResponseCallback(StockDataCallback callback, PricePoint value) {
-        if (callback != null) {
-            callback.response(value, this);
-        }
+        if (callback != null) callback.response(value, this);
     }
 
     /**
@@ -375,7 +375,15 @@ public class Stock implements Serializable {
         );
     }
 
+    public void showSummary(Context context, Date from, Date to){
+        new MaterialAlertDialogBuilder(context)
+                .setTitle("Summary")
+                .setMessage(getSummaryHTML(from, to))
+                .show();
+    }
+
     private List<BigDecimal> getClosePricesValues() {
+        if(priceHistory == null) return new ArrayList<>();
         return priceHistory.getClose()
                 .stream()
                 .map(DataPoint::getValue).collect(Collectors.toList());

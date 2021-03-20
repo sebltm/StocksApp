@@ -133,13 +133,9 @@ public class SearchHistoryAdapter<T extends Activity & SearchHistoryAdapter.Sear
         }
 
         public void setSearchHistoryItem(SearchHistoryItem searchHistoryItem) {
-            this.repeatSearch.setOnClickListener(v -> {
-                searchItemEvent.repeatSearch(searchHistoryItem);
-            });
+            this.repeatSearch.setOnClickListener(v -> searchItemEvent.repeatSearch(searchHistoryItem));
 
-            this.showSummary.setOnClickListener(v -> {
-                searchItemEvent.showSummary(searchHistoryItem);
-            });
+            this.showSummary.setOnClickListener(v -> searchItemEvent.showSummary(searchHistoryItem));
         }
 
         public interface SearchItemEvent {

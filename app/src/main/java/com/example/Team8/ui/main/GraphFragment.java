@@ -36,6 +36,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.stream.Collectors;
 
 public class GraphFragment extends Fragment {
 
@@ -103,13 +104,10 @@ public class GraphFragment extends Fragment {
     }
 
     private List<Entry> pointToEntry(List<AnalysisPoint> analysisPoints) {
-        List<Entry> entryList = new ArrayList<>();
-
-        for (AnalysisPoint point : analysisPoints) {
-            entryList.add(new Entry(point.getDateTime().getTime(), point.getValue().floatValue()));
-        }
-
-        return entryList;
+        return analysisPoints
+                .stream()
+                .map(point -> new Entry(point.getDateTime().getTime(), point.getValue().floatValue()))
+                .collect(Collectors.toList());
     }
 
     private List<Entry> pointToEntry(PricePoint pricePoints) {

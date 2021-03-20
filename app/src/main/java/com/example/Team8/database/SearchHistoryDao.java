@@ -3,6 +3,7 @@ package com.example.Team8.database;
 import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
+import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 import androidx.room.TypeConverters;
 
@@ -20,8 +21,8 @@ public interface SearchHistoryDao {
     @TypeConverters(StockHistoryConverter.class)
     SearchHistoryItem getItem(Stock stock, Date dateFrom, Date dateTo, List<AnalysisType> analysisTypes);
 
-    @Query("SELECT * from SearchHistory WHERE date_from < (:dateFrom)")
-    List<SearchHistoryItem> loadAllByDateFrom(Long dateFrom);
+    @Query("SELECT * from SearchHistory WHERE date_executed < (:dateFrom)")
+    List<SearchHistoryItem> loadAllByDateExecuted(Long dateFrom);
 
     @Query("SELECT * from SearchHistory ORDER BY date_executed DESC LIMIT (:n)")
     List<SearchHistoryItem> loadN(Integer n);
@@ -30,10 +31,10 @@ public interface SearchHistoryDao {
     @TypeConverters(StockHistoryConverter.class)
     boolean exists(Stock stock, Date dateFrom, Date dateTo, List<AnalysisType> analysisTypes);
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insert(SearchHistoryItem searchHistoryItem);
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertAll(SearchHistoryItem... searchHistoryItems);
 
     @Delete

@@ -29,4 +29,5 @@ public abstract class SearchHistoryDatabase extends RoomDatabase {
     }
 
     public abstract SearchHistoryDao getSearchHistoryDao();
+
 }

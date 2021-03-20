@@ -209,15 +209,13 @@ public class UnitTest1 {
     @Test
     public void API_SEARCH_TEST() {
         System.out.println("API SEARCH TEST");
-        executeTest(done -> {
-            apiSearchAndCatchAssertionError("apple", done, stocks -> {
-                assertNotNull("SEARCH FOR APPLE IS NOT NULL", stocks);
-                assertTrue("SEARCH FOR APPLE IS NON ZERO", stocks.size() > 0);
-                System.out.println("SEARCH FOR APPLE FOUND");
-                System.out.printf("SEARCH RESULTS SIZE: %s\n\n", stocks.size());
-                done.run();
-            });
-        });
+        executeTest(done -> apiSearchAndCatchAssertionError("apple", done, stocks -> {
+            assertNotNull("SEARCH FOR APPLE IS NOT NULL", stocks);
+            assertTrue("SEARCH FOR APPLE IS NON ZERO", stocks.size() > 0);
+            System.out.println("SEARCH FOR APPLE FOUND");
+            System.out.printf("SEARCH RESULTS SIZE: %s\n\n", stocks.size());
+            done.run();
+        }));
 
         executeTest(done -> {
             apiSearchAndCatchAssertionError("advvsdvs", done, stocks -> {

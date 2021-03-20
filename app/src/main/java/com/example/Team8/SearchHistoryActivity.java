@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
@@ -30,8 +32,8 @@ public class SearchHistoryActivity extends Activity {
         Toolbar toolbar = findViewById(R.id.search_history_toolbar);
         setActionBar(toolbar);
 
-        SharedPreferences preferences = this.getPreferences(Context.MODE_PRIVATE);
-        int numItems = preferences.getInt("num_items", 25);
+        SharedPreferences preferences = this.getSharedPreferences("search_activity", Context.MODE_PRIVATE);
+        final int[] numItems = {preferences.getInt("num_items", 25)};
 
         SearchHistoryDatabase database = SearchHistoryDatabase.getInstance(this);
         RecyclerView searchHistoryList = findViewById(R.id.search_history_list);
@@ -42,23 +44,48 @@ public class SearchHistoryActivity extends Activity {
         searchHistoryList.setLayoutManager(new LinearLayoutManager(this));
 
         new Thread(() -> {
-            historyItems.addAll(database.getSearchHistoryDao().loadN(numItems));
+            historyItems.addAll(database.getSearchHistoryDao().loadN(numItems[0]));
             SearchHistoryActivity.this.runOnUiThread(adapter::notifyDataSetChanged);
         }).start();
 
         TextView textView = findViewById(R.id.search_history_subtitle);
-        textView.setText(getString(R.string.search_history_num_items, numItems));
+        textView.setText(getString(R.string.search_history_num_items, numItems[0]));
 
         Spinner spinner = findViewById(R.id.dropdown_database_elements);
         ArrayAdapter<CharSequence> dropdownDatabaseAdapater = ArrayAdapter.createFromResource(this, R.array.database_elements, android.R.layout.simple_spinner_item);
         dropdownDatabaseAdapater.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(dropdownDatabaseAdapater);
 
+        int position = dropdownDatabaseAdapater.getPosition(String.valueOf(numItems[0]));
+        spinner.setSelection(position);
+
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                String selectedItem = spinner.getSelectedItem().toString();
+                numItems[0] = Integer.parseInt(selectedItem);
+                preferences.edit().putInt("num_items", numItems[0]).apply();
+
+                textView.setText(getString(R.string.search_history_num_items, numItems[0]));
+
+                new Thread(() -> {
+                    historyItems.clear();
+                    historyItems.addAll(database.getSearchHistoryDao().loadN(numItems[0]));
+                    SearchHistoryActivity.this.runOnUiThread(adapter::notifyDataSetChanged);
+                }).start();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
         Button clearHistory = findViewById(R.id.search_history_clear);
         clearHistory.setOnClickListener(v -> new Thread(() -> {
             SearchHistoryDatabase db = SearchHistoryDatabase.getInstance(this);
             db.getSearchHistoryDao().deleteAll();
-            adapter.refreshInternalList(numItems);
+            adapter.refreshInternalList(numItems[0]);
             runOnUiThread(adapter::notifyDataSetChanged);
         }).start());
     }

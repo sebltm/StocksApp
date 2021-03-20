@@ -178,8 +178,8 @@ public class SearchActivity extends Activity implements StockAutoCompleteWatcher
                     SearchHistoryItem searchHistoryItem = dao.getItem(selectedStock, fromDate.getCal().getTime(), toDate.getCal().getTime(), analysisTypes);
                     searchHistoryItem.setAnalysisDays(analysisDays);
 
+                    GraphActivity.searchItem = searchHistoryItem;
                     Intent intent = new Intent(SearchActivity.this, GraphActivity.class);
-                    intent.putExtra("SearchItem", searchHistoryItem);
                     context.startActivity(intent);
                 } else {
                     selectedStock.fetchData(
@@ -202,7 +202,6 @@ public class SearchActivity extends Activity implements StockAutoCompleteWatcher
 
                                     GraphActivity.searchItem = searchHistoryItem;
                                     Intent intent = new Intent(SearchActivity.this, GraphActivity.class);
-                                    // intent.putExtra("SearchItem", searchHistoryItem);
                                     context.startActivity(intent);
                                 });
                             });

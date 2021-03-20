@@ -2,7 +2,6 @@ package com.example.Team8.ui.main;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,7 +15,6 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.widget.SwitchCompat;
 import androidx.fragment.app.Fragment;
 
-import com.example.Team8.GraphActivity;
 import com.example.Team8.R;
 import com.example.Team8.utils.AnalysisPoint;
 import com.example.Team8.utils.AnalysisType;
@@ -36,7 +34,6 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -182,6 +179,21 @@ public class GraphFragment extends Fragment {
                                 getActivity().runOnUiThread(() -> Toast.makeText(getActivity(), error, Toast.LENGTH_LONG).show())
                         )
                 );
+
+//                switch(analysisType) {
+//                    case SMA:
+//                        analysisPoints = searchItem.getStock().calculateSMA(searchItem.getAnalysisDays());
+//                        break;
+//                    case EMA:
+//                        analysisPoints = searchItem.getStock().calculateEMA(searchItem.getAnalysisDays());
+//                        break;
+//                    case MACD:
+//                        analysisPoints = searchItem.getStock().calculateMACD(12, 26, 2);
+//                        break;
+//                    case MACDAVG:
+//                        analysisPoints = searchItem.getStock().calculateMACDAVG();
+//                        break;
+//                }
 
                 createChart(graphView, analysisPoints, pricePoint, globalPriceActive);
 

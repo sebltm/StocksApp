@@ -1,6 +1,7 @@
 package com.example.Team8.ui.main;
 
 import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,16 +26,21 @@ import com.example.Team8.utils.SearchHistoryItem;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.AxisBase;
 import com.github.mikephil.charting.components.Description;
+import com.github.mikephil.charting.components.MarkerView;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.formatter.ValueFormatter;
+import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.stream.Collectors;
@@ -160,6 +166,8 @@ public class GraphFragment extends Fragment {
 
         xAxis.setAxisMinimum(searchItem.getFrom().getTime());
 
+        mpLineChart.setMarker(new CustomMarkerView(this.getActivity(), R.layout.marker));
+
         LineData data = new LineData(dataSets);
         mpLineChart.setData(data);
         mpLineChart.invalidate();
@@ -206,6 +214,33 @@ public class GraphFragment extends Fragment {
         @Override
         public String getAxisLabel(float value, AxisBase axis) {
             return dateFormat.format(value);
+        }
+    }
+
+    static class CustomMarkerView extends MarkerView {
+
+        /**
+         * Constructor. Sets up the MarkerView with a custom layout resource.
+         *
+         * @param context
+         * @param layoutResource the layout resource to use for the MarkerView
+         */
+        TextView text;
+
+        public CustomMarkerView(Context context, int layoutResource) {
+            super(context, layoutResource);
+            text = findViewById(R.id.marker_text);
+        }
+
+        @Override
+        public void refreshContent(Entry e, Highlight highlight) {
+            String formattedDate = dateFormat.format(new Date((long) e.getX()));
+            BigDecimal price = BigDecimal.valueOf(e.getY()).setScale(5, RoundingMode.HALF_UP);
+            String formattedPrice = price.stripTrailingZeros().toPlainString();
+            String formattedString = getResources().getString(R.string.marker_text, formattedDate, formattedPrice);
+            text.setText(formattedString);
+
+            super.refreshContent(e, highlight);
         }
     }
 }

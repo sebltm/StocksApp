@@ -38,12 +38,7 @@ import java.util.stream.IntStream;
 
 import kotlin.jvm.functions.Function2;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 /**
  * Example local unit test, which will execute on the development machine (host).
@@ -110,19 +105,11 @@ public class UnitTest1 {
 
         assert (s1 instanceof Stock);
 
-        Stock s2 = new Stock(hm_str_str);
+        Object o = (Object) hm_str_str;
+
+        Stock s2 = new Stock((HashMap<String, String>) o);
 
         assert (s2 instanceof Stock);
-
-        Object o = hm_str_str;
-
-        Stock s3 = new Stock((HashMap<String, String>) o);
-
-        assert (s3 instanceof Stock);
-
-        Stock s4 = new Stock((HashMap<String, String>) o);
-
-        assert (s4 instanceof Stock);
 
         System.out.println("ALL STOCK OBJECTS VALID");
     }
@@ -197,7 +184,7 @@ public class UnitTest1 {
         List<Integer> expected_ints = Arrays.asList(1,3,4,5);
         arr.forEach(o -> {
             try{
-                assertTrue(expected_ints.contains(o));
+                assertTrue(expected_ints.contains((int) o));
             }catch (Exception e){
                 throw new AssertionError(e.getMessage());
             }

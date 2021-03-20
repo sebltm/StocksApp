@@ -180,21 +180,6 @@ public class GraphFragment extends Fragment {
                         )
                 );
 
-//                switch(analysisType) {
-//                    case SMA:
-//                        analysisPoints = searchItem.getStock().calculateSMA(searchItem.getAnalysisDays());
-//                        break;
-//                    case EMA:
-//                        analysisPoints = searchItem.getStock().calculateEMA(searchItem.getAnalysisDays());
-//                        break;
-//                    case MACD:
-//                        analysisPoints = searchItem.getStock().calculateMACD(12, 26, 2);
-//                        break;
-//                    case MACDAVG:
-//                        analysisPoints = searchItem.getStock().calculateMACDAVG();
-//                        break;
-//                }
-
                 createChart(graphView, analysisPoints, pricePoint, globalPriceActive);
 
                 dataNotLoaded = false;

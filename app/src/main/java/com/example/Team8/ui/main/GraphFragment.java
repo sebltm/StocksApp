@@ -16,6 +16,7 @@ import androidx.appcompat.widget.SwitchCompat;
 import androidx.fragment.app.Fragment;
 
 import com.example.Team8.R;
+import com.example.Team8.SearchActivity;
 import com.example.Team8.utils.AnalysisPoint;
 import com.example.Team8.utils.AnalysisType;
 import com.example.Team8.utils.DataPoint;
@@ -97,10 +98,11 @@ public class GraphFragment extends Fragment {
     private void setSummaryHandler() {
         Button summaryBtn = graphView.findViewById(R.id.summaryBtn);
         summaryBtn.setOnClickListener((view) ->
-                new MaterialAlertDialogBuilder(getContext())
-                        .setTitle("Summary")
-                        .setMessage(searchItem.getStock().getSummaryHTML(searchItem.getFrom(), searchItem.getTo()))
-                        .show()
+                searchItem.getStock().showSummary(
+                        getContext(),
+                        searchItem.getFrom(),
+                        searchItem.getTo()
+                )
         );
     }
 

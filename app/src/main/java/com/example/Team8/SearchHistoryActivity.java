@@ -97,10 +97,11 @@ public class SearchHistoryActivity extends Activity implements SearchHistoryAdap
 
     @Override
     public void showSummary(SearchHistoryItem searchHistoryItem) {
-        new MaterialAlertDialogBuilder(this)
-                .setTitle("Summary")
-                .setMessage(searchHistoryItem.getStock().getSummaryHTML(searchHistoryItem.getFrom(), searchHistoryItem.getTo()))
-                .show();
+        searchHistoryItem.getStock().showSummary(
+                this,
+                searchHistoryItem.getFrom(),
+                searchHistoryItem.getTo()
+        );
     }
 
     @Override

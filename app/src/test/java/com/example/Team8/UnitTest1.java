@@ -13,7 +13,6 @@ import com.example.Team8.utils.JSON;
 import com.example.Team8.utils.PricePoint;
 import com.example.Team8.utils.Resolution;
 import com.example.Team8.utils.Stock;
-import com.example.Team8.utils.StockCandle;
 import com.example.Team8.utils.callbacks.HTTPCallback;
 import com.example.Team8.utils.callbacks.StockDataCallback;
 import com.example.Team8.utils.callbacks.StocksCallback;
@@ -39,7 +38,12 @@ import java.util.stream.IntStream;
 
 import kotlin.jvm.functions.Function2;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Example local unit test, which will execute on the development machine (host).
@@ -83,11 +87,6 @@ public class UnitTest1 {
     }
 
     private void FETCH_DATA_WITH_ASSERTION_ERROR_CATCH(HashMap<String, String> stock_info, Date fromDate, Date toDate, Runnable done, StockDataCallback callback) {
-    public void FETCH_DATA(HashMap<String, Object> stock_info, Date fromDate, Date toDate, StockDataCallback callback) {
-        new Stock(stock_info).fetchData(Resolution.types.get("D"), fromDate, toDate, callback);
-    }
-
-    private void FETCH_DATA_WITH_ASSERTION_ERROR_CATCH(HashMap<String, Object> stock_info, Date fromDate, Date toDate, Runnable done, StockDataCallback callback) {
         FETCH_DATA(
                 stock_info,
                 fromDate, toDate,
@@ -111,31 +110,13 @@ public class UnitTest1 {
 
         assert (s1 instanceof Stock);
 
-        Object o = (Object) hm_str_str;
-
-        Stock s2 = new Stock((HashMap<String, String>) o);
-
-        HashMap<String, Object> hm_str_obj = new HashMap<String, Object>() {{
-            put("currency", "");
-            put("description", "");
-            put("displaySymbol", "");
-            put("figi", "");
-            put("mic", "");
-            put("symbol", "APC.DE");
-            put("type", "");
-        }};
-
-        Stock s1 = new Stock(hm_str_obj);
-
-        assert (s1 instanceof Stock);
-
         Stock s2 = new Stock(hm_str_str);
 
         assert (s2 instanceof Stock);
 
-        Object o = (Object) hm_str_str;
+        Object o = hm_str_str;
 
-        Stock s3 = new Stock((HashMap<String, Object>) o);
+        Stock s3 = new Stock((HashMap<String, String>) o);
 
         assert (s3 instanceof Stock);
 
@@ -216,7 +197,7 @@ public class UnitTest1 {
         List<Integer> expected_ints = Arrays.asList(1,3,4,5);
         arr.forEach(o -> {
             try{
-                assertTrue(expected_ints.contains((int) o));
+                assertTrue(expected_ints.contains(o));
             }catch (Exception e){
                 throw new AssertionError(e.getMessage());
             }
@@ -321,59 +302,6 @@ public class UnitTest1 {
                     });
         };
         executeTest(test);
-    }
-
-    @Test
-    @RequiresApi(api = Build.VERSION_CODES.O)
-    public void getStockCandlesTEST() {
-        System.out.println("FETCHING STOCK CANDLES");
-        Consumer<Runnable> test = done -> {
-            API api = API.getInstance();
-            String getStockCandlesURL = api.getStockCandlesURL(
-                    "AAPL",
-                    String.valueOf(15),
-                    DateTimeHelper.toDate(LocalDate.now().minusDays(100)),
-                    DateTimeHelper.toDate(LocalDate.now())
-            );
-
-            fetchAndCatchAssertionError(getStockCandlesURL,
-                    done,
-                    response -> {
-                        assertEquals("object", response.getType());
-                        if (response.getType().equals("object")) {
-                            HashMap<String, Object> data = response.getDataObj();
-                            boolean status = api.isValidStatus((String) data.get("s"));
-                            if (!status) {
-                                System.out.println("NO DATA FOUND");
-                                done.run();
-                                return;
-                            }
-                            StockCandle s_c = new StockCandle(data);
-                            areStockCandlesValuesSizeSame(s_c);
-                            System.out.println(s_c.getO());
-                            System.out.println(s_c.getH());
-                            System.out.println(s_c.getL());
-                            System.out.println(s_c.getC());
-                            System.out.println(s_c.getV());
-                            System.out.println(s_c.getT());
-                            System.out.println(getStockCandlesURL);
-                        }
-                        done.run();
-                    });
-        };
-        executeTest(test);
-    }
-
-    private void areStockCandlesValuesSizeSame(StockCandle stockCandle) {
-        List<Integer> value_sizes = Arrays.asList(
-                stockCandle.getO().size(),
-                stockCandle.getH().size(),
-                stockCandle.getL().size(),
-                stockCandle.getC().size(),
-                stockCandle.getT().size()
-        );
-        boolean sizes_same = value_sizes.stream().distinct().count() == 1;
-        assertTrue("ALL StockCandle VALUES HAVE SAME SIZES", sizes_same);
     }
 
     private void arePricePointValuesSizeSame(PricePoint pricePoint) {
@@ -601,7 +529,7 @@ public class UnitTest1 {
     @Test
     public void SMA_TEST() {
         System.out.println("SMA TEST");
-        HashMap<String, Object> AAPL = new HashMap<String, Object>() {{
+        HashMap<String, String> AAPL = new HashMap<String, String>() {{
             put("currency", "USD");
             put("description", "APPLE INC");
             put("displaySymbol", "AAPL");

@@ -156,21 +156,10 @@ public class SearchActivity extends Activity implements StockAutoCompleteWatcher
 
         List<AnalysisType> analysisTypes = new ArrayList<>();
 
-        if (smaCheckbox.isChecked()) {
-            analysisTypes.add(AnalysisType.SMA);
-        }
-
-        if (emaCheckbox.isChecked()) {
-            analysisTypes.add(AnalysisType.EMA);
-        }
-
-        if (macdCheckbox.isChecked()) {
-            analysisTypes.add(AnalysisType.MACD);
-        }
-
-        if (macdavgCheckbox.isChecked()) {
-            analysisTypes.add(AnalysisType.MACDAVG);
-        }
+        if (smaCheckbox.isChecked()) analysisTypes.add(AnalysisType.SMA);
+        if (emaCheckbox.isChecked()) analysisTypes.add(AnalysisType.EMA);
+        if (macdCheckbox.isChecked()) analysisTypes.add(AnalysisType.MACD);
+        if (macdavgCheckbox.isChecked()) analysisTypes.add(AnalysisType.MACDAVG);
 
         if (fromDate.getCal().compareTo(toDate.getCal()) <= 0 && selectedStock != null && !analysisTypes.isEmpty()) {
             spinner.setVisibility(View.VISIBLE);

@@ -37,11 +37,16 @@ public class JSON_REQUEST extends HTTP_REQUEST<HTTPCallback<JSON>, JSON> {
                 try {
                     if (body_str != null) {
                         j = new JSON(body_str);
-                        if (j.getType() == null) j = null;
+
+                        //If there was a response, but the response is empty, then create an empty JSON object
+                        //This differentiates a null response (there was an error) to a empty response (a response with no objects)
+                        //The SearchActivity displays a toast when there was an error
+                        if (j.getType() == null) j = new JSON("");
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
+
                 setResponse(onResponse, j);
             }
         };

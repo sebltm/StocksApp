@@ -71,6 +71,16 @@ public class SearchHistoryAdapter extends RecyclerView.Adapter<SearchHistoryAdap
         localItems.addAll(db.getSearchHistoryDao().loadN(numItems));
     }
 
+    public void addAll(List<SearchHistoryItem> searchHistoryItems) {
+        localItems.addAll(searchHistoryItems);
+        this.notifyDataSetChanged();
+    }
+
+    public void clear() {
+        localItems.clear();
+        this.notifyDataSetChanged();
+    }
+
     @Override
     public int getItemCount() {
         return localItems.size();

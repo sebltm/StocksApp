@@ -12,7 +12,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-@Entity(tableName = "SearchHistory", primaryKeys = {"stock", "date_from", "date_to", "analysis_type"})
+@Entity(tableName = "SearchHistory", primaryKeys = {"stock", "date_from", "date_to"})
 public class SearchHistoryItem implements Serializable {
 
     @NonNull

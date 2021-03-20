@@ -1,6 +1,5 @@
 package com.example.Team8.utils;
 
-import android.annotation.SuppressLint;
 import android.text.Html;
 import android.text.Spanned;
 
@@ -16,8 +15,6 @@ import com.example.Team8.utils.http.HTTP_JSON;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Comparator;
@@ -313,11 +310,6 @@ public class Stock implements Serializable {
     public void fetchData(String resolution, Date from, Date to, StockDataCallback callback) {
         API api = API.getInstance();
         String getStockCandlesURL;
-
-        if (priceHistory != null) {
-            setResponseCallback(callback, priceHistory);
-            return;
-        }
 
         try {
             getStockCandlesURL = api.getStockCandlesURL(symbol, Resolution.types.get(resolution), from, to);

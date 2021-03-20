@@ -44,9 +44,12 @@ public class SearchHistoryActivity extends Activity {
         searchHistoryList.setLayoutManager(new LinearLayoutManager(this));
 
         new Thread(() -> {
-            historyItems.addAll(database.getSearchHistoryDao().loadN(numItems[0]));
-            SearchHistoryActivity.this.runOnUiThread(adapter::notifyDataSetChanged);
-        }).start();
+            List<SearchHistoryItem> items = database.getSearchHistoryDao().loadN(numItems[0]);
+            runOnUiThread(() -> {
+                adapter.clear();
+                adapter.addAll(items);
+            });
+        });
 
         TextView textView = findViewById(R.id.search_history_subtitle);
         textView.setText(getString(R.string.search_history_num_items, numItems[0]));

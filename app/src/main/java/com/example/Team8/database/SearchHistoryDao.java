@@ -7,7 +7,6 @@ import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 import androidx.room.TypeConverters;
 
-import com.example.Team8.utils.AnalysisType;
 import com.example.Team8.utils.SearchHistoryItem;
 import com.example.Team8.utils.Stock;
 
@@ -17,9 +16,9 @@ import java.util.List;
 @Dao
 public interface SearchHistoryDao {
 
-    @Query("SELECT * from SearchHistory WHERE stock = (:stock) AND  date_from = (:dateFrom) AND date_to = (:dateTo) AND analysis_type = (:analysisTypes)")
+    @Query("SELECT * from SearchHistory WHERE stock = (:stock) AND  date_from = (:dateFrom) AND date_to = (:dateTo) LIMIT 1")
     @TypeConverters(StockHistoryConverter.class)
-    SearchHistoryItem getItem(Stock stock, Date dateFrom, Date dateTo, List<AnalysisType> analysisTypes);
+    SearchHistoryItem getItem(Stock stock, Date dateFrom, Date dateTo);
 
     @Query("SELECT * from SearchHistory WHERE date_executed < (:dateFrom)")
     List<SearchHistoryItem> loadAllByDateExecuted(Long dateFrom);
@@ -27,9 +26,9 @@ public interface SearchHistoryDao {
     @Query("SELECT * from SearchHistory ORDER BY date_executed DESC LIMIT (:n)")
     List<SearchHistoryItem> loadN(Integer n);
 
-    @Query("SELECT EXISTS (SELECT 1 FROM SearchHistory WHERE stock = (:stock) AND  date_from = (:dateFrom) AND date_to = (:dateTo) AND analysis_type = (:analysisTypes))")
+    @Query("SELECT EXISTS (SELECT * FROM SearchHistory WHERE stock = (:stock) AND  date_from = (:dateFrom) AND date_to = (:dateTo))")
     @TypeConverters(StockHistoryConverter.class)
-    boolean exists(Stock stock, Date dateFrom, Date dateTo, List<AnalysisType> analysisTypes);
+    boolean exists(Stock stock, Date dateFrom, Date dateTo);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insert(SearchHistoryItem searchHistoryItem);

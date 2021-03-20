@@ -47,6 +47,8 @@ public class SearchActivity extends Activity implements StockAutoCompleteWatcher
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
 
+        selectedStock = null;
+
         Toolbar toolbar = findViewById(R.id.toolbar);
         setActionBar(toolbar);
 
@@ -174,8 +176,8 @@ public class SearchActivity extends Activity implements StockAutoCompleteWatcher
         if (fromDate.getCal().compareTo(toDate.getCal()) <= 0 && selectedStock != null && !analysisTypes.isEmpty()) {
             new Thread(() -> {
                 SearchHistoryDao dao = database.getSearchHistoryDao();
-                if (dao.exists(selectedStock, fromDate.getCal().getTime(), toDate.getCal().getTime(), analysisTypes)) {
-                    SearchHistoryItem searchHistoryItem = dao.getItem(selectedStock, fromDate.getCal().getTime(), toDate.getCal().getTime(), analysisTypes);
+                if (dao.exists(selectedStock, fromDate.getCal().getTime(), toDate.getCal().getTime())) {
+                    SearchHistoryItem searchHistoryItem = dao.getItem(selectedStock, fromDate.getCal().getTime(), toDate.getCal().getTime());
                     searchHistoryItem.setAnalysisDays(analysisDays);
 
                     GraphActivity.searchItem = searchHistoryItem;

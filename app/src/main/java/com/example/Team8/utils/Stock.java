@@ -282,9 +282,7 @@ public class Stock implements Serializable {
     }
 
     private void setResponseCallback(StockDataCallback callback, PricePoint value) {
-        if (callback != null) {
-            callback.response(value, this);
-        }
+        if (callback != null) callback.response(value, this);
     }
 
     /**

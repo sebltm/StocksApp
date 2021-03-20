@@ -19,9 +19,7 @@ public class API {
     }
 
     public static API getInstance() {
-        if (instance == null) {
-            instance = new API();
-        }
+        if (instance == null) instance = new API();
         return instance;
     }
 
@@ -63,9 +61,7 @@ public class API {
     }
 
     private void setSearchCallback(StocksCallback callback, List<Stock> value) {
-        if (callback != null) {
-            callback.response(value);
-        }
+        if (callback != null) callback.response(value);
     }
 
     @SuppressWarnings("unchecked")
@@ -87,15 +83,16 @@ public class API {
                     }
                     if (response.getType().equals("object")) {
                         HashMap<String, Object> data = response.getDataObj();
+                        List<Stock> retrievedStocks = new ArrayList<>();
                         int count = 0;
+
                         try {
                             Object countObj = data.get("count");
                             if (countObj instanceof Integer) count = (int) countObj;
                         } catch (Exception ignored) {
-                            setSearchCallback(callback, new ArrayList<>());
+                            count = -1;
                         }
 
-                        List<Stock> retrievedStocks = new ArrayList<>();
                         if (count > 0) {
                             Object[] results = (Object[]) data.get("result");
                             results = results != null ? results : new Object[0];

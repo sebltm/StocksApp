@@ -115,20 +115,6 @@ public class SearchActivity extends Activity implements StockAutoCompleteWatcher
     }
 
     private void resetView(View v) {
-        //TODO BUG FOUND
-        // How to reproduce BUG:
-        // Search for a stock e.g. aapl,
-        // set the from date to anything before the current date
-        // press on sma checkbox -
-        // set analysis days to 1 for now
-        // press search
-        // Wait for the graph to load at least
-        // Go back
-        // set analysis days to different value, e.g. a larger number, 100
-        // press on search again
-        // graph doesn't update from this change
-        // -------------
-        // Pressing the reset button to invoke this function solves it, but this shouldn't be required and the graph should auto update from the new inputs
         fromDate.clear();
         toDate.clear();
 
@@ -191,8 +177,8 @@ public class SearchActivity extends Activity implements StockAutoCompleteWatcher
 
             new Thread(() -> {
                 SearchHistoryDao dao = database.getSearchHistoryDao();
-                if (dao.exists(selectedStock, fromDate.getCal().getTime(), toDate.getCal().getTime())) {
-                    SearchHistoryItem searchHistoryItem = dao.getItem(selectedStock, fromDate.getCal().getTime(), toDate.getCal().getTime());
+                if (dao.exists(selectedStock, fromDate.getCal().getTime(), toDate.getCal().getTime(), analysisDays)) {
+                    SearchHistoryItem searchHistoryItem = dao.getItem(selectedStock, fromDate.getCal().getTime(), toDate.getCal().getTime(), analysisDays);
                     searchHistoryItem.setAnalysisDays(analysisDays);
 
                     GraphActivity.searchItem = searchHistoryItem;

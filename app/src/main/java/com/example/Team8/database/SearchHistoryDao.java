@@ -16,9 +16,9 @@ import java.util.List;
 @Dao
 public interface SearchHistoryDao {
 
-    @Query("SELECT * from SearchHistory WHERE stock = (:stock) AND  date_from = (:dateFrom) AND date_to = (:dateTo) LIMIT 1")
+    @Query("SELECT * from SearchHistory WHERE stock = (:stock) AND  date_from = (:dateFrom) AND date_to = (:dateTo) AND analysis_days >= (:analysisDays) LIMIT 1")
     @TypeConverters(StockHistoryConverter.class)
-    SearchHistoryItem getItem(Stock stock, Date dateFrom, Date dateTo);
+    SearchHistoryItem getItem(Stock stock, Date dateFrom, Date dateTo, int analysisDays);
 
     @Query("SELECT * from SearchHistory WHERE date_executed < (:dateFrom)")
     List<SearchHistoryItem> loadAllByDateExecuted(Long dateFrom);
@@ -26,9 +26,9 @@ public interface SearchHistoryDao {
     @Query("SELECT * from SearchHistory ORDER BY date_executed DESC LIMIT (:n)")
     List<SearchHistoryItem> loadN(Integer n);
 
-    @Query("SELECT EXISTS (SELECT * FROM SearchHistory WHERE stock = (:stock) AND  date_from = (:dateFrom) AND date_to = (:dateTo))")
+    @Query("SELECT EXISTS (SELECT * FROM SearchHistory WHERE stock = (:stock) AND  date_from = (:dateFrom) AND date_to = (:dateTo) AND analysis_days >= (:analysisDays))")
     @TypeConverters(StockHistoryConverter.class)
-    boolean exists(Stock stock, Date dateFrom, Date dateTo);
+    boolean exists(Stock stock, Date dateFrom, Date dateTo, int analysisDays);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insert(SearchHistoryItem searchHistoryItem);

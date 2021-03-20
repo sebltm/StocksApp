@@ -53,6 +53,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
+        android:paddingHorizontal="10dp"
         android:background="@drawable/gradient_bttn"
         android:text="@string/search_history_clear"
         android:textColor="#f5f5f5"

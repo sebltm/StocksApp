@@ -18,6 +18,7 @@ import androidx.fragment.app.Fragment;
 import com.example.Team8.R;
 import com.example.Team8.utils.AnalysisPoint;
 import com.example.Team8.utils.AnalysisType;
+import com.example.Team8.utils.DataPoint;
 import com.example.Team8.utils.DateTimeHelper;
 import com.example.Team8.utils.PricePoint;
 import com.example.Team8.utils.SearchHistoryItem;
@@ -36,6 +37,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.stream.Collectors;
 
 public class GraphFragment extends Fragment {
 
@@ -103,21 +105,22 @@ public class GraphFragment extends Fragment {
     }
 
     private List<Entry> pointToEntry(List<AnalysisPoint> analysisPoints) {
-        List<Entry> entryList = new ArrayList<>();
-
-        for (AnalysisPoint point : analysisPoints) {
-            entryList.add(new Entry(point.getDateTime().getTime(), point.getValue().floatValue()));
-        }
-
-        return entryList;
+        return analysisPoints
+                .stream()
+                .map(point -> new Entry(point.getDateTime().getTime(), point.getValue().floatValue()))
+                .collect(Collectors.toList());
     }
 
     private List<Entry> pointToEntry(PricePoint pricePoints) {
         List<Entry> entryList = new ArrayList<>();
 
-        for (int i = 0; i < pricePoints.getTimestamps().size(); i++) {
-            long time = DateTimeHelper.toDateTime(pricePoints.getTimestamps().get(i)).getTime();
-            long value = pricePoints.getClose().get(i).getValue().longValue();
+        List<String> timestamps = pricePoints.getTimestamps();
+        List<DataPoint> close_prices = pricePoints.getClose();
+        int timestamps_size = timestamps.size();
+
+        for (int i = 0; i < timestamps_size; i++) {
+            long time = DateTimeHelper.toDateTime(timestamps.get(i)).getTime();
+            long value = close_prices.get(i).getValue().longValue();
 
             entryList.add(new Entry(time, value));
         }

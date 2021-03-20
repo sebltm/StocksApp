@@ -361,11 +361,14 @@ public class Stock implements Serializable {
     }
 
     public String getSummary(Date from, Date to) {
-        double max = getMaxPrice().doubleValue();
-        double min = getMinPrice().doubleValue();
+        List<BigDecimal> close_prices = getClosePricesValues();
+
+        double max = getMaxPrice(close_prices).doubleValue();
+        double min = getMinPrice(close_prices).doubleValue();
         double diff_max_min = max - min;
         double sum_max_min =  max + min;
         double diff_percent  = sum_max_min > 0? (diff_max_min / (sum_max_min / 2)) * 100 : 0;
+
         String summary = String.format(
                 "For stock <b>%1$s</b> (%2$s) from %3$s to %4$s. " +
                         "The difference in the stock value was <b>%5$s%%</b>. " +
@@ -378,6 +381,7 @@ public class Stock implements Serializable {
                 max,
                 min
         );
+
         return summary;
     }
 
@@ -387,15 +391,15 @@ public class Stock implements Serializable {
                 .map(DataPoint::getValue).collect(Collectors.toList());
     }
 
-    private BigDecimal getMaxPrice() {
-        return getClosePricesValues()
+    private BigDecimal getMaxPrice(List<BigDecimal> prices) {
+        return prices
                 .stream()
                 .max(Comparator.comparing(BigDecimal::doubleValue))
                 .orElseGet(() -> new BigDecimal("0.0"));
     }
 
-    private BigDecimal getMinPrice() {
-        return getClosePricesValues()
+    private BigDecimal getMinPrice(List<BigDecimal> prices) {
+        return prices
                 .stream()
                 .min(Comparator.comparing(BigDecimal::doubleValue))
                 .orElseGet(() -> new BigDecimal("0.0"));

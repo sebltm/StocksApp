@@ -133,7 +133,6 @@ public class SearchActivity extends Activity implements StockAutoCompleteWatcher
     }
 
     private void executeSearch(View v) {
-        spinner.setVisibility(View.VISIBLE);
         String stockSymbol = stockAutocomplete.getText().toString();
 
         if (analysisDaysView.getText().toString().isEmpty()) {
@@ -174,6 +173,8 @@ public class SearchActivity extends Activity implements StockAutoCompleteWatcher
         }
 
         if (fromDate.getCal().compareTo(toDate.getCal()) <= 0 && selectedStock != null && !analysisTypes.isEmpty()) {
+            spinner.setVisibility(View.VISIBLE);
+
             new Thread(() -> {
                 SearchHistoryDao dao = database.getSearchHistoryDao();
                 if (dao.exists(selectedStock, fromDate.getCal().getTime(), toDate.getCal().getTime())) {
@@ -183,6 +184,7 @@ public class SearchActivity extends Activity implements StockAutoCompleteWatcher
                     GraphActivity.searchItem = searchHistoryItem;
                     Intent intent = new Intent(SearchActivity.this, GraphActivity.class);
                     context.startActivity(intent);
+                    spinner.setVisibility(View.INVISIBLE);
                 } else {
                     selectedStock.fetchData(
                             Resolution.types.get("D"),
@@ -215,7 +217,7 @@ public class SearchActivity extends Activity implements StockAutoCompleteWatcher
             fromDate.setDayEqual(toDate);
         } else {
             spinner.setVisibility(View.INVISIBLE);
-            Toast.makeText(SearchActivity.this, "Please select a stock smybol from the autcomplete list", Toast.LENGTH_LONG).show();
+            Toast.makeText(SearchActivity.this, "Please select a stock symbol from the autocomplete list", Toast.LENGTH_LONG).show();
             stockAutocomplete.showDropDown();
         }
     }

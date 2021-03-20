@@ -18,7 +18,7 @@ public class SimpleMovingAverage {
     public SimpleMovingAverage calculate(double[] price, int period) throws Exception {
         // ie: if you want 50 SMA then you need 50 data points
         if (price.length < period)
-            throw new Exception("Not enough data points, given data size less then the indicated period");
+            throw new Exception("Not enough data points, given data size less than the indicated period");
 
         this.results = new double[price.length];
 

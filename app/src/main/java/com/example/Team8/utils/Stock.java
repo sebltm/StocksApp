@@ -363,8 +363,9 @@ public class Stock implements Serializable {
     public String getSummary(Date from, Date to) {
         double max = getMaxPrice().doubleValue();
         double min = getMinPrice().doubleValue();
-        double diff = (max - min);
-        double diff_percent  = (diff / (max + min / 2)) * 100;
+        double diff_max_min = max - min;
+        double sum_max_min =  max + min;
+        double diff_percent  = sum_max_min > 0? (diff_max_min / (sum_max_min / 2)) * 100 : 0;
         String summary = String.format(
                 "For stock <b>%1$s</b> (%2$s) from %3$s to %4$s. " +
                         "The difference in the stock value was <b>%5$s%%</b>. " +

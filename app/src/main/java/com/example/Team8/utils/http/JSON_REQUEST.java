@@ -33,22 +33,16 @@ public class JSON_REQUEST extends HTTP_REQUEST<HTTPCallback<JSON>, JSON> {
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) {
                 String body_str = getBodyStr(response);
-                boolean error = false;
                 JSON j = null;
                 try {
                     if (body_str != null) {
                         j = new JSON(body_str);
-                        if (j.getType() == null) {
-                            error = true;
-                        }
-                    } else {
-                        error = true;
+                        if (j.getType() == null) j = null;
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
-                    error = true;
                 }
-                setResponse(onResponse, error ? new JSON("") : j);
+                setResponse(onResponse, j);
             }
         };
     }

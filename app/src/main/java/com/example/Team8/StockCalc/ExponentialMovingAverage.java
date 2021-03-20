@@ -25,7 +25,7 @@ public class ExponentialMovingAverage {
     public ExponentialMovingAverage calculate(double[] prices, int period) throws Exception {
 
         if (period >= prices.length)
-            throw new Exception("Given period is bigger then given set of prices");
+            throw new Exception("Given period is bigger than the given set of prices");
 
         this.prices = prices;
         this.period = period;

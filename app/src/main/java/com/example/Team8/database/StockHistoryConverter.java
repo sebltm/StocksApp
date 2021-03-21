@@ -59,11 +59,11 @@ public class StockHistoryConverter {
         if (pricePointString == null) return null;
         return new Gson().fromJson(pricePointString, new Token<PricePoint>().get());
     }
-}
 
-class Token<T> {
-    public Type get() {
-        return new TypeToken<T>() {
-        }.getType();
+    private static class Token<T> {
+        public Type get() {
+            return new TypeToken<T>() {
+            }.getType();
+        }
     }
 }

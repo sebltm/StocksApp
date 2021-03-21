@@ -3,6 +3,7 @@ package com.example.Team8.ui.main;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.Bitmap.CompressFormat;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -43,6 +44,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -218,21 +220,27 @@ public class GraphFragment extends Fragment {
     private void exportGraphAsImageHandler() {
         ImageButton saveBtn = graphView.findViewById(R.id.saveImageBtn);
         saveBtn.setOnClickListener(v -> {
-            mpLineChart.saveToGallery(
-                    String.format(
-                            "[%1$s]_stock_%2$s_analysis_%3$s_from_%4$s_to_%5$s",
-                            DateTimeHelper.toEpoch(new Date()),
-                            searchItem.getStock().getSymbol().toLowerCase(),
-                            analysisType.toString().toLowerCase(),
-                            DateTimeHelper.toEpoch(searchItem.getFrom()),
-                            DateTimeHelper.toEpoch(searchItem.getTo())
-                    ),
-                    "",
-                    "MPAndroidChart-Library Save",
-                    Bitmap.CompressFormat.PNG,
-                    40
-            );
+            CompressFormat selectedFormat = CompressFormat.JPEG;
+//            selectedFormat = CompressFormat.PNG;
+            exportGraphAsImage(selectedFormat);
         });
+    }
+
+    private void exportGraphAsImage(CompressFormat imageType) {
+        mpLineChart.saveToGallery(
+                String.format(
+                        "[%1$s]_stock_%2$s_analysis_%3$s_from_%4$s_to_%5$s",
+                        DateTimeHelper.toEpoch(new Date()),
+                        searchItem.getStock().getSymbol().toLowerCase(),
+                        analysisType.toString().toLowerCase(),
+                        DateTimeHelper.toEpoch(searchItem.getFrom()),
+                        DateTimeHelper.toEpoch(searchItem.getTo())
+                ),
+                "",
+                "MPAndroidChart-Library Save",
+                imageType,
+                40
+        );
     }
 
     static class StockPriceFormat extends ValueFormatter {

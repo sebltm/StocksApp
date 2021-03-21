@@ -2,6 +2,7 @@ package com.example.Team8.ui.main;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -210,6 +211,19 @@ public class GraphFragment extends Fragment {
                 togglePrice.setChecked(localPriceActive);
             });
         }).start();
+    }
+
+    private void exportGraphAsJpg() {
+        Button saveBtn = graphView.findViewById(R.id.saveImageBtn);
+        saveBtn.setOnClickListener(v -> {
+            mpLineChart.saveToGallery(
+                    String.format("%1$s", DateTimeHelper.toEpoch(new Date())),
+                    "",
+                    "MPAndroidChart-Library Save",
+                    Bitmap.CompressFormat.PNG,
+                    40
+            );
+        });
     }
 
     static class StockPriceFormat extends ValueFormatter {

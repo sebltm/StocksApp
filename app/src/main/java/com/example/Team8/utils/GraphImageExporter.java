@@ -65,41 +65,49 @@ public class GraphImageExporter {
     }
 
     private String validateFilename(String filename) {
-        if (isStringNullOrEmpty(filename)) {
-            filename = default_filename.get();
-            return filename;
-        }
+        if (isStringNullOrEmpty(filename)) return default_filename.get();
         filename = filename.startsWith("/") ? filename.substring(1) : filename;
         filename = filename.endsWith("/") ? filename.substring(0, filename.length() - 1) : filename;
         return filename;
     }
 
-    private void validateInputs() {
+    private int validateQuality(int quality) {
         int default_quality = 50;
-        String default_subFolderPath = "";
+        return quality < 0 || quality > 100 ? default_quality : quality;
+    }
+
+    private String validateFileDescription(String fileDescription) {
         String default_file_description = "MPAndroidChart-Library Save";
+        return isStringNullOrEmpty(fileDescription) ? default_file_description : fileDescription;
+    }
 
-        if (quality < 0 || quality > 100) quality = default_quality;
+    private String validateSubFolderPath(String subFolderPath) {
+        String default_subFolderPath = "";
+        return isStringNullOrEmpty(subFolderPath) ? default_subFolderPath : subFolderPath;
+    }
 
+    private CompressFormat validateCompressFormat(CompressFormat compressFormat) {
+        return compressFormat == null ? default_format : compressFormat;
+    }
+
+    private void validateInputs() {
         filename = validateFilename(filename);
-
-        if (isStringNullOrEmpty(fileDescription)) fileDescription = default_file_description;
-
-        if (isStringNullOrEmpty(subFolderPath)) subFolderPath = default_subFolderPath;
-
-        if (compressFormat == null) compressFormat = default_format;
+        fileDescription = validateFileDescription(fileDescription);
+        subFolderPath = validateSubFolderPath(subFolderPath);
+        compressFormat = validateCompressFormat(compressFormat);
+        quality = validateQuality(quality);
     }
 
     public String getFilename() {
         return filename;
     }
 
-    public String getSubFolderPath() {
-        return subFolderPath;
-    }
-
     public String getFileDescription() {
         return fileDescription;
+    }
+
+    public String getSubFolderPath() {
+        return subFolderPath;
     }
 
     public CompressFormat getCompressFormat() {

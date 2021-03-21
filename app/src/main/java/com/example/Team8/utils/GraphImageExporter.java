@@ -17,7 +17,7 @@ public class GraphImageExporter {
     private final LineChart lineChart;
     private String filename;
     private String fileDescription;
-    private String subFolderPath;
+    private String subFolderPath = "";
     private int quality = -1;
     private CompressFormat compressFormat;
 
@@ -60,27 +60,12 @@ public class GraphImageExporter {
         return this;
     }
 
-    private String getFileSavedPath(){
-        return String.format("%s%s",default_full_path, subFolderPath);
-    }
-
-    private String getExtension(){
-        switch (compressFormat){
-            case JPEG:
-                return ".jpg";
-            case PNG:
-                return ".png";
-            default:
-                return "";
-        }
-    }
-
-    private boolean isStringNullOrEmpty(String str){
+    private boolean isStringNullOrEmpty(String str) {
         return str == null || str.trim().length() == 0;
     }
 
-    private String validateFilename(String filename){
-        if (isStringNullOrEmpty(filename)){
+    private String validateFilename(String filename) {
+        if (isStringNullOrEmpty(filename)) {
             filename = default_filename.get();
             return filename;
         }
@@ -105,11 +90,6 @@ public class GraphImageExporter {
         if (compressFormat == null) compressFormat = default_format;
     }
 
-    private GraphImageExporter exportGraph() {
-        validateInputs();
-        return this;
-    }
-
     public String getFilename() {
         return filename;
     }
@@ -130,19 +110,31 @@ public class GraphImageExporter {
         return quality;
     }
 
-    public boolean export() {
-        exportGraph();
-        return lineChart.saveToGallery(
-                this.filename,
-                this.subFolderPath,
-                this.fileDescription,
-                this.compressFormat,
-                this.getQuality()
-        );
+    public String getFileSavedPath() {
+        return String.format("%s%s", default_full_path, subFolderPath);
     }
 
-    public interface ExportCallback{
-        void response(boolean success, String... file_info);
+    public String getExtension() {
+        if (compressFormat == null) return "";
+        switch (compressFormat) {
+            case JPEG:
+                return ".jpg";
+            case PNG:
+                return ".png";
+            default:
+                return String.format(".%s", compressFormat.toString().toLowerCase());
+        }
+    }
+
+    public boolean export() {
+        validateInputs();
+        return lineChart.saveToGallery(
+                filename,
+                subFolderPath,
+                fileDescription,
+                compressFormat,
+                quality
+        );
     }
 }
 

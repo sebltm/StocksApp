@@ -214,7 +214,15 @@ public class GraphFragment extends Fragment implements ActivityResultCallback<Bo
         if (!success) {
             Toast.makeText(getContext(), "Error while exporting graph as image", Toast.LENGTH_LONG).show();
         } else {
-            Toast.makeText(getContext(), String.format("Saved to \"%s\"", graphImageExporter.getFilename()), Toast.LENGTH_LONG).show();
+            Toast.makeText(
+                    getContext(),
+                    String.format("Saved to \"%s\"\nFilename: \"%s%s\"",
+                            graphImageExporter.getFileSavedPath(),
+                            graphImageExporter.getFilename(),
+                            graphImageExporter.getExtension()
+                    ),
+                    Toast.LENGTH_LONG
+            ).show();
         }
     }
 

@@ -17,18 +17,18 @@ public class StockHistoryConverter {
 
     private static final Supplier<Type> stock_type_token = () -> new TypeToken<Stock>(){}.getType();
     private static final Supplier<Type> pricePoint_type_token = () -> new TypeToken<PricePoint>(){}.getType();
-    private static final Supplier<Type> list_a_points_type_token = () -> new TypeToken<List<AnalysisType>>(){}.getType();
+    private static final Supplier<Type> list_a_types_type_token = () -> new TypeToken<List<AnalysisType>>(){}.getType();
 
     @TypeConverter
     public String fromAnalysisTypeList(List<AnalysisType> analysisTypeList) {
         if (analysisTypeList == null) return null;
-        return new Gson().toJson(analysisTypeList, list_a_points_type_token.get());
+        return new Gson().toJson(analysisTypeList, list_a_types_type_token.get());
     }
 
     @TypeConverter
     public List<AnalysisType> toAnalysisTypeList(String analysisTypeString) {
         if (analysisTypeString == null) return null;
-        return new Gson().fromJson(analysisTypeString, list_a_points_type_token.get());
+        return new Gson().fromJson(analysisTypeString, list_a_types_type_token.get());
     }
 
     @TypeConverter

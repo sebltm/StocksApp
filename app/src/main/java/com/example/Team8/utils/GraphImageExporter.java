@@ -25,14 +25,12 @@ public class GraphImageExporter {
         this.lineChart = lineChart;
     }
 
-    public GraphImageExporter setFilename(Stock stock, AnalysisType analysisType, Date from, Date to) {
+    public GraphImageExporter setFilename(Stock stock, AnalysisType analysisType, String from, String to) {
         filename = String.format(
-                "[%1$s]_stock_%2$s_analysis_%3$s_from_%4$s_to_%5$s",
-                DateTimeHelper.toEpoch(new Date()),
+                "%1$s_%2$s_%3$s_%4$s",
                 stock.getSymbol().toLowerCase(),
                 analysisType.toString().toLowerCase(),
-                DateTimeHelper.toEpoch(from),
-                DateTimeHelper.toEpoch(to)
+                from, to
         );
         return this;
     }
@@ -78,7 +76,7 @@ public class GraphImageExporter {
     }
 
     private boolean isStringNullOrEmpty(String str){
-        return str == null || str != null && str.trim().length() == 0;
+        return str == null || str.trim().length() == 0;
     }
 
     private String validateFilename(String filename){
@@ -91,7 +89,7 @@ public class GraphImageExporter {
         return filename;
     }
 
-    private void validateInputs(){
+    private void validateInputs() {
         int default_quality = 50;
         String default_subFolderPath = "";
         String default_file_description = "MPAndroidChart-Library Save";
@@ -104,29 +102,43 @@ public class GraphImageExporter {
 
         if (isStringNullOrEmpty(subFolderPath)) subFolderPath = default_subFolderPath;
 
-        if(compressFormat == null) compressFormat = default_format;
+        if (compressFormat == null) compressFormat = default_format;
     }
 
-    private boolean exportGraph() {
+    private GraphImageExporter exportGraph() {
         validateInputs();
-        return lineChart.saveToGallery(
-                filename,
-                subFolderPath,
-                fileDescription,
-                compressFormat,
-                quality
-        );
+        return this;
     }
 
-    public GraphImageExporter export(){
+    public String getFilename() {
+        return filename;
+    }
+
+    public String getSubFolderPath() {
+        return subFolderPath;
+    }
+
+    public String getFileDescription() {
+        return fileDescription;
+    }
+
+    public CompressFormat getCompressFormat() {
+        return compressFormat;
+    }
+
+    public int getQuality() {
+        return quality;
+    }
+
+    public boolean export() {
         exportGraph();
-        return this;
-    }
-
-    public GraphImageExporter export(ExportCallback onExport) {
-        boolean exported = exportGraph();
-        onExport.response(exported, getFileSavedPath(), filename, getExtension());
-        return this;
+        return lineChart.saveToGallery(
+                this.filename,
+                this.subFolderPath,
+                this.fileDescription,
+                this.compressFormat,
+                this.getQuality()
+        );
     }
 
     public interface ExportCallback{

@@ -1,8 +1,10 @@
 package com.example.Team8.ui.main;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap.CompressFormat;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -14,11 +16,13 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.SwitchCompat;
 import androidx.fragment.app.Fragment;
 
+import com.example.Team8.GraphActivity;
 import com.example.Team8.R;
 import com.example.Team8.utils.AnalysisPoint;
 import com.example.Team8.utils.AnalysisType;
@@ -48,7 +52,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.stream.Collectors;
 
-public class GraphFragment extends Fragment {
+public class GraphFragment extends Fragment implements ActivityResultCallback<Boolean> {
 
     private static final String format = "dd-MM-yy";
     private static final SimpleDateFormat dateFormat = new SimpleDateFormat(format, Locale.UK);
@@ -61,6 +65,7 @@ public class GraphFragment extends Fragment {
     private View graphView;
     private boolean dataNotLoaded = true;
     private SwitchCompat togglePrice;
+
 
     public GraphFragment(SearchHistoryItem searchItem, AnalysisType analysisType) {
         this.searchItem = searchItem;
@@ -84,7 +89,9 @@ public class GraphFragment extends Fragment {
         mpLineChart = graphView.findViewById(R.id.graph_frag_line_graph);
 
         setSummaryHandler();
-        exportGraphAsImageHandler();
+
+        ImageButton saveImageBttn = graphView.findViewById(R.id.saveImageBtn);
+        saveImageBttn.setOnClickListener(v -> checkPermissions());
 
         stockSymbol.setText(searchItem.getStock().getDisplaySymbol());
         dateFrom.setText(dateFormat.format(searchItem.getFrom()));
@@ -177,8 +184,51 @@ public class GraphFragment extends Fragment {
     }
 
     @Override
+    public void onStart() {
+        super.onStart();
+        recreateGraph();
+    }
+
+    @Override
     public void onResume() {
         super.onResume();
+        recreateGraph();
+    }
+
+    private void exportGraphAsImageHandler() {
+        CompressFormat selectedFormat = CompressFormat.JPEG;
+        GraphImageExporter graphImageExporter = new GraphImageExporter(mpLineChart);
+        graphImageExporter
+                .setQuality(100)
+                .setFilename(
+                        searchItem.getStock(),
+                        analysisType,
+                        dateFormat.format(searchItem.getFrom()),
+                        dateFormat.format(searchItem.getTo())
+                )
+                .setCompressFormat(selectedFormat)
+                .setSubFolderPath("Graphs");
+
+        boolean success = graphImageExporter.export();
+
+        if (!success) {
+            Toast.makeText(getContext(), "Error while exporting graph as image", Toast.LENGTH_LONG).show();
+        } else {
+            Toast.makeText(getContext(), String.format("Saved to \"%s\"", graphImageExporter.getFilename()), Toast.LENGTH_LONG).show();
+        }
+    }
+
+    public void checkPermissions() {
+        Activity activity;
+        if ((activity = getActivity()) != null && activity.checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+            exportGraphAsImageHandler();
+        } else if (activity != null) {
+            ((GraphActivity) getActivity()).requestPermissionLauncher.launch(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        }
+    }
+
+    private void recreateGraph() {
+        mpLineChart = graphView.findViewById(R.id.graph_frag_line_graph);
 
         new Thread(() -> {
             ProgressBar spinner = graphView.findViewById(R.id.spinner_graph);
@@ -209,29 +259,9 @@ public class GraphFragment extends Fragment {
         }).start();
     }
 
-    private void exportGraphAsImageHandler() {
-        ImageButton saveBtn = graphView.findViewById(R.id.saveImageBtn);
-        saveBtn.setOnClickListener(v -> {
-            CompressFormat selectedFormat = CompressFormat.JPEG;
-            new GraphImageExporter(mpLineChart)
-                    .setFilename("")
-                    .setQuality(100)
-                    .setFilename(
-                            searchItem.getStock(),
-                            analysisType,
-                            searchItem.getFrom(),
-                            searchItem.getTo()
-                    )
-                    .setCompressFormat(selectedFormat)
-                    .setSubFolderPath("Graphs")
-                    .export((success, file_info) -> {
-                        if(!success){
-                            Toast.makeText(getContext(), "Error while exporting graph as image", Toast.LENGTH_LONG).show();
-                            return;
-                        }
-                        Toast.makeText(getContext(), String.format("Saved to \"%s\"", file_info[0]), Toast.LENGTH_LONG).show();
-                    });
-        });
+    @Override
+    public void onActivityResult(Boolean result) {
+        System.out.println("RESULT OF PERMISSION IS " + result.toString());
     }
 
     private static class StockPriceFormat extends ValueFormatter {

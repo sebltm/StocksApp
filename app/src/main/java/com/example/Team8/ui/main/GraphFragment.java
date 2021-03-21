@@ -85,7 +85,7 @@ public class GraphFragment extends Fragment {
         mpLineChart = graphView.findViewById(R.id.graph_frag_line_graph);
 
         setSummaryHandler();
-        exportGraphAsJpgHandler();
+        exportGraphAsImageHandler();
 
         stockSymbol.setText(searchItem.getStock().getDisplaySymbol());
         dateFrom.setText(dateFormat.format(searchItem.getFrom()));
@@ -215,17 +215,23 @@ public class GraphFragment extends Fragment {
         }).start();
     }
 
-    private void exportGraphAsJpgHandler() {
+    private void exportGraphAsImageHandler() {
         ImageButton saveBtn = graphView.findViewById(R.id.saveImageBtn);
         saveBtn.setOnClickListener(v -> {
             mpLineChart.saveToGallery(
-                    String.format("%1$s", DateTimeHelper.toEpoch(new Date())),
+                    String.format(
+                            "[%1$s]_stock_%2$s_analysis_%3$s_from_%4$s_to_%5$s",
+                            DateTimeHelper.toEpoch(new Date()),
+                            searchItem.getStock().getSymbol().toLowerCase(),
+                            analysisType.toString().toLowerCase(),
+                            DateTimeHelper.toEpoch(searchItem.getFrom()),
+                            DateTimeHelper.toEpoch(searchItem.getTo())
+                    ),
                     "",
                     "MPAndroidChart-Library Save",
                     Bitmap.CompressFormat.PNG,
                     40
             );
-            System.out.println(mpLineChart.isSaveEnabled());
         });
     }
 

@@ -2,7 +2,6 @@ package com.example.Team8.ui.main;
 
 import android.app.Activity;
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.graphics.Bitmap.CompressFormat;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -20,11 +19,11 @@ import androidx.appcompat.widget.SwitchCompat;
 import androidx.fragment.app.Fragment;
 
 import com.example.Team8.R;
-import com.example.Team8.SearchActivity;
 import com.example.Team8.utils.AnalysisPoint;
 import com.example.Team8.utils.AnalysisType;
 import com.example.Team8.utils.DataPoint;
 import com.example.Team8.utils.DateTimeHelper;
+import com.example.Team8.utils.GraphImageExporter;
 import com.example.Team8.utils.PricePoint;
 import com.example.Team8.utils.SearchHistoryItem;
 import com.github.mikephil.charting.charts.LineChart;
@@ -38,13 +37,11 @@ import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.formatter.ValueFormatter;
 import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
-import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -222,25 +219,25 @@ public class GraphFragment extends Fragment {
         saveBtn.setOnClickListener(v -> {
             CompressFormat selectedFormat = CompressFormat.JPEG;
 //            selectedFormat = CompressFormat.PNG;
-            exportGraphAsImage(selectedFormat);
+            new GraphImageExporter(mpLineChart)
+                    .setFilename("")
+                    .setQuality(100)
+                    .setFilename(
+                            searchItem.getStock(),
+                            analysisType,
+                            searchItem.getFrom(),
+                            searchItem.getTo()
+                    )
+                    .setCompressFormat(selectedFormat)
+                    .setSubFolderPath("Graphs")
+                    .export((success, file_info) -> {
+                        if(!success){
+                            Toast.makeText(getContext(), "Error while exporting graph as image", Toast.LENGTH_LONG).show();
+                            return;
+                        }
+                        Toast.makeText(getContext(), String.format("Saved to \"%s\"", file_info[0]), Toast.LENGTH_LONG).show();
+                    });
         });
-    }
-
-    private void exportGraphAsImage(CompressFormat imageType) {
-        mpLineChart.saveToGallery(
-                String.format(
-                        "[%1$s]_stock_%2$s_analysis_%3$s_from_%4$s_to_%5$s",
-                        DateTimeHelper.toEpoch(new Date()),
-                        searchItem.getStock().getSymbol().toLowerCase(),
-                        analysisType.toString().toLowerCase(),
-                        DateTimeHelper.toEpoch(searchItem.getFrom()),
-                        DateTimeHelper.toEpoch(searchItem.getTo())
-                ),
-                "",
-                "MPAndroidChart-Library Save",
-                imageType,
-                40
-        );
     }
 
     static class StockPriceFormat extends ValueFormatter {

@@ -16,26 +16,14 @@ public class StockHistoryConverter {
 
     @TypeConverter
     public String fromAnalysisTypeList(List<AnalysisType> analysisTypeList) {
-        if (analysisTypeList == null) {
-            return null;
-        }
-
-        Gson gson = new Gson();
-        Type type = new TypeToken<List<AnalysisType>>() {
-        }.getType();
-        return gson.toJson(analysisTypeList, type);
+        if (analysisTypeList == null) return null;
+        return new Gson().toJson(analysisTypeList, new Token<List<AnalysisType>>().get());
     }
 
     @TypeConverter
     public List<AnalysisType> toAnalysisTypeList(String analysisTypeString) {
-        if (analysisTypeString == null) {
-            return null;
-        }
-
-        Gson gson = new Gson();
-        Type type = new TypeToken<List<AnalysisType>>() {
-        }.getType();
-        return gson.fromJson(analysisTypeString, type);
+        if (analysisTypeString == null) return null;
+        return new Gson().fromJson(analysisTypeString, new Token<List<AnalysisType>>().get());
     }
 
     @TypeConverter
@@ -50,49 +38,32 @@ public class StockHistoryConverter {
 
     @TypeConverter
     public String fromStock(Stock stock) {
-        if (stock == null) {
-            return null;
-        }
-
-        Gson gson = new Gson();
-        Type type = new TypeToken<Stock>() {
-        }.getType();
-        return gson.toJson(stock, type);
+        if (stock == null) return null;
+        return new Gson().toJson(stock, new Token<Stock>().get());
     }
 
     @TypeConverter
     public Stock toStock(String stockString) {
-        if (stockString == null) {
-            return null;
-        }
-
-        Gson gson = new Gson();
-        Type type = new TypeToken<Stock>() {
-        }.getType();
-        return gson.fromJson(stockString, type);
+        if (stockString == null) return null;
+        return new Gson().fromJson(stockString, new Token<Stock>().get());
     }
 
     @TypeConverter
     public String fromPricePoint(PricePoint pricePoint) {
-        if (pricePoint == null) {
-            return null;
-        }
-
-        Gson gson = new Gson();
-        Type type = new TypeToken<PricePoint>() {
-        }.getType();
-        return gson.toJson(pricePoint, type);
+        if (pricePoint == null) return null;
+        return new Gson().toJson(pricePoint, new Token<PricePoint>().get());
     }
 
     @TypeConverter
     public PricePoint toPricePoint(String pricePointString) {
-        if (pricePointString == null) {
-            return null;
-        }
+        if (pricePointString == null) return null;
+        return new Gson().fromJson(pricePointString, new Token<PricePoint>().get());
+    }
+}
 
-        Gson gson = new Gson();
-        Type type = new TypeToken<PricePoint>() {
+class Token<T> {
+    public Type get() {
+        return new TypeToken<T>() {
         }.getType();
-        return gson.fromJson(pricePointString, type);
     }
 }

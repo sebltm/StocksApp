@@ -102,6 +102,8 @@ public class API {
                         }
 
                         setSearchCallback(callback, retrievedStocks);
+                    } else {
+                        setSearchCallback(callback, null);
                     }
                 });
     }

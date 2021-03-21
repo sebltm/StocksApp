@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -84,6 +85,7 @@ public class GraphFragment extends Fragment {
         mpLineChart = graphView.findViewById(R.id.graph_frag_line_graph);
 
         setSummaryHandler();
+        exportGraphAsJpgHandler();
 
         stockSymbol.setText(searchItem.getStock().getDisplaySymbol());
         dateFrom.setText(dateFormat.format(searchItem.getFrom()));
@@ -213,8 +215,8 @@ public class GraphFragment extends Fragment {
         }).start();
     }
 
-    private void exportGraphAsJpg() {
-        Button saveBtn = graphView.findViewById(R.id.saveImageBtn);
+    private void exportGraphAsJpgHandler() {
+        ImageButton saveBtn = graphView.findViewById(R.id.saveImageBtn);
         saveBtn.setOnClickListener(v -> {
             mpLineChart.saveToGallery(
                     String.format("%1$s", DateTimeHelper.toEpoch(new Date())),
@@ -223,6 +225,7 @@ public class GraphFragment extends Fragment {
                     Bitmap.CompressFormat.PNG,
                     40
             );
+            System.out.println(mpLineChart.isSaveEnabled());
         });
     }
 

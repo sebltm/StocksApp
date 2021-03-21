@@ -18,9 +18,7 @@ public abstract class SearchHistoryDatabase extends RoomDatabase {
     }
 
     public static synchronized SearchHistoryDatabase getInstance(Context context) {
-        if (instance == null) {
-            instance = create(context);
-        }
+        if (instance == null) instance = create(context);
         return instance;
     }
 

@@ -1,5 +1,6 @@
 package com.example.Team8.ui.main;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap.CompressFormat;
@@ -58,7 +59,6 @@ public class GraphFragment extends Fragment {
     private List<AnalysisPoint> analysisPoints;
     private PricePoint pricePoint;
     private View graphView;
-    private boolean localPriceActive = false;
     private boolean dataNotLoaded = true;
     private SwitchCompat togglePrice;
 
@@ -95,9 +95,8 @@ public class GraphFragment extends Fragment {
 
         togglePrice.setOnCheckedChangeListener((buttonView, isChecked) -> {
             globalPriceActive = isChecked;
-            localPriceActive = isChecked;
 
-            createChart(graphView, analysisPoints, pricePoint, localPriceActive);
+            createChart(graphView, analysisPoints, pricePoint, globalPriceActive);
         });
 
         return graphView;
@@ -198,18 +197,14 @@ public class GraphFragment extends Fragment {
                 createChart(graphView, analysisPoints, pricePoint, globalPriceActive);
 
                 dataNotLoaded = false;
-            } else {
-                if (localPriceActive != globalPriceActive) {
-                    localPriceActive = globalPriceActive;
-
-                    createChart(this.graphView, analysisPoints, pricePoint, localPriceActive);
-                }
             }
+
+            createChart(this.graphView, analysisPoints, pricePoint, globalPriceActive);
 
             Activity activity = getActivity();
             if (activity != null) activity.runOnUiThread(() -> {
                 spinner.setVisibility(View.INVISIBLE);
-                togglePrice.setChecked(localPriceActive);
+                togglePrice.setChecked(globalPriceActive);
             });
         }).start();
     }
@@ -218,7 +213,6 @@ public class GraphFragment extends Fragment {
         ImageButton saveBtn = graphView.findViewById(R.id.saveImageBtn);
         saveBtn.setOnClickListener(v -> {
             CompressFormat selectedFormat = CompressFormat.JPEG;
-//            selectedFormat = CompressFormat.PNG;
             new GraphImageExporter(mpLineChart)
                     .setFilename("")
                     .setQuality(100)
@@ -240,14 +234,15 @@ public class GraphFragment extends Fragment {
         });
     }
 
-    static class StockPriceFormat extends ValueFormatter {
+    private static class StockPriceFormat extends ValueFormatter {
         @Override
         public String getAxisLabel(float value, AxisBase axis) {
             return dateFormat.format(value);
         }
     }
 
-    static class CustomMarkerView extends MarkerView {
+    @SuppressLint("ViewConstructor")
+    private static class CustomMarkerView extends MarkerView {
 
         /**
          * Constructor. Sets up the MarkerView with a custom layout resource.

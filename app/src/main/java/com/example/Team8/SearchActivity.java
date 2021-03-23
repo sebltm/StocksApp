@@ -133,6 +133,12 @@ public class SearchActivity extends Activity implements StockAutoCompleteWatcher
     }
 
     private void executeSearch(View v) {
+
+        if(fromDate.getCal().compareTo(toDate.getCal()) >= 0) {
+            Toast.makeText(SearchActivity.this, "The date \"from\" should be earlier than the date \"to\" ", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         String stockSymbol = stockAutocomplete.getText().toString();
 
         if (stockSymbol.isEmpty()) {
@@ -165,7 +171,12 @@ public class SearchActivity extends Activity implements StockAutoCompleteWatcher
         if (macdCheckbox.isChecked()) analysisTypes.add(AnalysisType.MACD);
         if (macdavgCheckbox.isChecked()) analysisTypes.add(AnalysisType.MACDAVG);
 
-        if (fromDate.getCal().compareTo(toDate.getCal()) <= 0 && selectedStock != null && !analysisTypes.isEmpty()) {
+        if(analysisTypes.isEmpty()) {
+            Toast.makeText(SearchActivity.this, "Please select at least one type of analysis", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if(selectedStock != null) {
             spinner.setVisibility(View.VISIBLE);
 
             new Thread(() -> {
@@ -204,10 +215,6 @@ public class SearchActivity extends Activity implements StockAutoCompleteWatcher
                             });
                 }
             }).start();
-        } else if (selectedStock != null) {
-            spinner.setVisibility(View.INVISIBLE);
-            Toast.makeText(SearchActivity.this, "\"From\" date must be smaller or equal \"to\" date", Toast.LENGTH_LONG).show();
-            fromDate.setDayEqual(toDate);
         } else {
             spinner.setVisibility(View.INVISIBLE);
             Toast.makeText(SearchActivity.this, "Please select a stock symbol from the autocomplete list", Toast.LENGTH_LONG).show();

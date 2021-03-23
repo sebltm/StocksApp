@@ -134,7 +134,7 @@ public class SearchActivity extends Activity implements StockAutoCompleteWatcher
 
     private void executeSearch(View v) {
 
-        if(fromDate.getCal().compareTo(toDate.getCal()) >= 0) {
+        if(fromDate.getCal().getTime().compareTo(toDate.getCal().getTime()) >= 0) {
             Toast.makeText(SearchActivity.this, "The date \"from\" should be earlier than the date \"to\" ", Toast.LENGTH_SHORT).show();
             return;
         }

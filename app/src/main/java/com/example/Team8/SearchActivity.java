@@ -135,25 +135,29 @@ public class SearchActivity extends Activity implements StockAutoCompleteWatcher
     private void executeSearch(View v) {
         String stockSymbol = stockAutocomplete.getText().toString();
 
-        if (analysisDaysView.getText().toString().isEmpty()) {
-            Toast.makeText(SearchActivity.this, "Please fill in the number of days for SMA or EMA field", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        int analysisDays = Integer.parseInt(analysisDaysView.getText().toString());
-
         if (stockSymbol.isEmpty()) {
             Toast.makeText(SearchActivity.this, "Please select the correct stock symbol to run the search", Toast.LENGTH_SHORT).show();
             return;
         }
 
+        //Always needs a value, for the database!
+        int analysisDaysTF = 0;
         if (smaCheckbox.isChecked() || emaCheckbox.isChecked()) {
-            if (analysisDays <= 0) {
+            if (analysisDaysView.getText().toString().isEmpty()) {
+                Toast.makeText(SearchActivity.this, "Please fill in the number of days for SMA or EMA field", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            analysisDaysTF = Integer.parseInt(analysisDaysView.getText().toString());
+
+            if (analysisDaysTF <= 0) {
                 Toast.makeText(SearchActivity.this, "Please enter the correct number of days for SMA or EMA analysis", Toast.LENGTH_SHORT).show();
                 return;
             }
         }
 
+        //Pack into a final variable for Thread
+        final int analysisDays = analysisDaysTF;
         List<AnalysisType> analysisTypes = new ArrayList<>();
 
         if (smaCheckbox.isChecked()) analysisTypes.add(AnalysisType.SMA);

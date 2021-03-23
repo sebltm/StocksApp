@@ -36,7 +36,6 @@ public class GraphActivity extends FragmentActivity {
         requestPermissionLauncher = registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
             if (isGranted) {
                 int currentItem = viewPager.getCurrentItem();
-                String tag = "f" + currentItem;
                 GraphFragment fragment = ((GraphFragment) getSupportFragmentManager().findFragmentByTag("f" + currentItem));
                 fragment.checkPermissions();
             }

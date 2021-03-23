@@ -66,7 +66,7 @@ public class SearchHistoryDatabaseAndroidUnitTest {
         database.getSearchHistoryDao().deleteAll();
         database.getSearchHistoryDao().insert(item);
 
-        SearchHistoryItem fetched = database.getSearchHistoryDao().getItem(item.getStock(), item.getFrom(), item.getTo(), analysisTypeList);
+        SearchHistoryItem fetched = database.getSearchHistoryDao().getItem(item.getStock(), item.getFrom(), item.getTo(), item.getAnalysisDays());
 
         assert (fetched.getStock().getDescription().equals(item.getStock().getDescription()));
         assert (item.getFrom().getTime() == fetched.getFrom().getTime());
@@ -122,7 +122,7 @@ public class SearchHistoryDatabaseAndroidUnitTest {
 
         SearchHistoryItem item = new SearchHistoryItem(stock, new Date(System.currentTimeMillis()), new Date(System.currentTimeMillis()), analysisTypeList, 15);
         database.getSearchHistoryDao().insert(item);
-        boolean exists = database.getSearchHistoryDao().exists(item.getStock(), item.getFrom(), item.getTo(), analysisTypeList);
+        boolean exists = database.getSearchHistoryDao().exists(item.getStock(), item.getFrom(), item.getTo(), item.getAnalysisDays());
 
         assert (exists);
 

@@ -17,7 +17,7 @@ public class GraphImageExporter {
     private final LineChart lineChart;
     private String filename;
     private String fileDescription;
-    private String subFolderPath;
+    private String subFolderPath = "";
     private int quality = -1;
     private CompressFormat compressFormat;
 
@@ -60,66 +60,54 @@ public class GraphImageExporter {
         return this;
     }
 
-    private String getFileSavedPath(){
-        return String.format("%s%s",default_full_path, subFolderPath);
-    }
-
-    private String getExtension(){
-        switch (compressFormat){
-            case JPEG:
-                return ".jpg";
-            case PNG:
-                return ".png";
-            default:
-                return "";
-        }
-    }
-
-    private boolean isStringNullOrEmpty(String str){
+    private boolean isStringNullOrEmpty(String str) {
         return str == null || str.trim().length() == 0;
     }
 
-    private String validateFilename(String filename){
-        if (isStringNullOrEmpty(filename)){
-            filename = default_filename.get();
-            return filename;
-        }
+    private String validateFilename(String filename) {
+        if (isStringNullOrEmpty(filename)) return default_filename.get();
         filename = filename.startsWith("/") ? filename.substring(1) : filename;
         filename = filename.endsWith("/") ? filename.substring(0, filename.length() - 1) : filename;
         return filename;
     }
 
-    private void validateInputs() {
+    private int validateQuality(int quality) {
         int default_quality = 50;
-        String default_subFolderPath = "";
-        String default_file_description = "MPAndroidChart-Library Save";
-
-        if (quality < 0 || quality > 100) quality = default_quality;
-
-        filename = validateFilename(filename);
-
-        if (isStringNullOrEmpty(fileDescription)) fileDescription = default_file_description;
-
-        if (isStringNullOrEmpty(subFolderPath)) subFolderPath = default_subFolderPath;
-
-        if (compressFormat == null) compressFormat = default_format;
+        return quality < 0 || quality > 100 ? default_quality : quality;
     }
 
-    private GraphImageExporter exportGraph() {
-        validateInputs();
-        return this;
+    private String validateFileDescription(String fileDescription) {
+        String default_file_description = "MPAndroidChart-Library Save";
+        return isStringNullOrEmpty(fileDescription) ? default_file_description : fileDescription;
+    }
+
+    private String validateSubFolderPath(String subFolderPath) {
+        String default_subFolderPath = "";
+        return isStringNullOrEmpty(subFolderPath) ? default_subFolderPath : subFolderPath;
+    }
+
+    private CompressFormat validateCompressFormat(CompressFormat compressFormat) {
+        return compressFormat == null ? default_format : compressFormat;
+    }
+
+    private void validateInputs() {
+        filename = validateFilename(filename);
+        fileDescription = validateFileDescription(fileDescription);
+        subFolderPath = validateSubFolderPath(subFolderPath);
+        compressFormat = validateCompressFormat(compressFormat);
+        quality = validateQuality(quality);
     }
 
     public String getFilename() {
         return filename;
     }
 
-    public String getSubFolderPath() {
-        return subFolderPath;
-    }
-
     public String getFileDescription() {
         return fileDescription;
+    }
+
+    public String getSubFolderPath() {
+        return subFolderPath;
     }
 
     public CompressFormat getCompressFormat() {
@@ -130,19 +118,31 @@ public class GraphImageExporter {
         return quality;
     }
 
-    public boolean export() {
-        exportGraph();
-        return lineChart.saveToGallery(
-                this.filename,
-                this.subFolderPath,
-                this.fileDescription,
-                this.compressFormat,
-                this.getQuality()
-        );
+    public String getFileSavedPath() {
+        return String.format("%s%s", default_full_path, subFolderPath);
     }
 
-    public interface ExportCallback{
-        void response(boolean success, String... file_info);
+    public String getExtension() {
+        if (compressFormat == null) return "";
+        switch (compressFormat) {
+            case JPEG:
+                return ".jpg";
+            case PNG:
+                return ".png";
+            default:
+                return String.format(".%s", compressFormat.toString().toLowerCase());
+        }
+    }
+
+    public boolean export() {
+        validateInputs();
+        return lineChart.saveToGallery(
+                filename,
+                subFolderPath,
+                fileDescription,
+                compressFormat,
+                quality
+        );
     }
 }
 

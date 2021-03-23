@@ -244,8 +244,6 @@ public class GraphFragment extends Fragment implements ActivityResultCallback<Bo
                         )
                 );
 
-                createChart(graphView, analysisPoints, pricePoint, globalPriceActive);
-
                 dataNotLoaded = false;
             }
 
